@@ -1,33 +1,35 @@
 package com.zkkc.patrolrobot.moudle.home.activity;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Process;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.BarUtils;
-import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zkkc.patrolrobot.Constant;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
 import com.zkkc.patrolrobot.entity.BatteryStateBean;
+import com.zkkc.patrolrobot.moudle.home.adapter.XQAdapter;
+import com.zkkc.patrolrobot.moudle.home.entity.HostBasicDetails;
+import com.zkkc.patrolrobot.moudle.home.entity.XQBean;
 import com.zkkc.patrolrobot.receiver.BatteryChangedReceiver;
+import com.zkkc.patrolrobot.widget.XLPopup;
 
-import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
 import org.fusesource.mqtt.client.Callback;
@@ -41,10 +43,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.functions.Consumer;
 
 
 public class MainAct extends BaseActivity {
@@ -102,11 +105,15 @@ public class MainAct extends BaseActivity {
      */
     @BindView(R.id.llg)
     LinearLayout llg;
+    @BindView(R.id.tvSu)
+    TextView tvSu;
     /**
      * 温度
      */
     @BindView(R.id.llh)
     LinearLayout llh;
+    @BindView(R.id.tvWd)
+    TextView tvWd;
     /**
      * GPS
      */
@@ -148,6 +155,92 @@ public class MainAct extends BaseActivity {
      */
     @BindView(R.id.llm)
     LinearLayout llm;
+    /**
+     * 控件布局
+     */
+    @BindView(R.id.llKJREL)
+    RelativeLayout llKJREL;
+
+
+    /**
+     * 线路
+     */
+    @BindView(R.id.llXL)
+    LinearLayout llXL;
+    @BindView(R.id.ivXL)
+    ImageView ivXL;
+    //弹出popup
+    @BindView(R.id.llXLPopup)
+    LinearLayout llXLPopup;
+    @BindView(R.id.etXLNum)
+    EditText etXLNum;
+    @BindView(R.id.etXLQ)
+    EditText etXLQ;
+    @BindView(R.id.etXLZ)
+    EditText etXLZ;
+    @BindView(R.id.btnXLOk)
+    Button btnXLOk;
+    /**
+     * 详情
+     */
+    @BindView(R.id.llXQ)
+    LinearLayout llXQ;
+    @BindView(R.id.ivXQ)
+    ImageView ivXQ;
+
+    @BindView(R.id.llXQPopup)
+    LinearLayout llXQPopup;
+    @BindView(R.id.rvXQ)
+    RecyclerView rvXQ;
+
+
+    /**
+     * 行进控制
+     */
+    @BindView(R.id.llXJ)
+    LinearLayout llXJ;
+    @BindView(R.id.ivXJUp)
+    ImageView ivXJUp;
+    @BindView(R.id.ivXJDown)
+    ImageView ivXJDown;
+    /**
+     * 摄像头控制
+     */
+    @BindView(R.id.llKJGH)
+    LinearLayout llKJGH;
+    @BindView(R.id.ivKJGLeft)
+    ImageView ivKJGLeft;
+    @BindView(R.id.ivKJGRight)
+    ImageView ivKJGRight;
+    @BindView(R.id.llKJGV)
+    LinearLayout llKJGV;
+    @BindView(R.id.ivKJGUp)
+    ImageView ivKJGUp;
+    @BindView(R.id.ivKJGDown)
+    ImageView ivKJGDown;
+    /**
+     * 位置确认
+     */
+    @BindView(R.id.btnAffirm)
+    Button btnAffirm;
+    /**
+     * 完成
+     */
+    @BindView(R.id.llWc)
+    LinearLayout llWc;
+    @BindView(R.id.ivWc)
+    ImageView ivWc;
+    /**
+     * 调焦
+     */
+    @BindView(R.id.llTJ)
+    LinearLayout llTJ;
+    @BindView(R.id.ivTJAdd)
+    ImageView ivTJAdd;
+    @BindView(R.id.ivTJMinus)
+    ImageView ivTJMinus;
+    @BindView(R.id.tvCXT)
+    TextView tvCXT;
 
 
     //电池广播接收数据
@@ -168,6 +261,8 @@ public class MainAct extends BaseActivity {
     private long RECONNECT_DELAY = 3;//在第一次重新连接尝试之前等待时长
     private long RECONNECT_DELAY_MAX = 3;//重新连接尝试之间等待的最长时间
     private boolean connectState = false;//mqtt连接状态
+
+    private List<XQBean> xqBeans = new ArrayList<>();
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void batteryEvent(BatteryStateBean stateBean) {
@@ -234,17 +329,36 @@ public class MainAct extends BaseActivity {
         registerReceiver(batteryChangedReceiver, filter);
         //创建MQTT和相关设置
         createMqttBean();
+
+        for (int i = 0; i < 10; i++) {
+            XQBean xqBean = new XQBean();
+            xqBean.setJdNum(i + 1);
+            xqBean.setThNum((i + 10) + "");
+            xqBean.setJj("2.0");
+            xqBean.setLeftJd((130 + i) + "°");
+            xqBean.setRightJd((120 + i) + "°");
+            xqBeans.add(xqBean);
+        }
+
+
+        XQAdapter adapter = new XQAdapter(R.layout.item_xq, xqBeans);
+        rvXQ.setLayoutManager(new LinearLayoutManager(this));
+        rvXQ.setAdapter(adapter);
     }
 
+    private boolean XLPopupShow = false;
+    private boolean XQPopupShow = false;
 
-    @OnClick({R.id.lla, R.id.llb, R.id.llj, R.id.llm})
+    @OnClick({R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
+            R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.llWc,
+            R.id.ivTJAdd, R.id.ivTJMinus, R.id.tvCXT})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.lla:
                 break;
             case R.id.llb:
                 if (connection != null) {
-                    sendPublishData("");
+                    sendPublishData(Constant.TEST_STR2);
                 } else {
                     ToastUtils.showShort("请先连接主机");
                 }
@@ -256,11 +370,85 @@ public class MainAct extends BaseActivity {
             case R.id.llm://关闭
                 showCloseDialog();
                 break;
+            case R.id.llXL://线路
+                if (XLPopupShow) {
+                    llXLPopup.setVisibility(View.GONE);
+                    XLPopupShow = false;
+                    ivXL.setImageResource(R.mipmap.ic_xl);
+                    //点击使其隐藏
+                } else {
+                    if (XQPopupShow) {
+                        llXQPopup.setVisibility(View.GONE);
+                        XQPopupShow = false;
+                        ivXQ.setImageResource(R.mipmap.ic_xq_b);
+                    }
+                    llXLPopup.setVisibility(View.VISIBLE);
+                    XLPopupShow = true;
+                    ivXL.setImageResource(R.mipmap.ic_xl_a);
+                    //点击使其显示
+
+                }
+
+                break;
+            case R.id.llXQ://详情
+                if (XQPopupShow) {
+                    llXQPopup.setVisibility(View.GONE);
+                    XQPopupShow = false;
+                    ivXQ.setImageResource(R.mipmap.ic_xq_b);
+                    //点击使其隐藏
+
+                } else {
+                    if (XLPopupShow) {
+                        llXLPopup.setVisibility(View.GONE);
+                        XLPopupShow = false;
+                        ivXL.setImageResource(R.mipmap.ic_xl);
+                    }
+                    llXQPopup.setVisibility(View.VISIBLE);
+                    XQPopupShow = true;
+                    ivXQ.setImageResource(R.mipmap.ic_xq);
+                    //点击使其显示
+                }
+
+
+                break;
+            case R.id.ivXJUp://前进
+
+                break;
+            case R.id.ivXJDown://后退
+
+                break;
+            case R.id.ivKJGLeft://左
+
+                break;
+            case R.id.ivKJGRight://右
+
+                break;
+            case R.id.ivKJGUp://上
+
+                break;
+            case R.id.ivKJGDown://下
+
+                break;
+            case R.id.btnAffirm://位置确认
+
+                break;
+            case R.id.llWc://完成
+
+                break;
+            case R.id.ivTJAdd://加
+
+                break;
+            case R.id.ivTJMinus://减
+
+                break;
+            case R.id.tvCXT://调焦
+
+                break;
         }
     }
 
     private void sendPublishData(String jsonStr) {
-        connection.publish(Constant.SUBSCRIBE_TOPIC_STR_TEST, Constant.TEST_STR.getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
+        connection.publish(Constant.SUBSCRIBE_TOPIC_STR_TEST, jsonStr.getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
             public void onSuccess(Void v) {
 
                 ToastUtils.showShort("操作成功");
@@ -274,7 +462,6 @@ public class MainAct extends BaseActivity {
         });
 
     }
-
 
     /**
      * 连接Dialog
@@ -345,11 +532,36 @@ public class MainAct extends BaseActivity {
 //                              ack.run();
                                 switch (topic.toString()) {
                                     case Constant.SUBSCRIBE_TOPIC_STR_TEST:
-                                        ToastUtils.showShort("1");
+                                        HostBasicDetails hostBasicDetails = GsonUtils.getGson().fromJson(body.ascii().toString(), HostBasicDetails.class);
+                                        final int electric = hostBasicDetails.getRTstate().getElectric();//电量
+                                        final int humidity = hostBasicDetails.getRTstate().getHumidity();//湿度
+                                        final int temperature = hostBasicDetails.getRTstate().getTemperature();//温度
+                                        final int balance = hostBasicDetails.getRTstate().getBalance();//平衡状态 正常-0 警告-1 危险-2
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                //TODO
+                                                tvZDNum.setText(electric + "%");
+                                                tvSu.setText(humidity + "%");
+                                                tvWd.setText(temperature + "℃");
+                                                if (balance == 0) {
+                                                    tvPh.setText("正常");
+                                                    tvPh.setTextColor(getResources().getColor(R.color.green));
+                                                } else if (balance == 1) {
+                                                    tvPh.setText("警告");
+                                                    tvPh.setTextColor(getResources().getColor(R.color.colorAccent));
+                                                } else if (balance == 2) {
+                                                    tvPh.setText("危险");
+                                                    tvPh.setTextColor(getResources().getColor(R.color.red));
+                                                }
+
+
+                                            }
+                                        });
+
                                         LogUtils.v("listener---onPublish1---" + body.ascii().toString());
                                         break;
                                     case Constant.SUBSCRIBE_TOPIC_STR_TEST2:
-                                        ToastUtils.showShort("2");
                                         LogUtils.v("listener---onPublish2---" + body.ascii().toString());
                                         break;
                                 }
@@ -474,8 +686,6 @@ public class MainAct extends BaseActivity {
             mqtt.setReconnectDelay(RECONNECT_DELAY);//在第一次重新连接尝试之前等待时长
             mqtt.setReconnectDelayMax(RECONNECT_DELAY_MAX);//重新连接尝试之间等待的最长时间
 //            mqtt.setReconnectBackOffMultiplier();//重新连接尝试之间使用指数退避。设置为1可禁用指数退避。默认为2。
-            //连接
-//            connection = mqtt.callbackConnection();
 
 
         } catch (URISyntaxException e) {
@@ -483,60 +693,6 @@ public class MainAct extends BaseActivity {
         }
 
 
-    }
-
-    //连接Mqtt
-    private void connectMqtt() {
-        connection.connect(new Callback<Void>() {
-            public void onFailure(Throwable value) {
-//                    result.failure(value); // If we could not connect to the server.
-                LogUtils.v("connect---onFailure");
-            }
-
-            // Once we connect..
-            public void onSuccess(Void v) {
-                LogUtils.v("connect---onSuccess");
-                // Subscribe to a topic
-                Topic[] topics = {new Topic("TestSjr", QoS.AT_LEAST_ONCE)};
-                connection.subscribe(topics, new Callback<byte[]>() {
-                    public void onSuccess(byte[] qoses) {
-                        // The result of the subcribe request.
-                        LogUtils.v("subscribe---onSuccess");
-                    }
-
-                    public void onFailure(Throwable value) {
-//                            connection.close(null); // subscribe failed.
-                        LogUtils.v("subscribe---onFailure");
-                    }
-                });
-
-                // Send a message to a topic
-                connection.publish("Test", Constant.TEST_STR.getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
-                    public void onSuccess(Void v) {
-                        // the pubish operation completed successfully.
-                        LogUtils.v("publish---onSuccess");
-                    }
-
-                    public void onFailure(Throwable value) {
-//                            connection.close(null); // publish failed.
-                        LogUtils.v("publish---onFailure");
-                    }
-                });
-
-//                    // To disconnect..
-//                    connection.disconnect(new Callback<Void>() {
-//                        public void onSuccess(Void v) {
-//                            // called once the connection is disconnected.
-//                            LogUtils.v("disconnect---onSuccess");
-//                        }
-//
-//                        public void onFailure(Throwable value) {
-//                            // Disconnects never fail.
-//                            LogUtils.v("disconnect---onFailure");
-//                        }
-//                    });
-            }
-        });
     }
 
     /**
