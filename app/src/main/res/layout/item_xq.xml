@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dp_5"
-    android:background="@drawable/edit_shape">
+    android:background="@drawable/item_white_shape">
 
     <TextView
         android:id="@+id/tvJdNum"

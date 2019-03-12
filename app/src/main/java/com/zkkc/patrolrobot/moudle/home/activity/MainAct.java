@@ -28,7 +28,6 @@ import com.zkkc.patrolrobot.moudle.home.adapter.XQAdapter;
 import com.zkkc.patrolrobot.moudle.home.entity.HostBasicDetails;
 import com.zkkc.patrolrobot.moudle.home.entity.XQBean;
 import com.zkkc.patrolrobot.receiver.BatteryChangedReceiver;
-import com.zkkc.patrolrobot.widget.XLPopup;
 
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;

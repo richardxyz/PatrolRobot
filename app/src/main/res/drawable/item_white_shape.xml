@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="@dimen/dp_2" />
     <solid
-        android:color="@color/popup_white"/>
+        android:color="@color/popup_item_white"/>
     <stroke
         android:width="0.5dp"
         android:color="@color/yellow" />
