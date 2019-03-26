@@ -4,6 +4,30 @@
     android:layout_height="@dimen/dp_41"
     android:paddingTop="@dimen/dp_2"
     android:paddingBottom="@dimen/dp_2">
+
+    <LinearLayout
+        android:id="@+id/lli"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="match_parent"
+        android:background="@drawable/ll_clicked"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_height"
+            android:background="@mipmap/ic_wdsb" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/text_margin_top"
+            android:text="@string/item_i"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/text_size" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/lla"
         android:layout_width="@dimen/dp_50"
@@ -50,7 +74,6 @@
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
-
 
 
     <LinearLayout
@@ -127,10 +150,12 @@
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
+
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
     <LinearLayout
         android:id="@+id/llf"
         android:layout_width="@dimen/dp_50"
@@ -204,28 +229,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/lli"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="match_parent"
-        android:background="@drawable/ll_clicked"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="@dimen/image_width"
-            android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_gps" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/text_margin_top"
-            android:text="@string/item_i"
-            android:textColor="@color/yellow"
-            android:textSize="@dimen/text_size" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llj"
