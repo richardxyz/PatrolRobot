@@ -10,12 +10,11 @@ import com.blankj.utilcode.util.LogUtils;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack;
 import com.shuyu.gsyvideoplayer.model.VideoOptionModel;
-import com.zkkc.patrolrobot.Constant;
+import com.zkkc.patrolrobot.TrackConstant;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.base.BaseFragment;
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
-import com.zkkc.patrolrobot.entity.BatteryStateBean;
 import com.zkkc.patrolrobot.moudle.home.entity.PlayStateBean;
 import com.zkkc.patrolrobot.widget.EmptyControlVideo;
 
@@ -97,7 +96,7 @@ public class KJGFragment extends BaseFragment {
     }
 
     private void RTSPVideoPlay() {
-        detailPlayer.setUp(Constant.KJG_VIDEO_URL, false, "");
+        detailPlayer.setUp(TrackConstant.KJG_VIDEO_URL, false, "");
         detailPlayer.startPlayLogic();//视频播放
 
     }

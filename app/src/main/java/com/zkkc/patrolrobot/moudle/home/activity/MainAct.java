@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,11 +30,15 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.zkkc.patrolrobot.Constant;
+import com.yzq.zxinglibrary.android.CaptureActivity;
+import com.yzq.zxinglibrary.bean.ZxingConfig;
+import com.yzq.zxinglibrary.common.Constant;
+import com.zkkc.patrolrobot.TrackConstant;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.entity.BatteryStateBean;
 import com.zkkc.patrolrobot.moudle.details.activity.DetailsAct;
+import com.zkkc.patrolrobot.moudle.devices.DeviceAct;
 import com.zkkc.patrolrobot.moudle.home.adapter.XQAdapter;
 import com.zkkc.patrolrobot.moudle.home.contract.MainContract;
 import com.zkkc.patrolrobot.moudle.home.entity.DeviceConfigurationState;
@@ -131,7 +136,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     @BindView(R.id.tvWd)
     TextView tvWd;
     /**
-     * GPS
+     * 我的设备
      */
     @BindView(R.id.lli)
     LinearLayout lli;
@@ -382,11 +387,15 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     private boolean XQPopupShow = false;
     private boolean isHW = false;
 
-    @OnClick({R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
+
+    @OnClick({R.id.lli, R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
             R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.llWc,
             R.id.ivTJAdd, R.id.ivTJMinus, R.id.tvCXT})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.lli://我的设备
+                startActivity(new Intent(MainAct.this, DeviceAct.class));
+                break;
             case R.id.lla://配置信息
 //                showDDPSDDialog();//到达拍摄点
 //                showQzPsdDialog();//确认为拍摄点
@@ -502,10 +511,9 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
         }
     }
 
-
     private void sendPublishData(Object b) {
 
-        connection.publish(Constant.DEVICE_OP, GsonUtils.toJson(b).getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
+        connection.publish(TrackConstant.DEVICE_OP, GsonUtils.toJson(b).getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
             public void onSuccess(Void v) {
 
                 ToastUtils.showShort("操作成功");
@@ -578,7 +586,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                                 LogUtils.v("listener---onConnected");
 
                                 //TODO -------
-                                if (!serialNumDq.equals("")){
+                                if (!serialNumDq.equals("")) {
                                     //查询当前是否为配置状态
                                     DeviceConfigurationState state = new DeviceConfigurationState();
                                     state.setSerialNum(serialNumDq);
@@ -601,7 +609,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                             public void onPublish(UTF8Buffer topic, Buffer body, Runnable ack) {
 //                              ack.run();
                                 switch (topic.toString()) {
-                                    case Constant.DEVICE_RT_STATE:
+                                    case TrackConstant.DEVICE_RT_STATE:
                                         HostBasicDetails hostBasicDetails = GsonUtils.getGson().fromJson(body.ascii().toString(), HostBasicDetails.class);
                                         String serialNum = hostBasicDetails.getSerialNum();//机器序列号
                                         if (serialNumDq.isEmpty() || serialNumDq.equals("")) {
@@ -659,13 +667,13 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
 
                                         LogUtils.v("listener---onPublish1---" + body.ascii().toString());
                                         break;
-                                    case Constant.DEVICE_STATE://机器模式及配置状态
+                                    case TrackConstant.DEVICE_STATE://机器模式及配置状态
 //                                        HostBasicDetails hostBasicDetails = GsonUtils.getGson().fromJson(body.ascii().toString(), HostBasicDetails.class);
                                         DeviceStateBean deviceStateBean = GsonUtils.getGson().fromJson(body.ascii().toString(), DeviceStateBean.class);
 
                                         break;
 
-                                    case Constant.BASE_URL:
+                                    case TrackConstant.BASE_URL:
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -894,8 +902,8 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
      * //订阅Topics
      */
     private void subscribeAllTopic() {
-        Topic testTopic = new Topic(Constant.DEVICE_RT_STATE, QoS.AT_LEAST_ONCE);
-//        Topic testTopic2 = new Topic(Constant.SUBSCRIBE_TOPIC_STR_TEST2, QoS.AT_LEAST_ONCE);
+        Topic testTopic = new Topic(TrackConstant.DEVICE_RT_STATE, QoS.AT_LEAST_ONCE);
+//        Topic testTopic2 = new Topic(TrackConstant.SUBSCRIBE_TOPIC_STR_TEST2, QoS.AT_LEAST_ONCE);
         Topic[] topics = {testTopic};//Topic
         connection.subscribe(topics, new Callback<byte[]>() {
             public void onSuccess(byte[] qoses) {
@@ -1067,7 +1075,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
         try {
             //创建mqtt连接
             mqtt = new MQTT();
-            mqtt.setHost(Constant.LOCAL_HOST, Constant.HOST_PORT);
+            mqtt.setHost(TrackConstant.LOCAL_HOST, TrackConstant.HOST_PORT);
             //相关属性设置
             mqtt.setKeepAlive(KEEP_ALIVE);
 //            mqtt.setUserName(etName.getText().toString().trim());

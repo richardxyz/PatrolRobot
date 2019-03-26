@@ -1,6 +1,6 @@
 package com.zkkc.patrolrobot;
 
-public class Constant {
+public class TrackConstant {
     public final static String BASE_URL = "172.16.1.152:8182";
     //    public final static String KJG_VIDEO_URL = "rtsp://admin:zkkc4200@192.168.1.216:554/h264/ch0/main/av_stream";
 //    public final static String KJG_VIDEO_URL = "rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov";
