@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_43"
+    android:layout_height="@dimen/dp_41"
     android:paddingTop="@dimen/dp_2"
     android:paddingBottom="@dimen/dp_2">
     <LinearLayout
@@ -51,10 +51,7 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+
 
     <LinearLayout
         android:id="@+id/llc"
@@ -130,7 +127,10 @@
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
-
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
     <LinearLayout
         android:id="@+id/llf"
         android:layout_width="@dimen/dp_50"

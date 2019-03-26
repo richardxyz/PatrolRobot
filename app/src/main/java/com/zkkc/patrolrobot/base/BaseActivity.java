@@ -1,16 +1,22 @@
 package com.zkkc.patrolrobot.base;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zkkc.patrolrobot.R;
 
@@ -119,9 +125,40 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
 
             Window _window = getWindow();
             WindowManager.LayoutParams params = _window.getAttributes();
-            params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE;
+            params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
             _window.setAttributes(params);
         }
+    }
+
+    /**
+     * 预览图片弹窗
+     */
+    public void showPictureDialog(Uri uri) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.picture_show_act, null);
+        ImageView ivClose = view.findViewById(R.id.ivClose);
+        PhotoView photoView = view.findViewById(R.id.photoView);
+        final Dialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Window window = dialog.getWindow();
+        window.setContentView(view);
+        //设置dialog弹窗宽高
+        WindowManager.LayoutParams params = window.getAttributes();
+        //dialog宽高适应屏幕
+        WindowManager manager = getWindowManager();
+        Display display = manager.getDefaultDisplay();
+        params.height = (int) (display.getHeight() * 0.95);
+        params.width = (int) (display.getWidth() * 0.8);
+        window.setAttributes(params);
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+//        photoView.setImageResource(R.mipmap.wel_a);
+        photoView.setImageURI(uri);
     }
 
     /**

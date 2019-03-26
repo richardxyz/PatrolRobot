@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_5"
+    android:gravity="center_horizontal"
+    android:background="@drawable/edit_shape_a"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvThNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_1"
+        android:text="塔号--"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/sp_14" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:gravity="right"
+            android:text="配置人员："
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tvPzName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_1"
+            android:layout_weight="1"
+            android:text="--"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_14" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:gravity="right"
+            android:text="拍摄点数量："
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tvPsdNum"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_1"
+            android:layout_weight="1"
+            android:text="--"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_14" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginBottom="@dimen/dp_1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:gravity="right"
+            android:text="配置完成时间："
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tvWcName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_1"
+            android:layout_weight="1"
+            android:text="--"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_14" />
+    </LinearLayout>
+</LinearLayout>

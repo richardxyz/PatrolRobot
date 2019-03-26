@@ -15,28 +15,17 @@
         android:layout_height="match_parent"
         android:background="@drawable/main_shape">
 
-        <RelativeLayout
+        <FrameLayout
+            android:id="@+id/flVideo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/dp_1">
+            android:padding="@dimen/dp_2">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/wel_a" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="无视频"
-                android:textColor="@color/gray_10"
-                android:textSize="@dimen/sp_35"
-                android:textStyle="bold" />
-        </RelativeLayout>
+        </FrameLayout>
 
         <include layout="@layout/main_kj_rel" />
+
+
     </RelativeLayout>
 
 </LinearLayout>

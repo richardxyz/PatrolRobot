@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_5"
+    android:background="@drawable/edit_shape_a">
+
+    <TextView
+        android:id="@+id/tvNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="角度1"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/sp_12" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvNum"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_20">
+
+        <com.android.library.YLCircleImageView
+            android:id="@+id/ivShowPic"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_65"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/wel_a"
+            app:radius="3dp" />
+
+        <TextView
+            android:id="@+id/tvLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="左旋角度：36°"
+            android:layout_alignTop="@id/ivShowPic"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/tvRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvLeft"
+            android:layout_centerVertical="true"
+            android:text="右旋角度：36°"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/tvBs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/ivShowPic"
+            android:text="焦距倍数：2.0"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_12" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

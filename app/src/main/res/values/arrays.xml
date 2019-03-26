@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="spinner_tx">
+        <item>直线塔</item>
+        <item>耐张塔</item>
+    </array>
+    <array name="spinner_xdwz">
+        <item>塔前</item>
+        <item>塔后</item>
+    </array>
+    <array name="spinner_cdz">
+        <item>存在</item>
+        <item>不存在</item>
+    </array>
+
+    <array name="progress_colors">
+        <item>#00BCD4</item>
+        <item>#FFCC33</item>
+        <item>#e2030e</item>
+        <item>#07ba04</item>
+    </array>
+</resources>

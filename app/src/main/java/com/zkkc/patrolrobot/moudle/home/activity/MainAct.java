@@ -1,19 +1,30 @@
 package com.zkkc.patrolrobot.moudle.home.activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.FragmentUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
@@ -21,12 +32,18 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.zkkc.patrolrobot.Constant;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.base.BaseActivity;
-import com.zkkc.patrolrobot.base.BasePresenter;
-import com.zkkc.patrolrobot.base.BaseView;
 import com.zkkc.patrolrobot.entity.BatteryStateBean;
+import com.zkkc.patrolrobot.moudle.details.activity.DetailsAct;
 import com.zkkc.patrolrobot.moudle.home.adapter.XQAdapter;
+import com.zkkc.patrolrobot.moudle.home.contract.MainContract;
+import com.zkkc.patrolrobot.moudle.home.entity.DeviceConfigurationState;
+import com.zkkc.patrolrobot.moudle.home.entity.DeviceStateBean;
 import com.zkkc.patrolrobot.moudle.home.entity.HostBasicDetails;
+import com.zkkc.patrolrobot.moudle.home.entity.PlayStateBean;
 import com.zkkc.patrolrobot.moudle.home.entity.XQBean;
+import com.zkkc.patrolrobot.moudle.home.fragment.HWFragment;
+import com.zkkc.patrolrobot.moudle.home.fragment.KJGFragment;
+import com.zkkc.patrolrobot.moudle.home.presenter.MainPresenter;
 import com.zkkc.patrolrobot.receiver.BatteryChangedReceiver;
 
 import org.fusesource.hawtbuf.Buffer;
@@ -49,7 +66,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class MainAct extends BaseActivity {
+public class MainAct extends BaseActivity<MainContract.View, MainContract.Presenter> implements MainContract.View {
 
     /**
      * 配置信息
@@ -240,19 +257,21 @@ public class MainAct extends BaseActivity {
     ImageView ivTJMinus;
     @BindView(R.id.tvCXT)
     TextView tvCXT;
+    /**
+     * 视频播放器
+     */
+    @BindView(R.id.flVideo)
+    FrameLayout flVideo;
 
 
     //电池广播接收数据
     private static final String BATTERY_STATUS_CHARGING = "BATTERY_STATUS_CHARGING";
     private static final String BATTERY_STATUS_FULL = "BATTERY_STATUS_FULL";
     private static final String BATTERY_STATUS_NOT_CHARGING = "BATTERY_STATUS_NOT_CHARGING";
-
-
     private BatteryChangedReceiver batteryChangedReceiver;
     private String batteryType;//充电状态
     private int powNum;//当前电量
-
-
+    //mqtt相关
     private MQTT mqtt;
     CallbackConnection connection;
     private short KEEP_ALIVE = 5;
@@ -262,6 +281,11 @@ public class MainAct extends BaseActivity {
     private boolean connectState = false;//mqtt连接状态
 
     private List<XQBean> xqBeans = new ArrayList<>();
+    XQAdapter adapter;
+    //fragment
+    FragmentManager manager;
+    KJGFragment kjgFragment;
+    HWFragment hwFragment;
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void batteryEvent(BatteryStateBean stateBean) {
@@ -306,13 +330,13 @@ public class MainAct extends BaseActivity {
     }
 
     @Override
-    public BasePresenter createPresenter() {
-        return null;
+    public MainContract.Presenter createPresenter() {
+        return new MainPresenter(this);
     }
 
     @Override
-    public BaseView createView() {
-        return null;
+    public MainContract.View createView() {
+        return this;
     }
 
     @Override
@@ -340,27 +364,54 @@ public class MainAct extends BaseActivity {
         }
 
 
-        XQAdapter adapter = new XQAdapter(R.layout.item_xq, xqBeans);
+        adapter = new XQAdapter(R.layout.item_xq, xqBeans);
         rvXQ.setLayoutManager(new LinearLayoutManager(this));
         rvXQ.setAdapter(adapter);
+        widgetHideAndShow(false, false, false, false);
+
+
+        manager = getSupportFragmentManager();
+        kjgFragment = new KJGFragment();
+
+        FragmentUtils.add(manager, kjgFragment, R.id.flVideo);
+
+
     }
 
     private boolean XLPopupShow = false;
     private boolean XQPopupShow = false;
+    private boolean isHW = false;
 
     @OnClick({R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
             R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.llWc,
             R.id.ivTJAdd, R.id.ivTJMinus, R.id.tvCXT})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.lla:
+            case R.id.lla://配置信息
+//                showDDPSDDialog();//到达拍摄点
+//                showQzPsdDialog();//确认为拍摄点
+//                showPSDialog();//拍摄点信息录入
+                startActivity(new Intent(MainAct.this, DetailsAct.class));
+
                 break;
-            case R.id.llb:
-                if (connection != null) {
-                    sendPublishData(Constant.TEST_STR2);
+            case R.id.llb://可见光切换
+//                if (connection != null && connectState) {
+                if (isHW) {
+                    if (kjgFragment == null) {
+                        kjgFragment = new KJGFragment();
+                    }
+                    FragmentUtils.replace(manager, kjgFragment, R.id.flVideo);
+                    isHW = false;
                 } else {
-                    ToastUtils.showShort("请先连接主机");
+                    if (hwFragment == null) {
+                        hwFragment = new HWFragment();
+                    }
+                    FragmentUtils.replace(manager, hwFragment, R.id.flVideo);
+                    isHW = true;
                 }
+//                } else {
+//                    ToastUtils.showShort("请先连接主机");
+//                }
 
                 break;
             case R.id.llj://连接
@@ -406,6 +457,9 @@ public class MainAct extends BaseActivity {
                     XQPopupShow = true;
                     ivXQ.setImageResource(R.mipmap.ic_xq);
                     //点击使其显示
+                    //TODO 数据变化更新
+
+                    adapter.notifyDataSetChanged();
                 }
 
 
@@ -429,10 +483,12 @@ public class MainAct extends BaseActivity {
 
                 break;
             case R.id.btnAffirm://位置确认
+                showQzPsdDialog();//确认为拍摄点
 
                 break;
             case R.id.llWc://完成
-
+//                showqhHwDialog();//可见光完成后dialog
+                showPzwcDialog();//配置全部完成
                 break;
             case R.id.ivTJAdd://加
 
@@ -446,8 +502,10 @@ public class MainAct extends BaseActivity {
         }
     }
 
-    private void sendPublishData(String jsonStr) {
-        connection.publish(Constant.SUBSCRIBE_TOPIC_STR_TEST, jsonStr.getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
+
+    private void sendPublishData(Object b) {
+
+        connection.publish(Constant.DEVICE_OP, GsonUtils.toJson(b).getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
             public void onSuccess(Void v) {
 
                 ToastUtils.showShort("操作成功");
@@ -474,6 +532,7 @@ public class MainAct extends BaseActivity {
     private String USER_NAME = "USER_NAME";
     private String NAME = "NAME";
     private String PW = "PW";
+    private String serialNumDq = "";
 
     private void showConnectDialog() {
         View diaView = View.inflate(this, R.layout.dialog_connect, null);
@@ -511,17 +570,29 @@ public class MainAct extends BaseActivity {
                             @Override
                             public void onConnected() {
                                 connectState = true;
+                                EventBus.getDefault().postSticky(new PlayStateBean(connectState));
                                 updateUi(true);
                                 if (connectDialog != null) {
                                     connectDialog.dismiss();
                                 }
-
                                 LogUtils.v("listener---onConnected");
+
+                                //TODO -------
+                                if (!serialNumDq.equals("")){
+                                    //查询当前是否为配置状态
+                                    DeviceConfigurationState state = new DeviceConfigurationState();
+                                    state.setSerialNum(serialNumDq);
+                                    state.setModule(0);
+                                    state.setOp(2);
+                                    sendPublishData(state);
+                                }
+
                             }
 
                             @Override
                             public void onDisconnected() {
                                 connectState = false;
+                                EventBus.getDefault().postSticky(new PlayStateBean(connectState));
                                 updateUi(false);
                                 LogUtils.v("listener---onDisconnected");
                             }
@@ -530,12 +601,23 @@ public class MainAct extends BaseActivity {
                             public void onPublish(UTF8Buffer topic, Buffer body, Runnable ack) {
 //                              ack.run();
                                 switch (topic.toString()) {
-                                    case Constant.SUBSCRIBE_TOPIC_STR_TEST:
+                                    case Constant.DEVICE_RT_STATE:
                                         HostBasicDetails hostBasicDetails = GsonUtils.getGson().fromJson(body.ascii().toString(), HostBasicDetails.class);
-                                        final int electric = hostBasicDetails.getRTstate().getElectric();//电量
-                                        final int humidity = hostBasicDetails.getRTstate().getHumidity();//湿度
-                                        final int temperature = hostBasicDetails.getRTstate().getTemperature();//温度
-                                        final int balance = hostBasicDetails.getRTstate().getBalance();//平衡状态 正常-0 警告-1 危险-2
+                                        String serialNum = hostBasicDetails.getSerialNum();//机器序列号
+                                        if (serialNumDq.isEmpty() || serialNumDq.equals("")) {
+                                            serialNumDq = serialNum;
+                                        } else {
+                                            if (!serialNumDq.equals(serialNum)) {
+                                                serialNumDq = serialNum;
+                                            }
+                                        }
+                                        final int electric = hostBasicDetails.getElectric();//电量
+                                        final int humidity = hostBasicDetails.getHumidity();//湿度
+                                        final int temperature = hostBasicDetails.getTemperature();//温度
+                                        final int balance = hostBasicDetails.getBalance();//平衡状态 正常-0 警告-1 危险-2
+                                        final int camera = hostBasicDetails.getPeripheral().getCamera();//可见光摄像头（关闭-0 开启-1）
+                                        final int ir = hostBasicDetails.getPeripheral().getIr();//红外（关闭-0 开启-1）
+                                        final int radar = hostBasicDetails.getPeripheral().getRadar();//雷达（关闭-0 开启-1）
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -554,13 +636,44 @@ public class MainAct extends BaseActivity {
                                                     tvPh.setTextColor(getResources().getColor(R.color.red));
                                                 }
 
+                                                if (camera == 1) {
+                                                    tvKjg.setText("开启");
+                                                } else {
+                                                    tvKjg.setText("关闭");
+                                                }
+                                                if (ir == 1) {
+
+                                                    tvHw.setText("开启");
+                                                } else {
+                                                    tvHw.setText("关闭");
+                                                }
+                                                if (radar == 1) {
+                                                    tvLd.setText("开启");
+                                                } else {
+                                                    tvLd.setText("关闭");
+                                                }
+
 
                                             }
                                         });
 
                                         LogUtils.v("listener---onPublish1---" + body.ascii().toString());
                                         break;
-                                    case Constant.SUBSCRIBE_TOPIC_STR_TEST2:
+                                    case Constant.DEVICE_STATE://机器模式及配置状态
+//                                        HostBasicDetails hostBasicDetails = GsonUtils.getGson().fromJson(body.ascii().toString(), HostBasicDetails.class);
+                                        DeviceStateBean deviceStateBean = GsonUtils.getGson().fromJson(body.ascii().toString(), DeviceStateBean.class);
+
+                                        break;
+
+                                    case Constant.BASE_URL:
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                showDDPSDDialog();//到达拍摄点
+                                            }
+                                        });
+
+
                                         LogUtils.v("listener---onPublish2---" + body.ascii().toString());
                                         break;
                                 }
@@ -583,6 +696,7 @@ public class MainAct extends BaseActivity {
                             @Override
                             public void onFailure(Throwable value) {
                                 connectState = false;
+                                EventBus.getDefault().postSticky(new PlayStateBean(connectState));
                                 updateUi(false);
                                 LogUtils.v("connect---onFailure---" + value);
                             }
@@ -605,6 +719,146 @@ public class MainAct extends BaseActivity {
         });
     }
 
+    Dialog dialog;
+    AlertDialog.Builder builder;
+
+    /**
+     * 到达拍摄点dialog
+     */
+    private void showDDPSDDialog() {
+        if (dialog == null) {
+            builder = new AlertDialog.Builder(this);
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_ddpsd, null);
+            Button btnGo = view.findViewById(R.id.btnGo);
+            dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+            Window window = dialog.getWindow();
+            window.setContentView(view);
+            //设置dialog弹窗宽高
+            WindowManager.LayoutParams params = window.getAttributes();
+            //dialog宽高
+            params.height = ConvertUtils.dp2px(220);
+            params.width = ConvertUtils.dp2px(320);
+            window.setAttributes(params);
+            btnGo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    dialog = null;
+                    widgetHideAndShow(true, true, true, true);
+
+
+                }
+            });
+        }
+    }
+
+    Dialog dialogPsd;
+
+    /**
+     * 拍摄点信息录入dialog
+     */
+    private void showPSDialog() {
+        View view = View.inflate(this, R.layout.dialog_psd, null);
+        dialogPsd = new Dialog(this);
+        dialogPsd.setContentView(view);
+        Button btnGo = view.findViewById(R.id.btnGo);
+        EditText etDQNum = view.findViewById(R.id.etDQNum);
+        EditText etFZCNum = view.findViewById(R.id.etFZCNum);
+
+        Spinner spinner_CDZ = view.findViewById(R.id.spinner_CDZ);
+        spinner_CDZ.setDropDownVerticalOffset(ConvertUtils.dp2px(30));
+        spinner_CDZ.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView positionTv = (TextView) view;
+                positionTv.setTextColor(getResources().getColor(R.color.yellow));
+                positionTv.setGravity(Gravity.CENTER);
+                switch (position) {
+                    case 0://存在
+
+                        break;
+                    case 1://不存在
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        Spinner spinner_XDWZ = view.findViewById(R.id.spinner_XDWZ);
+        spinner_XDWZ.setDropDownVerticalOffset(ConvertUtils.dp2px(30));
+        spinner_XDWZ.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView positionTv = (TextView) view;
+                positionTv.setTextColor(getResources().getColor(R.color.yellow));
+                positionTv.setGravity(Gravity.CENTER);
+                switch (position) {
+                    case 0://塔前
+
+                        break;
+                    case 1://塔后
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        Spinner spinner_TX = view.findViewById(R.id.spinner_TX);
+        spinner_TX.setDropDownVerticalOffset(ConvertUtils.dp2px(30));
+        spinner_TX.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView positionTv = (TextView) view;
+                positionTv.setTextColor(getResources().getColor(R.color.yellow));
+                positionTv.setGravity(Gravity.CENTER);
+                switch (position) {
+                    case 0://直线塔
+
+                        break;
+                    case 1://耐张塔
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+
+        dialogPsd.setCanceledOnTouchOutside(false);
+        dialogPsd.show();
+        Window window = dialogPsd.getWindow();
+        window.setContentView(view);
+        //设置dialog弹窗宽高
+        WindowManager.LayoutParams params = window.getAttributes();
+        //dialog宽高
+        params.height = ConvertUtils.dp2px(360);
+        params.width = ConvertUtils.dp2px(280);
+        window.setAttributes(params);
+        btnGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialogPsd.dismiss();
+
+
+            }
+        });
+    }
+
+
     private void updateUi(final boolean isConnect) {
         runOnUiThread(new Runnable() {
             @Override
@@ -617,7 +871,6 @@ public class MainAct extends BaseActivity {
                         etName.setFocusableInTouchMode(false);
                         etPW.setFocusable(false);
                         etPW.setFocusableInTouchMode(false);
-
                         btnConnect.setClickable(false);
                         btnConnect.setText("已接入主机");
                     } else {
@@ -641,9 +894,9 @@ public class MainAct extends BaseActivity {
      * //订阅Topics
      */
     private void subscribeAllTopic() {
-        Topic testTopic = new Topic(Constant.SUBSCRIBE_TOPIC_STR_TEST, QoS.AT_LEAST_ONCE);
-        Topic testTopic2 = new Topic(Constant.SUBSCRIBE_TOPIC_STR_TEST2, QoS.AT_LEAST_ONCE);
-        Topic[] topics = {testTopic, testTopic2};//Topic
+        Topic testTopic = new Topic(Constant.DEVICE_RT_STATE, QoS.AT_LEAST_ONCE);
+//        Topic testTopic2 = new Topic(Constant.SUBSCRIBE_TOPIC_STR_TEST2, QoS.AT_LEAST_ONCE);
+        Topic[] topics = {testTopic};//Topic
         connection.subscribe(topics, new Callback<byte[]>() {
             public void onSuccess(byte[] qoses) {
                 // The result of the subcribe request.
@@ -667,6 +920,144 @@ public class MainAct extends BaseActivity {
                 });
             }
         });
+    }
+
+    /**
+     * 确认为拍摄点Dialog
+     */
+    Dialog qzPsdDialog;
+
+    public void showQzPsdDialog() {
+        View dialogView = View.inflate(this, R.layout.dialog_qz_psd, null);
+        qzPsdDialog = new Dialog(this);
+        qzPsdDialog.setContentView(dialogView);
+        qzPsdDialog.show();
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnOk = dialogView.findViewById(R.id.btnOk);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qzPsdDialog.dismiss();
+            }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qzPsdDialog.dismiss();
+                //TODO 确定拍摄点逻辑
+                showPSDialog();
+            }
+        });
+
+    }
+
+    /**
+     * 确认添加拍摄角度Dialog
+     */
+    Dialog qzPsJdDialog;
+
+    public void showQzPsJdDialog() {
+        View dialogView = View.inflate(this, R.layout.dialog_qz_psjd, null);
+        qzPsJdDialog = new Dialog(this);
+        qzPsJdDialog.setContentView(dialogView);
+        qzPsJdDialog.show();
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnOk = dialogView.findViewById(R.id.btnOk);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qzPsJdDialog.dismiss();
+            }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qzPsJdDialog.dismiss();
+                //TODO 确定拍摄角度逻辑
+
+            }
+        });
+
+    }
+
+    /**
+     * 可见光配置完成，请求进行红外配置Dialog
+     */
+    Dialog qhHwDialog;
+
+    public void showqhHwDialog() {
+        View dialogView = View.inflate(this, R.layout.dialog_qh_hw, null);
+        qhHwDialog = new Dialog(this);
+        qhHwDialog.setContentView(dialogView);
+        qhHwDialog.show();
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnOk = dialogView.findViewById(R.id.btnOk);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qhHwDialog.dismiss();
+            }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qhHwDialog.dismiss();
+                //TODO 切换红外影像，进行角度确认
+
+            }
+        });
+
+    }
+
+    /**
+     * 确认添加为红外巡检角度Dialog
+     */
+    Dialog hwJdDialog;
+
+    public void showHwJdDialog() {
+        View dialogView = View.inflate(this, R.layout.dialog_hw_qrjd, null);
+        hwJdDialog = new Dialog(this);
+        hwJdDialog.setContentView(dialogView);
+        hwJdDialog.show();
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnOk = dialogView.findViewById(R.id.btnOk);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hwJdDialog.dismiss();
+            }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hwJdDialog.dismiss();
+                //TODO 添加红外角度确认
+
+            }
+        });
+
+    }
+
+    /**
+     * 当前拍摄点配置完成Dialog
+     */
+    Dialog pzwcDialog;
+
+    public void showPzwcDialog() {
+        View dialogView = View.inflate(this, R.layout.dialog_pzwc, null);
+        pzwcDialog = new Dialog(this);
+        pzwcDialog.setContentView(dialogView);
+        pzwcDialog.show();
+        Button btnOk = dialogView.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pzwcDialog.dismiss();
+                //TODO 当前拍摄点配置完成，等待机器到达下个拍摄点
+
+            }
+        });
+
     }
 
     /**
@@ -722,6 +1113,46 @@ public class MainAct extends BaseActivity {
             connectDialog.dismiss();
             connectDialog = null;
         }
+        if (dialogPsd != null) {
+            dialogPsd.dismiss();
+            dialogPsd = null;
+        }
+
     }
 
+    /**
+     * 操作控件的显示和隐藏
+     *
+     * @param xj  前行 后退
+     * @param sxt 摄像头方向和位置确认按钮
+     * @param tj  调焦按钮
+     * @param wc  完成按钮
+     */
+    private void widgetHideAndShow(boolean xj, boolean sxt, boolean tj, boolean wc) {
+        if (xj) {
+            llXJ.setVisibility(View.VISIBLE);
+        } else {
+            llXJ.setVisibility(View.GONE);
+        }
+        if (sxt) {
+            llKJGH.setVisibility(View.VISIBLE);
+            llKJGV.setVisibility(View.VISIBLE);
+            btnAffirm.setVisibility(View.VISIBLE);
+        } else {
+            llKJGH.setVisibility(View.GONE);
+            llKJGV.setVisibility(View.GONE);
+            btnAffirm.setVisibility(View.GONE);
+        }
+        if (tj) {
+            llTJ.setVisibility(View.VISIBLE);
+        } else {
+            llTJ.setVisibility(View.GONE);
+        }
+        if (wc) {
+            llWc.setVisibility(View.VISIBLE);
+        } else {
+            llWc.setVisibility(View.GONE);
+        }
+
+    }
 }
