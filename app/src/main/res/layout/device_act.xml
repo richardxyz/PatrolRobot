@@ -13,6 +13,7 @@
         android:text="设备信息"
         android:textColor="@color/yellow"
         android:textSize="@dimen/sp_18" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,11 +27,18 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvShowDevice"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
         </android.support.v7.widget.RecyclerView>
 
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_margin="@dimen/dp_5"
+            android:background="@mipmap/ic_close_a" />
     </LinearLayout>
 
 

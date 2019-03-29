@@ -15,6 +15,7 @@ public class DeviceConfigurationState {
     private int Module;
     private int Op;
 
+
     public String getSerialNum() {
         return SerialNum;
     }

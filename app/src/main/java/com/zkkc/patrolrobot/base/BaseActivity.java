@@ -93,7 +93,7 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
     }
 
     public void fullscreen(boolean enable) {
-        hideBottomUIMenu();
+
         if (enable) { //显示状态栏
 
             WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -114,8 +114,9 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         }
-
+        hideBottomUIMenu();
     }
+
     private void hideBottomUIMenu() {
         //隐藏虚拟按键，并且全屏
         if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
@@ -129,6 +130,7 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
             _window.setAttributes(params);
         }
     }
+
 
     /**
      * 预览图片弹窗
@@ -197,6 +199,7 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
         Process.killProcess(Process.myPid());
         System.exit(0);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

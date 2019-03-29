@@ -28,9 +28,16 @@ public class DeviceAct extends BaseActivity {
     Button btnAdd;
     @BindView(R.id.rvShowDevice)
     RecyclerView rvShowDevice;
-
+    @BindView(R.id.btnClose)
+    Button btnClose;
 
     private static int REQUEST_CODE = 1024;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fullscreen(true);
+    }
 
     @Override
     public int getLayoutId() {
@@ -54,7 +61,7 @@ public class DeviceAct extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btnAdd})
+    @OnClick({R.id.btnAdd, R.id.btnClose})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnAdd:
@@ -75,6 +82,9 @@ public class DeviceAct extends BaseActivity {
                 config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
                 intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
                 startActivityForResult(intent, REQUEST_CODE);
+                break;
+            case R.id.btnClose:
+                finish();
                 break;
         }
     }

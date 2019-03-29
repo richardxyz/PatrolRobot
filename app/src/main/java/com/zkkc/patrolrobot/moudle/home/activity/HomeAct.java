@@ -5,12 +5,11 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,11 +29,8 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.yzq.zxinglibrary.android.CaptureActivity;
-import com.yzq.zxinglibrary.bean.ZxingConfig;
-import com.yzq.zxinglibrary.common.Constant;
-import com.zkkc.patrolrobot.TrackConstant;
 import com.zkkc.patrolrobot.R;
+import com.zkkc.patrolrobot.TrackConstant;
 import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.entity.BatteryStateBean;
 import com.zkkc.patrolrobot.moudle.details.activity.DetailsAct;
@@ -46,17 +42,15 @@ import com.zkkc.patrolrobot.moudle.home.entity.DeviceStateBean;
 import com.zkkc.patrolrobot.moudle.home.entity.HostBasicDetails;
 import com.zkkc.patrolrobot.moudle.home.entity.PZZTBean;
 import com.zkkc.patrolrobot.moudle.home.entity.PlayStateBean;
-import com.zkkc.patrolrobot.moudle.home.entity.XQBean;
 import com.zkkc.patrolrobot.moudle.home.fragment.HWFragment;
 import com.zkkc.patrolrobot.moudle.home.fragment.KJGFragment;
 import com.zkkc.patrolrobot.moudle.home.presenter.MainPresenter;
+import com.zkkc.patrolrobot.moudle.home.utils.DeviceOPUtils;
 import com.zkkc.patrolrobot.receiver.BatteryChangedReceiver;
 
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
-import org.fusesource.mqtt.client.Callback;
 import org.fusesource.mqtt.client.CallbackConnection;
-import org.fusesource.mqtt.client.Listener;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
@@ -65,14 +59,12 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class MainAct extends BaseActivity<MainContract.View, MainContract.Presenter>{
+public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presenter> implements MainContract.View {
 
     /**
      * 配置信息
@@ -209,7 +201,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     LinearLayout llXQ;
     @BindView(R.id.ivXQ)
     ImageView ivXQ;
-
+    //弹出popup
     @BindView(R.id.llXQPopup)
     LinearLayout llXQPopup;
     @BindView(R.id.rvXQ)
@@ -279,14 +271,13 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     private int powNum;//当前电量
     //mqtt相关
     private MQTT mqtt;
-    CallbackConnection connection;
     private short KEEP_ALIVE = 5;
     private long CONNECT_ATTEMPTS_MAX = -1;//重连次数
     private long RECONNECT_DELAY = 3;//在第一次重新连接尝试之前等待时长
     private long RECONNECT_DELAY_MAX = 3;//重新连接尝试之间等待的最长时间
     private boolean connectState = false;//mqtt连接状态
+    CallbackConnection connection;
 
-    private List<XQBean> xqBeans = new ArrayList<>();
     XQAdapter adapter;
     //fragment
     FragmentManager manager;
@@ -337,12 +328,12 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     @Override
     public MainContract.Presenter createPresenter() {
-        return null;
+        return new MainPresenter(this);
     }
 
     @Override
     public MainContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override
@@ -356,56 +347,129 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
         filter.addAction(Intent.ACTION_BATTERY_OKAY);
         batteryChangedReceiver = new BatteryChangedReceiver();
         registerReceiver(batteryChangedReceiver, filter);
-        //创建MQTT和相关设置
-        createMqttBean();
-
-        for (int i = 0; i < 10; i++) {
-            XQBean xqBean = new XQBean();
-            xqBean.setJdNum(i + 1);
-            xqBean.setThNum((i + 10) + "");
-            xqBean.setJj("2.0");
-            xqBean.setLeftJd((130 + i) + "°");
-            xqBean.setRightJd((120 + i) + "°");
-            xqBeans.add(xqBean);
-        }
-
-
-        adapter = new XQAdapter(R.layout.item_xq, xqBeans);
-        rvXQ.setLayoutManager(new LinearLayoutManager(this));
-        rvXQ.setAdapter(adapter);
+        //隐藏控制按钮
         widgetHideAndShow(false, false, false, false);
-
-
+        //加载fragment
         manager = getSupportFragmentManager();
         kjgFragment = new KJGFragment();
-
         FragmentUtils.add(manager, kjgFragment, R.id.flVideo);
+        //创建mqtt连接
+        createMqttBean();
+
+        ivXJUp.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: //正常前行
+                        DeviceOPUtils.deviceUp(HomeAct.this, connection);
+                        break;
+                    case MotionEvent.ACTION_UP://停止
+                        DeviceOPUtils.deviceStop(HomeAct.this, connection);
+                        break;
+                }
+
+                return false;
+            }
+        });
+        ivXJDown.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN://正常后退
+                        DeviceOPUtils.deviceDown(HomeAct.this, connection);
+                        break;
+                    case MotionEvent.ACTION_UP://停止
+                        DeviceOPUtils.deviceStop(HomeAct.this, connection);
+                        break;
+                }
+                return false;
+            }
+        });
+        ivKJGLeft.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN://摄像头左转
+                        DeviceOPUtils.cameraLeft(HomeAct.this, connection, isHW);
+                        break;
+                    case MotionEvent.ACTION_UP://停止
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW);
+                        break;
+                }
+                return false;
+            }
+        });
+        ivKJGRight.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN://摄像头右转
+                        DeviceOPUtils.cameraRight(HomeAct.this, connection, isHW);
+
+                        break;
+                    case MotionEvent.ACTION_UP://停止
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW);
+                        break;
+                }
+                return false;
+            }
+        });
+        ivKJGUp.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN://摄像头向上转
+                        DeviceOPUtils.cameraUp(HomeAct.this, connection, isHW);
+
+                        break;
+                    case MotionEvent.ACTION_UP://停止
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW);
+                        break;
+                }
+                return false;
+            }
+        });
+        ivKJGDown.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN://摄像头向下转
+                        DeviceOPUtils.cameraDown(HomeAct.this, connection, isHW);
+                        break;
+                    case MotionEvent.ACTION_UP://停止
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW);
+                        break;
+                }
+                return false;
+            }
+        });
 
 
     }
 
-    private boolean XLPopupShow = false;
-    private boolean XQPopupShow = false;
-    private boolean isHW = false;
-
+    private boolean XLPopupShow = false;//线路popup是否显示
+    private boolean XQPopupShow = false;//详情popup是否显示
+    private boolean isHW = false;//是否为红外
+    public static final String XL_NUM = "XL_NUM";
+    public static final String XL_Q = "XL_Q";
+    public static final String XL_Z = "XL_Z";
+    private int deviceStateNow = -1;//机器的当前配置状态（0-未配置 1-配置中 2-配置完成 3-配置修改）
+    private int deviceStateDian = -1;//机器的配置中时状态（0-行走中 1-点配置 2-可见光角度配置 3-红外角度配置  4-配置校验）
 
     @OnClick({R.id.lli, R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
             R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.llWc,
-            R.id.ivTJAdd, R.id.ivTJMinus, R.id.tvCXT})
+            R.id.ivTJAdd, R.id.ivTJMinus, R.id.tvCXT, R.id.btnXLOk})
     public void onViewClicked(View view) {
+
         switch (view.getId()) {
             case R.id.lli://我的设备
-                startActivity(new Intent(MainAct.this, DeviceAct.class));
+                startActivity(new Intent(HomeAct.this, DeviceAct.class));
                 break;
             case R.id.lla://配置信息
-//                showDDPSDDialog();//到达拍摄点
-//                showQzPsdDialog();//确认为拍摄点
-//                showPSDialog();//拍摄点信息录入
-                startActivity(new Intent(MainAct.this, DetailsAct.class));
+                startActivity(new Intent(HomeAct.this, DetailsAct.class));
 
                 break;
             case R.id.llb://可见光切换
-//                if (connection != null && connectState) {
                 if (isHW) {
                     if (kjgFragment == null) {
                         kjgFragment = new KJGFragment();
@@ -419,10 +483,6 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                     FragmentUtils.replace(manager, hwFragment, R.id.flVideo);
                     isHW = true;
                 }
-//                } else {
-//                    ToastUtils.showShort("请先连接主机");
-//                }
-
                 break;
             case R.id.llj://连接
                 showConnectDialog();
@@ -432,49 +492,37 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
             case R.id.llXL://线路
                 if (XLPopupShow) {
-                    llXLPopup.setVisibility(View.GONE);
-                    XLPopupShow = false;
-                    ivXL.setImageResource(R.mipmap.ic_xl);
+                    updateXLPopupShow(false);
                     //点击使其隐藏
                 } else {
-                    if (XQPopupShow) {
-                        llXQPopup.setVisibility(View.GONE);
-                        XQPopupShow = false;
-                        ivXQ.setImageResource(R.mipmap.ic_xq_b);
-                    }
-                    llXLPopup.setVisibility(View.VISIBLE);
-                    XLPopupShow = true;
-                    ivXL.setImageResource(R.mipmap.ic_xl_a);
+                    updateXLPopupShow(true);
                     //点击使其显示
+                    //查询线路配置信息
+                    if (connectState) {
+                        DeviceOPUtils.queryXLPZXX(HomeAct.this,connection);
+                    } else {
+                        ToastUtils.showShort("当前未登录设备");
+                    }
 
                 }
 
                 break;
             case R.id.llXQ://详情
                 if (XQPopupShow) {
-                    llXQPopup.setVisibility(View.GONE);
-                    XQPopupShow = false;
-                    ivXQ.setImageResource(R.mipmap.ic_xq_b);
+                    updateXQPopupShow(false);
                     //点击使其隐藏
-
                 } else {
-                    if (XLPopupShow) {
-                        llXLPopup.setVisibility(View.GONE);
-                        XLPopupShow = false;
-                        ivXL.setImageResource(R.mipmap.ic_xl);
-                    }
-                    llXQPopup.setVisibility(View.VISIBLE);
-                    XQPopupShow = true;
-                    ivXQ.setImageResource(R.mipmap.ic_xq);
+                    updateXQPopupShow(true);
                     //点击使其显示
                     //TODO 数据变化更新
 
-                    adapter.notifyDataSetChanged();
+//                    adapter.notifyDataSetChanged();
                 }
 
 
                 break;
             case R.id.ivXJUp://前进
+
 
                 break;
             case R.id.ivXJDown://后退
@@ -509,23 +557,62 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
             case R.id.tvCXT://调焦
 
                 break;
+            case R.id.btnXLOk://确认添加（线路）
+                if (connectState) {
+                    //TODO 进入配置模式
+                    if (deviceStateNow == 0) {
+                        //进入配置模式
+                        DeviceOPUtils.inPZMS(HomeAct.this, connection);
+                    }
+
+
+                } else {
+                    ToastUtils.showShort("当前未登录设备");
+                }
+
+
+                break;
         }
     }
 
-    private void sendPublishData(Object b) {
-        connection.publish(TrackConstant.DEVICE_OP, GsonUtils.toJson(b).getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
-            public void onSuccess(Void v) {
-
-                ToastUtils.showShort("操作成功");
-                LogUtils.v("publish---onSuccess");
+    /**
+     * 更新详情Popup显示状态
+     */
+    private void updateXQPopupShow(boolean b) {
+        if (b) {
+            if (XLPopupShow) {
+                llXLPopup.setVisibility(View.GONE);
+                XLPopupShow = false;
+                ivXL.setImageResource(R.mipmap.ic_xl);
             }
+            llXQPopup.setVisibility(View.VISIBLE);
+            XQPopupShow = true;
+            ivXQ.setImageResource(R.mipmap.ic_xq);
+        } else {
+            llXQPopup.setVisibility(View.GONE);
+            XQPopupShow = false;
+            ivXQ.setImageResource(R.mipmap.ic_xq_b);
+        }
+    }
 
-            public void onFailure(Throwable value) {
-                ToastUtils.showShort("操作失败，请稍后再试");
-                LogUtils.v("publish---onFailure");
+    /**
+     * 更新线路Popup显示状态
+     */
+    private void updateXLPopupShow(boolean b) {
+        if (b) {
+            if (XQPopupShow) {
+                llXQPopup.setVisibility(View.GONE);
+                XQPopupShow = false;
+                ivXQ.setImageResource(R.mipmap.ic_xq_b);
             }
-        });
-
+            llXLPopup.setVisibility(View.VISIBLE);
+            XLPopupShow = true;
+            ivXL.setImageResource(R.mipmap.ic_xl_a);
+        } else {
+            llXLPopup.setVisibility(View.GONE);
+            XLPopupShow = false;
+            ivXL.setImageResource(R.mipmap.ic_xl);
+        }
     }
 
     /**
@@ -537,15 +624,15 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     EditText etName;
     EditText etPW;
     Button btnConnect;
-    private String USER_NAME = "USER_NAME";
-    private String NAME = "NAME";
-    private String PW = "PW";
-    private String serialNumDq = "";
+    public static final String USER_NAME = "USER_NAME";
+    public static final String NAME = "NAME";
+    public static final String PW = "PW";
 
     private void showConnectDialog() {
         View diaView = View.inflate(this, R.layout.dialog_connect, null);
         connectDialog = new Dialog(this);
         connectDialog.setContentView(diaView);
+        connectDialog.setCanceledOnTouchOutside(false);
         ivClose = diaView.findViewById(R.id.ivClose);
         etUserName = diaView.findViewById(R.id.etUserName);
         etName = diaView.findViewById(R.id.etName);
@@ -554,203 +641,15 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
         connectDialog.show();
         etUserName.setText(SPUtils.getInstance().getString(USER_NAME));
         etName.setText(SPUtils.getInstance().getString(NAME));
+        etPW.setText(SPUtils.getInstance().getString(PW));
         updateUi(connectState);
-        if (connectState) {
-            etPW.setText(SPUtils.getInstance().getString(PW));
-        } else {
-            etPW.setText("");
-        }
-
-
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isOk = checkStr();
-                if (isOk) {
-                    if (connectState) {
-                        ToastUtils.showShort("当前已连接");
-                    } else {
-
-                        mqtt.setUserName(etName.getText().toString().trim());
-                        mqtt.setPassword(etPW.getText().toString().trim());
-                        connection = mqtt.callbackConnection();
-                        connection.listener(new Listener() {
-                            @Override
-                            public void onConnected() {
-                                connectState = true;
-                                EventBus.getDefault().postSticky(new PlayStateBean(connectState));
-                                updateUi(true);
-                                if (connectDialog != null) {
-                                    connectDialog.dismiss();
-                                }
-                                LogUtils.v("listener---onConnected");
-
-                                //TODO -------
-
-                                    //查询当前是否为配置状态
-                                    DeviceConfigurationState state = new DeviceConfigurationState();
-                                    state.setSerialNum(serialNumDq);
-                                    state.setModule(0);
-                                    state.setOp(2);
-                                    sendPublishData(state);
-
-
-                            }
-
-                            @Override
-                            public void onDisconnected() {
-                                connectState = false;
-                                EventBus.getDefault().postSticky(new PlayStateBean(connectState));
-                                updateUi(false);
-                                LogUtils.v("listener---onDisconnected");
-                            }
-
-                            @Override
-                            public void onPublish(UTF8Buffer topic, Buffer body, Runnable ack) {
-//                              ack.run();
-                                switch (topic.toString()) {
-                                    case TrackConstant.DEVICE_RT_STATE:
-                                        HostBasicDetails hostBasicDetails = GsonUtils.getGson().fromJson(body.ascii().toString(), HostBasicDetails.class);
-                                        String serialNum = hostBasicDetails.getSerialNum();//机器序列号
-                                        if (serialNumDq.isEmpty() || serialNumDq.equals("")) {
-                                            serialNumDq = serialNum;
-                                        } else {
-                                            if (!serialNumDq.equals(serialNum)) {
-                                                serialNumDq = serialNum;
-                                            }
-                                        }
-                                        final int electric = hostBasicDetails.getElectric();//电量
-                                        final int humidity = hostBasicDetails.getHumidity();//湿度
-                                        final int temperature = hostBasicDetails.getTemperature();//温度
-                                        final int balance = hostBasicDetails.getBalance();//平衡状态 正常-0 警告-1 危险-2
-                                        final int camera = hostBasicDetails.getPeripheral().getCamera();//可见光摄像头（关闭-0 开启-1）
-                                        final int ir = hostBasicDetails.getPeripheral().getIr();//红外（关闭-0 开启-1）
-                                        final int radar = hostBasicDetails.getPeripheral().getRadar();//雷达（关闭-0 开启-1）
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                //TODO
-                                                tvZDNum.setText(electric + "%");
-                                                tvSu.setText(humidity + "%");
-                                                tvWd.setText(temperature + "℃");
-                                                if (balance == 0) {
-                                                    tvPh.setText("正常");
-                                                    tvPh.setTextColor(getResources().getColor(R.color.green));
-                                                } else if (balance == 1) {
-                                                    tvPh.setText("警告");
-                                                    tvPh.setTextColor(getResources().getColor(R.color.colorAccent));
-                                                } else if (balance == 2) {
-                                                    tvPh.setText("危险");
-                                                    tvPh.setTextColor(getResources().getColor(R.color.red));
-                                                }
-
-                                                if (camera == 1) {
-                                                    tvKjg.setText("开启");
-                                                } else {
-                                                    tvKjg.setText("关闭");
-                                                }
-                                                if (ir == 1) {
-
-                                                    tvHw.setText("开启");
-                                                } else {
-                                                    tvHw.setText("关闭");
-                                                }
-                                                if (radar == 1) {
-                                                    tvLd.setText("开启");
-                                                } else {
-                                                    tvLd.setText("关闭");
-                                                }
-
-
-                                            }
-                                        });
-
-                                        LogUtils.v("listener---onPublish1---" + body.ascii().toString());
-                                        break;
-                                    case TrackConstant.DEVICE_STATE://机器模式及配置状态
-                                        DeviceStateBean deviceStateBean = GsonUtils.getGson().fromJson(body.ascii().toString(), DeviceStateBean.class);
-                                        if (deviceStateBean.getModule() == 0) {
-
-
-                                        } else if (deviceStateBean.getModule() == 1) {
-                                            if (deviceStateBean.getMianState() == 1) {
-                                                if (deviceStateBean.getSubstate() == 1) {
-                                                    //点配置（到达拍摄点）
-                                                    runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            showDDPSDDialog();//到达拍摄点
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    case TrackConstant.DEVICE_RESULT:
-                                        PZZTBean pzztBean = GsonUtils.getGson().fromJson(body.ascii().toString(), PZZTBean.class);
-                                        LogUtils.v("pzztBean" + pzztBean.toString());
-                                        int module = pzztBean.getModule();
-                                        int op = pzztBean.getOp();
-                                        if (module == 0 && op == 2) {
-                                            if (pzztBean.getData() != null) {
-                                                int mianState = pzztBean.getData().getMianState();
-                                                int subState = pzztBean.getData().getSubstate();
-                                                if (mianState == 0) {
-                                                    ToastUtils.showShort("未配置状态");
-
-                                                } else if (mianState == 1) {
-                                                    ToastUtils.showShort("配置中");
-                                                    if (subState == 1) {
-                                                        ToastUtils.showShort("点配置");
-                                                    } else if (subState == 2) {
-                                                        ToastUtils.showShort("角度配置");
-                                                    } else if (subState == 3) {
-                                                        ToastUtils.showShort("配置校验");
-                                                    }
-
-
-                                                } else if (mianState == 2) {
-                                                    ToastUtils.showShort("配置完成");
-                                                } else if (mianState == 3) {
-                                                    ToastUtils.showShort("配置修改");
-                                                }
-
-                                            } else {
-
-                                            }
-                                        }
-
-                                        break;
-                                }
-
-                            }
-
-                            @Override
-                            public void onFailure(Throwable value) {
-                                LogUtils.v("listener---onFailure");
-                            }
-                        });
-                        connection.connect(new Callback<Void>() {
-                            @Override
-                            public void onSuccess(Void value) {
-                                connectState = true;
-                                LogUtils.v("connect---onSuccess");
-                                subscribeAllTopic();//订阅Topics
-                            }
-
-                            @Override
-                            public void onFailure(Throwable value) {
-                                connectState = false;
-                                EventBus.getDefault().postSticky(new PlayStateBean(connectState));
-                                updateUi(false);
-                                LogUtils.v("connect---onFailure---" + value);
-                            }
-                        });
-                    }
-                } else {
-                    ToastUtils.showShort("用户名或密码不能为空");
-                }
-
+                String userName = etUserName.getText().toString().trim();
+                String name = etName.getText().toString().trim();
+                String pW = etPW.getText().toString().trim();
+                getPresenter().MQTTConnHost(userName, name, pW, mqtt);
 
             }
         });
@@ -895,7 +794,6 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 dialogPsd.dismiss();
 
 
@@ -917,7 +815,8 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                         etPW.setFocusable(false);
                         etPW.setFocusableInTouchMode(false);
                         btnConnect.setClickable(false);
-                        btnConnect.setText("已接入主机");
+                        btnConnect.setText("已登录主机");
+                        btnConnect.setVisibility(View.INVISIBLE);
                     } else {
                         etUserName.setFocusable(true);
                         etUserName.setFocusableInTouchMode(true);
@@ -928,42 +827,10 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                         etPW.requestFocus();
                         btnConnect.setClickable(true);
                         btnConnect.setText("连接");
+                        btnConnect.setVisibility(View.VISIBLE);
                     }
 
                 }
-            }
-        });
-    }
-
-    /**
-     * //订阅Topics
-     */
-    private void subscribeAllTopic() {
-        Topic deviceRTState = new Topic(TrackConstant.DEVICE_RT_STATE, QoS.AT_LEAST_ONCE);
-        Topic deviceState = new Topic(TrackConstant.DEVICE_STATE, QoS.AT_LEAST_ONCE);
-        Topic deviceResult = new Topic(TrackConstant.DEVICE_RESULT, QoS.AT_LEAST_ONCE);
-        Topic[] topics = {deviceRTState, deviceState, deviceResult};//Topics
-        connection.subscribe(topics, new Callback<byte[]>() {
-            public void onSuccess(byte[] qoses) {
-                // The result of the subcribe request.
-                LogUtils.v("subscribe---onSuccess");
-                ToastUtils.showShort("连接主机成功");
-            }
-
-            public void onFailure(Throwable value) {
-                LogUtils.v("subscribe---onFailure");
-                //如果订阅失败的话，就主动中断当前连接并且进行重连
-                connection.disconnect(new Callback<Void>() {
-                    @Override
-                    public void onSuccess(Void value) {
-
-                    }
-
-                    @Override
-                    public void onFailure(Throwable value) {
-
-                    }
-                });
             }
         });
     }
@@ -991,7 +858,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
             public void onClick(View v) {
                 qzPsdDialog.dismiss();
                 //TODO 确定拍摄点逻辑
-                showPSDialog();
+
             }
         });
 
@@ -1106,50 +973,6 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     }
 
-    /**
-     * 创建MQTT和相关设置
-     */
-    private void createMqttBean() {
-        try {
-            //创建mqtt连接
-            mqtt = new MQTT();
-            mqtt.setHost(TrackConstant.LOCAL_HOST, TrackConstant.HOST_PORT);
-            //相关属性设置
-            mqtt.setKeepAlive(KEEP_ALIVE);
-//            mqtt.setUserName(etName.getText().toString().trim());
-//            mqtt.setPassword(etPW.getText().toString().trim());
-            mqtt.setConnectAttemptsMax(CONNECT_ATTEMPTS_MAX);//默认为-1，无限次重连
-            mqtt.setReconnectDelay(RECONNECT_DELAY);//在第一次重新连接尝试之前等待时长
-            mqtt.setReconnectDelayMax(RECONNECT_DELAY_MAX);//重新连接尝试之间等待的最长时间
-//            mqtt.setReconnectBackOffMultiplier();//重新连接尝试之间使用指数退避。设置为1可禁用指数退避。默认为2。
-
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    /**
-     * 存储登录名和密码
-     *
-     * @return
-     */
-    private boolean checkStr() {
-        String userName = etUserName.getText().toString().trim();
-        String name = etName.getText().toString().trim();
-        String pW = etPW.getText().toString().trim();
-        if (!"".equals(userName) && !"".equals(name) && !"".equals(pW)) {
-            SPUtils.getInstance().put(USER_NAME, userName);
-            SPUtils.getInstance().put(NAME, name);
-            SPUtils.getInstance().put(PW, pW);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -1199,6 +1022,420 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
         } else {
             llWc.setVisibility(View.GONE);
         }
+
+    }
+
+    /**
+     * 创建MQTT和相关设置
+     */
+    private void createMqttBean() {
+        try {
+            //创建mqtt连接
+            mqtt = new MQTT();
+            mqtt.setHost(TrackConstant.LOCAL_HOST, TrackConstant.HOST_PORT);
+            //相关属性设置
+            mqtt.setKeepAlive(KEEP_ALIVE);
+//            mqtt.setUserName(etName.getText().toString().trim());
+//            mqtt.setPassword(etPW.getText().toString().trim());
+            mqtt.setConnectAttemptsMax(CONNECT_ATTEMPTS_MAX);//默认为-1，无限次重连
+            mqtt.setReconnectDelay(RECONNECT_DELAY);//在第一次重新连接尝试之前等待时长
+            mqtt.setReconnectDelayMax(RECONNECT_DELAY_MAX);//重新连接尝试之间等待的最长时间
+//            mqtt.setReconnectBackOffMultiplier();//重新连接尝试之间使用指数退避。设置为1可禁用指数退避。默认为2。
+
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void mFailure(String strErr) {
+        ToastUtils.showShort(strErr);
+        connectState = false;
+    }
+
+    @Override
+    public void mConnected(CallbackConnection connection, String str) {
+        this.connection = connection;
+        ToastUtils.showShort(str);
+        connectState = true;
+        Topic deviceRTState = new Topic(TrackConstant.DEVICE_RT_STATE, QoS.AT_LEAST_ONCE);
+        Topic deviceState = new Topic(TrackConstant.DEVICE_STATE, QoS.AT_LEAST_ONCE);
+        Topic deviceResult = new Topic(TrackConstant.DEVICE_RESULT, QoS.AT_LEAST_ONCE);
+        Topic[] topics = {deviceRTState, deviceState, deviceResult};//Topics
+        getPresenter().subscribeAllTopic(topics);
+    }
+
+    @Override
+    public void mDisconnected(String str) {
+        ToastUtils.showShort(str);
+        connectState = false;
+    }
+
+    @Override
+    public void mPublish(UTF8Buffer topic, Buffer body) {
+        switch (topic.toString()) {
+            case TrackConstant.DEVICE_RT_STATE://机器实时状态
+                final HostBasicDetails hostBasicDetails = GsonUtils.getGson().fromJson(body.ascii().toString(), HostBasicDetails.class);
+                String serialNum = hostBasicDetails.getSerialNum();//机器序列号
+
+                final int balance = hostBasicDetails.getBalance();//平衡状态 正常-0 警告-1 危险-2
+                final int camera = hostBasicDetails.getPeripheral().getCamera();//可见光摄像头（关闭-0 开启-1）
+                final int ir = hostBasicDetails.getPeripheral().getIr();//红外（关闭-0 开启-1）
+                final int radar = hostBasicDetails.getPeripheral().getRadar();//雷达（关闭-0 开启-1）
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //TODO
+                        tvZDNum.setText(hostBasicDetails.getElectric() + "%");//电量
+                        tvSu.setText(hostBasicDetails.getHumidity() + "%");//湿度
+                        tvWd.setText(hostBasicDetails.getTemperature() + "℃");//温度
+                        if (balance == 0) {
+                            tvPh.setText("正常");
+                            tvPh.setTextColor(getResources().getColor(R.color.green));
+                        } else if (balance == 1) {
+                            tvPh.setText("警告");
+                            tvPh.setTextColor(getResources().getColor(R.color.colorAccent));
+                        } else if (balance == 2) {
+                            tvPh.setText("危险");
+                            tvPh.setTextColor(getResources().getColor(R.color.red));
+                        }
+                        if (camera == 1) {
+                            tvKjg.setText("开启");
+                        } else {
+                            tvKjg.setText("关闭");
+                        }
+                        if (ir == 1) {
+                            tvHw.setText("开启");
+                        } else {
+                            tvHw.setText("关闭");
+                        }
+                        if (radar == 1) {
+                            tvLd.setText("开启");
+                        } else {
+                            tvLd.setText("关闭");
+                        }
+                    }
+                });
+                break;
+            case TrackConstant.DEVICE_STATE://机器模式及配置状态
+                DeviceStateBean deviceStateBean = GsonUtils.getGson().fromJson(body.ascii().toString(), DeviceStateBean.class);
+                if (deviceStateBean.getModule() == 1) {
+                    if (deviceStateBean.getMianState() == 1) {
+                        if (deviceStateBean.getSubstate() == 1) {
+                            //点配置（到达拍摄点）
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showDDPSDDialog();//到达拍摄点
+                                }
+                            });
+                        }
+                    }
+                } else if (deviceStateBean.getModule() == 0) {
+
+                }
+
+                break;
+            case TrackConstant.DEVICE_RESULT:
+                final PZZTBean pzztBean = GsonUtils.getGson().fromJson(body.ascii().toString(), PZZTBean.class);
+                int msgCode = pzztBean.getMsgCode();
+                if (msgCode == 200) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            switchData(pzztBean);
+                        }
+                    });
+
+                } else {
+                    ToastUtils.showShort(pzztBean.getResultMsg());
+                }
+
+
+                break;
+
+        }
+
+    }
+
+    /**
+     * 接收消息处理
+     *
+     * @param pzztBean
+     */
+    private void switchData(PZZTBean pzztBean) {
+        int module = pzztBean.getModule();
+        int op = pzztBean.getOp();
+        PZZTBean.DataBean data = pzztBean.getData();
+        switch (module) {
+            case 0://机器查询
+                switch (op) {
+                    case 0://机器状态
+                        break;
+                    case 1://配置信息
+                        if (data != null) {
+                            int state = data.getState();
+                            int lineNum = data.getLineNum();
+                            int initialPoint = data.getInitialPoint();
+                            int endPoint = data.getEndPoint();
+                            if (state == 0) {
+                                etXLNum.setText("");
+                                etXLQ.setText("");
+                                etXLZ.setText("");
+                                etXLNum.setFocusableInTouchMode(true);
+                                etXLQ.setFocusableInTouchMode(true);
+                                etXLZ.setFocusableInTouchMode(true);
+                                btnXLOk.setVisibility(View.VISIBLE);
+                            } else {
+                                etXLNum.setText("" + lineNum);
+                                etXLQ.setText("" + initialPoint);
+                                etXLZ.setText("" + endPoint);
+                                etXLNum.setFocusableInTouchMode(false);
+                                etXLQ.setFocusableInTouchMode(false);
+                                etXLZ.setFocusableInTouchMode(false);
+                                btnXLOk.setVisibility(View.INVISIBLE);
+                            }
+                        }
+
+                        break;
+                    case 2://配置状态
+//                        PZZTBean.DataBean data = pzztBean.getData();
+                        int mianState = data.getMianState();
+                        int substate = data.getSubstate();
+                        deviceStateNow = substate;
+                        switch (mianState) {
+                            case 0://未配置
+                                ToastUtils.showShort("未配置");
+                                updateXLPopupShow(true);
+                                break;
+                            case 1://配置中
+                                ToastUtils.showShort("配置中");
+                                deviceStateDian = substate;
+                                switch (substate) {
+                                    case 0://默认(行走中)
+                                        ToastUtils.showShort("行走中");
+
+                                        break;
+                                    case 1://点配置
+                                        ToastUtils.showShort("点配置");
+
+                                        break;
+                                    case 2://可见光角度配置
+                                        ToastUtils.showShort("可见光角度配置");
+
+                                        break;
+                                    case 3://红外角度配置
+                                        ToastUtils.showShort("红外角度配置");
+
+                                        break;
+                                    case 4://配置校验
+                                        ToastUtils.showShort("配置校验");
+
+                                        break;
+                                }
+                                break;
+                            case 2://配置完成
+                                ToastUtils.showShort("配置完成");
+                                break;
+                            case 3://配置修改
+                                ToastUtils.showShort("配置修改");
+                        }
+
+
+                        break;
+                    case 3://跨塔数量
+                        break;
+                }
+                break;
+            case 1://机器人安装
+                switch (op) {
+                    case 0://一键安装
+                        break;
+                    case 1://一键拆卸
+                        break;
+
+                }
+                break;
+            case 2://机器人运动
+                switch (op) {
+                    case 0://唤醒
+                        break;
+                    case 1://慢速前进
+                        break;
+                    case 2://正常前进
+                        break;
+                    case 3://慢速后退
+                        break;
+                    case 4://正常后退
+                        break;
+                    case 5://停止
+                        break;
+                    case 6://行进方向（小号到大号）
+                        break;
+                    case 7://行进方向（大号到小号）
+                        break;
+                }
+                break;
+            case 3://机器人悬臂
+                switch (op) {
+                    case 0://
+                        break;
+                    case 1://
+                        break;
+                    case 2://
+                        break;
+                    case 3://
+                        break;
+                    case 4://
+                        break;
+                    case 5://
+                        break;
+
+                }
+
+
+                break;
+            case 4://机器人模式
+                switch (op) {
+                    case 0://手动模式
+                        break;
+                    case 1://自动模式
+                        break;
+                }
+                break;
+            case 5://配置模式
+                switch (op) {
+                    case 0://进入配置模式
+
+                        //添加数据
+                        String xlNum = etXLNum.getText().toString().trim();
+                        String XLQ = etXLQ.getText().toString().trim();
+                        String XLZ = etXLZ.getText().toString().trim();
+                        getPresenter().addXL(xlNum, XLQ, XLZ, connection);
+
+                        break;
+                    case 1://配置模式暂停
+
+                        break;
+                    case 2://配置模式退出
+                        break;
+                }
+                break;
+            case 6://红外
+                switch (op) {
+                    case 0://云台上
+                        break;
+                    case 1://云台下
+                        break;
+                    case 2://云台左
+                        break;
+                    case 3://云台右
+                        break;
+                    case 4://云台停
+                        break;
+                    case 5://角度确认
+                        break;
+                    case 6://快照
+                        break;
+
+                }
+                break;
+            case 7://可见光
+                switch (op) {
+                    case 0://云台上
+                        break;
+                    case 1://云台下
+                        break;
+                    case 2://云台左
+                        break;
+                    case 3://云台右
+                        break;
+                    case 4://云台停
+                        break;
+                    case 5://放大
+                        break;
+                    case 6://缩小
+                        break;
+                    case 7://角度确认
+                        break;
+                    case 8://快照
+                        break;
+                }
+                break;
+            case 8://拍摄点
+                switch (op) {
+                    case 0://配置开始
+                        break;
+                    case 1://配置完成
+                        break;
+                    case 2://校验完成
+                        break;
+                    case 3://位置确认
+                        break;
+                }
+                break;
+            case 9://文件传输
+                switch (op) {
+                    case 0://文件传输请求
+                        break;
+                    case 1://文件传输开始
+                        break;
+                    case 2://文件传输结束
+                        break;
+                }
+                break;
+            case 10://配置指令
+                switch (op) {
+                    case 0://配置信息
+                        break;
+                    case 1://恢复出厂设置
+                        break;
+
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public void subscribeOk() {
+        EventBus.getDefault().postSticky(new PlayStateBean(connectState));
+        updateUi(true);
+        if (connectDialog != null) {
+            connectDialog.dismiss();
+        }
+        //查询当前是否为配置状态
+        DeviceOPUtils.queryPZZT(HomeAct.this, connection);
+    }
+
+    @Override
+    public void subscribeErr(String strErr) {
+        ToastUtils.showShort(strErr);
+    }
+
+    @Override
+    public void sendPublishSuccess() {
+
+    }
+
+    @Override
+    public void sendPublishErr(String strErr) {
+        ToastUtils.showShort(strErr);
+    }
+
+    @Override
+    public void addXLSuccess() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtils.showShort("配置成功");
+                updateXLPopupShow(false);
+
+            }
+        });
 
     }
 }
