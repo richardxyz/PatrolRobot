@@ -521,25 +521,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
 
                 break;
-            case R.id.ivXJUp://前进
-
-
-                break;
-            case R.id.ivXJDown://后退
-
-                break;
-            case R.id.ivKJGLeft://左
-
-                break;
-            case R.id.ivKJGRight://右
-
-                break;
-            case R.id.ivKJGUp://上
-
-                break;
-            case R.id.ivKJGDown://下
-
-                break;
             case R.id.btnAffirm://位置确认
                 showQzPsdDialog();//确认为拍摄点
 
@@ -549,10 +530,10 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 showPzwcDialog();//配置全部完成
                 break;
             case R.id.ivTJAdd://加
-
+                DeviceOPUtils.cameraFocus(HomeAct.this,connection,true);
                 break;
             case R.id.ivTJMinus://减
-
+                DeviceOPUtils.cameraFocus(HomeAct.this,connection,false);
                 break;
             case R.id.tvCXT://调焦
 
@@ -564,7 +545,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                         //进入配置模式
                         DeviceOPUtils.inPZMS(HomeAct.this, connection);
                     }
-
 
                 } else {
                     ToastUtils.showShort("当前未登录设备");

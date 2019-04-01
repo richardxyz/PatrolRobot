@@ -207,4 +207,21 @@ public class DeviceOPUtils {
         state.setOp(4);
         mContext.getPresenter().sendPublishData(state, connection);
     }
+    /**
+     * 可见光摄像头调焦
+     *
+     * @param mContext
+     * @param connection
+     */
+    public static void cameraFocus(HomeAct mContext, CallbackConnection connection,boolean adjust) {
+        DeviceConfigurationState state = new DeviceConfigurationState();
+        state.setSerialNum("");
+        state.setModule(7);
+        if (adjust) {
+            state.setOp(5);//放大
+        } else {
+            state.setOp(6);//缩小
+        }
+        mContext.getPresenter().sendPublishData(state, connection);
+    }
 }
