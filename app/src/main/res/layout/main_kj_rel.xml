@@ -5,40 +5,16 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/llXL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_70"
-        android:background="@drawable/ll_clicked"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_5"
-        android:paddingRight="@dimen/dp_5">
-
-        <ImageView
-            android:id="@+id/ivXL"
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_25"
-            android:src="@mipmap/ic_xl" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="线路"
-            android:textColor="@color/yellow"
-            android:textSize="@dimen/sp_10" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/llXLPopup"
-        android:layout_width="200dp"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_10"
-        android:layout_toRightOf="@id/llXL"
         android:background="@drawable/popup_shape"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
         android:visibility="gone">
 
         <TextView
@@ -46,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
             android:text="巡检线路"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
 
@@ -56,14 +32,47 @@
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_5"
+            android:background="@drawable/edit_shape_b"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="线路编号："
+                android:text="大塔方向 |"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etDTFX"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/edit_shape"
+                android:hint="必填"
+                android:maxLines="1"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_5"
+            android:background="@drawable/edit_shape_b"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="线路编号 |"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etXLNum"
@@ -73,7 +82,8 @@
                 android:background="@drawable/edit_shape"
                 android:hint="必填"
                 android:maxLines="1"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -83,14 +93,16 @@
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_15"
             android:layout_marginRight="@dimen/dp_5"
+            android:background="@drawable/edit_shape_b"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="起始塔号："
+                android:text="起始塔号 |"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etXLQ"
@@ -100,7 +112,8 @@
                 android:background="@drawable/edit_shape"
                 android:hint="必填"
                 android:maxLines="1"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -110,14 +123,16 @@
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_15"
             android:layout_marginRight="@dimen/dp_5"
+            android:background="@drawable/edit_shape_b"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="终止塔号："
+                android:text="终止塔号 |"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etXLZ"
@@ -127,57 +142,59 @@
                 android:background="@drawable/edit_shape"
                 android:hint="必填"
                 android:maxLines="1"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
         <Button
             android:id="@+id/btnXLOk"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_25"
             android:layout_marginTop="@dimen/dp_28"
             android:layout_marginBottom="@dimen/dp_20"
-            android:background="@drawable/btn_clicked"
+            android:background="@drawable/edit_shape_c"
             android:scaleType="centerCrop"
             android:text="确认添加"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llXQ"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/llXL"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_15"
-        android:background="@drawable/ll_clicked"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_5"
-        android:paddingRight="@dimen/dp_5">
+    <!--<LinearLayout-->
+    <!--android:id="@+id/llXQ"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@id/llXL"-->
+    <!--android:layout_marginLeft="@dimen/dp_8"-->
+    <!--android:layout_marginTop="@dimen/dp_15"-->
+    <!--android:background="@drawable/ll_clicked"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical"-->
+    <!--android:paddingLeft="@dimen/dp_5"-->
+    <!--android:paddingRight="@dimen/dp_5">-->
 
-        <ImageView
-            android:id="@+id/ivXQ"
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_25"
-            android:src="@mipmap/ic_xq_b" />
+    <!--<ImageView-->
+    <!--android:id="@+id/ivXQ"-->
+    <!--android:layout_width="@dimen/dp_25"-->
+    <!--android:layout_height="@dimen/dp_25"-->
+    <!--android:src="@mipmap/ic_xq_b" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="详情"
-            android:textColor="@color/yellow"
-            android:textSize="@dimen/sp_10" />
-    </LinearLayout>
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="详情"-->
+    <!--android:textColor="@color/yellow"-->
+    <!--android:textSize="@dimen/sp_10" />-->
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/llXQPopup"
         android:layout_width="280dp"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_5"
         android:layout_marginBottom="@dimen/dp_5"
-        android:layout_toRightOf="@id/llXQ"
         android:background="@drawable/popup_shape"
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -236,6 +253,19 @@
             android:src="@mipmap/jq_down" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnXJSD"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_30"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_9"
+        android:layout_toRightOf="@id/llXJ"
+        android:background="@drawable/btn_clicked"
+        android:text="慢速"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/sp_14" />
 
     <LinearLayout
         android:id="@+id/llKJGH"
@@ -346,9 +376,9 @@
             android:layout_marginBottom="@dimen/dp_3"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="@dimen/sp_12"
             android:text="调焦"
             android:textColor="@color/yellow"
+            android:textSize="@dimen/sp_12"
             android:textStyle="bold" />
 
         <ImageView
@@ -362,34 +392,75 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llWc"
-        android:layout_width="wrap_content"
+    <com.zkkc.patrolrobot.widget.seekbar.VerticalSeekBar
+        android:id="@+id/vsbZS"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="180dp"
+        android:layout_above="@id/llKJGH"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_toLeftOf="@id/llTJ" />
+
+    <TextView
+        android:id="@+id/tvZS"
+        android:layout_width="@dimen/dp_50"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_5"
-        android:background="@drawable/ll_clicked"
+        android:layout_above="@id/vsbZS"
+        android:layout_alignLeft="@id/vsbZS"
         android:gravity="center"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_5"
-        android:paddingRight="@dimen/dp_5">
+        android:text="30"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/ivWc"
-            android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_28"
-            android:src="@mipmap/ic_wc" />
+    <Button
+        android:id="@+id/btnWc"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_30"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_9"
+        android:layout_toLeftOf="@id/btnAffirm"
+        android:background="@drawable/btn_clicked"
+        android:scaleType="centerCrop"
+        android:text="角度配置完成"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/sp_14" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="完成"
-            android:textColor="@color/yellow"
-            android:textSize="@dimen/sp_10" />
+    <ScrollView
+        android:layout_width="@dimen/dp_400"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginBottom="@dimen/dp_50">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/mTest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black" />
+
+            <TextView
+                android:id="@+id/mTest2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

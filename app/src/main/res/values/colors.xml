@@ -9,20 +9,23 @@
     <color name="gray_10">#33FFFFFF</color>
     <color name="gray_20">#99FFEF5B</color>
     <color name="gray_8">#8AFAED70</color>
-    <color name="bg_color">#26213F</color>
+    <color name="bg_color">#01111B</color>
+    <color name="bg_color_2">#F2F2F2</color>
+
     <color name="bg_dialog">#312E42</color>
     <color name="text_n">#0404C2</color>
     <color name="spinner_dropdown">#00BCD4</color>
-    <color name="yellow">#FFCC33</color>
+    <color name="yellow">#FFCB00</color>
     <color name="red">#e2030e</color>
     <color name="green">#07ba04</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="light_white">#BEF5F3F3</color>
-    <color name="popup_white">#33FFFFFF</color>
+    <color name="popup_white">#E6486475</color>
     <color name="popup_item_white">#4DFFFFFF</color>
     <color name="violet">#673AB7</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="orange">#FF6902</color>
     <color name="colorBackground">#FF4081</color>
+    <color name="tip_text">#2394FB</color>
 </resources>

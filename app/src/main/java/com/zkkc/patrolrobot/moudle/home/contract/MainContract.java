@@ -43,7 +43,7 @@ public interface MainContract {
 
         public abstract void sendPublishData(Object b, CallbackConnection connection);
 
-        public abstract void addXL(String xlNum,String XLQ, String XLZ, CallbackConnection connection);
+        public abstract void addXL(String serialNumber,String dTFX,String xlNum,String XLQ, String XLZ, CallbackConnection connection);
 
 
     }

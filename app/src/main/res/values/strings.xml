@@ -15,4 +15,6 @@
     <string name="item_k">终端电量</string>
     <string name="item_l">主机电量</string>
     <string name="item_m">关闭</string>
+    <string name="item_o">详情</string>
+    <string name="item_n">线路</string>
 </resources>

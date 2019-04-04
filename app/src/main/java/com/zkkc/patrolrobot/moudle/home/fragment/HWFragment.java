@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
@@ -34,8 +36,8 @@ import cn.com.magnity.sdk.types.EnumerationInfo;
 public class HWFragment extends BaseFragment implements MagDevice.IUsbConnCallback, MagDevice.IFrameCallBack {
     @BindView(R.id.hwVideo)
     MagSurfaceView hwVideo;
-    @BindView(R.id.tvNoVideo)
-    TextView tvNoVideo;
+    @BindView(R.id.llNoVideo)
+    LinearLayout llNoVideo;
     private MagDevice mDev;
     private EnumerationInfo[] mDevices;
 
@@ -77,7 +79,7 @@ public class HWFragment extends BaseFragment implements MagDevice.IUsbConnCallba
          executorService = ThreadPoolHelp.Builder
                 .schedule(1)
                 .scheduleBuilder();
-        tvNoVideo.setVisibility(View.VISIBLE);
+        llNoVideo.setVisibility(View.VISIBLE);
         updateDeviceList();
     }
 
@@ -92,7 +94,7 @@ public class HWFragment extends BaseFragment implements MagDevice.IUsbConnCallba
         if (num <= 0) {
             return;
         }
-        tvNoVideo.setVisibility(View.GONE);
+        llNoVideo.setVisibility(View.GONE);
         restore();
 
     }
@@ -165,12 +167,12 @@ public class HWFragment extends BaseFragment implements MagDevice.IUsbConnCallba
             },50, TimeUnit.MILLISECONDS);
 //            play();
         } else if (r == MagDevice.CONN_FAIL) {
-            tvNoVideo.setVisibility(View.VISIBLE);
+            llNoVideo.setVisibility(View.VISIBLE);
             /* 连接失败 */
             ToastUtils.showShort("连接失败");
             return;
         } else if (r == MagDevice.CONN_PENDING) {
-            tvNoVideo.setVisibility(View.GONE);
+            llNoVideo.setVisibility(View.GONE);
             /* 需要在回调函数中判断是否连接成功 */
             ToastUtils.showShort("需要在回调函数中判断是否连接成功");
             return;
@@ -179,6 +181,7 @@ public class HWFragment extends BaseFragment implements MagDevice.IUsbConnCallba
     }
 
     public void stop() {
+        hwVideo.setVisibility(View.GONE);
         if (mDev != null) {
             /* 停止传输 */
             mDev.stop();
@@ -191,12 +194,13 @@ public class HWFragment extends BaseFragment implements MagDevice.IUsbConnCallba
     }
 
     private void play() {
+        hwVideo.setVisibility(View.VISIBLE);
         /* 设置调色板样式 */
         mDev.setColorPalette(MagDevice.ColorPalette.PaletteIronBow);
         if (mDev.play(this, 0, 0, MagDevice.StreamType.StreamTemperature)) {
             if (hwVideo != null) {
                 hwVideo.startDrawingThread(mDev);
-                tvNoVideo.setVisibility(View.GONE);
+                llNoVideo.setVisibility(View.GONE);
             }
         }
 

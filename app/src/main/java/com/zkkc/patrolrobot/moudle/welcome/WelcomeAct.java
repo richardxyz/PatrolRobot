@@ -11,7 +11,6 @@ import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
 import com.zkkc.patrolrobot.moudle.home.activity.HomeAct;
-import com.zkkc.patrolrobot.moudle.home.activity.MainAct;
 
 import butterknife.BindView;
 
@@ -45,7 +44,7 @@ public class WelcomeAct extends BaseActivity {
 
     @Override
     public void init() {
-        ivShow.setBackgroundResource(R.mipmap.welcome);
+        ivShow.setBackgroundResource(R.mipmap.icon_wel);
 
         //初始化渐变动画
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.welcome_anim);
@@ -58,7 +57,6 @@ public class WelcomeAct extends BaseActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-//                Intent intent = new Intent(WelcomeAct.this, MainAct.class);
                 Intent intent = new Intent(WelcomeAct.this, HomeAct.class);
                 startActivity(intent);
                 finish();

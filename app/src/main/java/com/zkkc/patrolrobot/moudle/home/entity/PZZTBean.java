@@ -80,11 +80,13 @@ public class PZZTBean {
          * MianState : 0
          * Substate : 0
          * State : 0
+         * BigTowerDir:0
          * LineNum : 1001
          * InitialPoint : 12
          * EndPoint : 45
          */
 
+        private int BigTowerDir;
         private int Tower;
         private int Direction;
         private int Move;
@@ -97,6 +99,23 @@ public class PZZTBean {
         private int LineNum;
         private int InitialPoint;
         private int EndPoint;
+        private int InstallResult;
+
+        public int getInstallResult() {
+            return InstallResult;
+        }
+
+        public void setInstallResult(int installResult) {
+            InstallResult = installResult;
+        }
+
+        public int getBigTowerDir() {
+            return BigTowerDir;
+        }
+
+        public void setBigTowerDir(int bigTowerDir) {
+            BigTowerDir = bigTowerDir;
+        }
 
         public int getTower() {
             return Tower;

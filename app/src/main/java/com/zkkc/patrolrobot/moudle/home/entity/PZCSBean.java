@@ -52,6 +52,7 @@ public class PZCSBean {
 
     public static class DataBean {
         /**
+         * BigTowerDir:0
          * LineNum : 1001
          * InitialPoint : 12
          * EndPoint : 45
@@ -63,6 +64,7 @@ public class PZCSBean {
          * Speed : 14
          */
 
+        private int BigTowerDir;
         private int LineNum;
         private int InitialPoint;
         private int EndPoint;
@@ -72,6 +74,23 @@ public class PZCSBean {
         private int Charge;
         private int Type;
         private int Speed;
+        private int ShootPointTotal;
+
+        public int getShootPointTotal() {
+            return ShootPointTotal;
+        }
+
+        public void setShootPointTotal(int shootPointTotal) {
+            ShootPointTotal = shootPointTotal;
+        }
+
+        public int getBigTowerDir() {
+            return BigTowerDir;
+        }
+
+        public void setBigTowerDir(int bigTowerDir) {
+            BigTowerDir = bigTowerDir;
+        }
 
         public int getLineNum() {
             return LineNum;

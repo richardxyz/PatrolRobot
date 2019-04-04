@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +31,7 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.luoxudong.app.threadpool.ThreadPoolHelp;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.TrackConstant;
 import com.zkkc.patrolrobot.base.BaseActivity;
@@ -40,6 +43,7 @@ import com.zkkc.patrolrobot.moudle.home.contract.MainContract;
 import com.zkkc.patrolrobot.moudle.home.entity.DeviceConfigurationState;
 import com.zkkc.patrolrobot.moudle.home.entity.DeviceStateBean;
 import com.zkkc.patrolrobot.moudle.home.entity.HostBasicDetails;
+import com.zkkc.patrolrobot.moudle.home.entity.PZCSBean;
 import com.zkkc.patrolrobot.moudle.home.entity.PZZTBean;
 import com.zkkc.patrolrobot.moudle.home.entity.PlayStateBean;
 import com.zkkc.patrolrobot.moudle.home.fragment.HWFragment;
@@ -47,6 +51,7 @@ import com.zkkc.patrolrobot.moudle.home.fragment.KJGFragment;
 import com.zkkc.patrolrobot.moudle.home.presenter.MainPresenter;
 import com.zkkc.patrolrobot.moudle.home.utils.DeviceOPUtils;
 import com.zkkc.patrolrobot.receiver.BatteryChangedReceiver;
+import com.zkkc.patrolrobot.widget.seekbar.VerticalSeekBar;
 
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -59,6 +64,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URISyntaxException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -186,6 +193,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     //弹出popup
     @BindView(R.id.llXLPopup)
     LinearLayout llXLPopup;
+    @BindView(R.id.etDTFX)
+    EditText etDTFX;
     @BindView(R.id.etXLNum)
     EditText etXLNum;
     @BindView(R.id.etXLQ)
@@ -217,6 +226,10 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     ImageView ivXJUp;
     @BindView(R.id.ivXJDown)
     ImageView ivXJDown;
+    @BindView(R.id.btnXJSD)
+    Button btnXJSD;//档速
+
+
     /**
      * 摄像头控制
      */
@@ -240,10 +253,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     /**
      * 完成
      */
-    @BindView(R.id.llWc)
-    LinearLayout llWc;
-    @BindView(R.id.ivWc)
-    ImageView ivWc;
+    @BindView(R.id.btnWc)
+    Button btnWc;
     /**
      * 调焦
      */
@@ -255,6 +266,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     ImageView ivTJMinus;
     @BindView(R.id.tvCXT)
     TextView tvCXT;
+    @BindView(R.id.vsbZS)
+    VerticalSeekBar vsbZS;
+
     /**
      * 视频播放器
      */
@@ -262,6 +276,14 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     FrameLayout flVideo;
 
 
+    @BindView(R.id.tvZS)
+    TextView tvZS;
+
+    @BindView(R.id.mTest)
+    TextView mTest;
+    @BindView(R.id.mTest2)
+    TextView mTest2;
+    public static String SERIAL_NUMBER = "";
     //电池广播接收数据
     private static final String BATTERY_STATUS_CHARGING = "BATTERY_STATUS_CHARGING";
     private static final String BATTERY_STATUS_FULL = "BATTERY_STATUS_FULL";
@@ -283,6 +305,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     FragmentManager manager;
     KJGFragment kjgFragment;
     HWFragment hwFragment;
+    ScheduledExecutorService executorService;
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void batteryEvent(BatteryStateBean stateBean) {
@@ -315,6 +338,13 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        SERIAL_NUMBER = SPUtils.getInstance().getString("SERIAL_NUMBER");
+//        ToastUtils.showShort(SERIAL_NUMBER);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fullscreen(true);
@@ -336,6 +366,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         return this;
     }
 
+    PZCSBean.DataBean beanZS;
+
     @Override
     public void init() {
         //动态权限
@@ -347,24 +379,40 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         filter.addAction(Intent.ACTION_BATTERY_OKAY);
         batteryChangedReceiver = new BatteryChangedReceiver();
         registerReceiver(batteryChangedReceiver, filter);
+        //设置seekBar的样式和大小相关
+        vsbZS.setSelectColor(getResources().getColor(R.color.yellow));
+        vsbZS.setThumb(R.mipmap.bg_seekbar);
+        vsbZS.setThumbSize(35, 25);
+        vsbZS.setProgress(30);
+        setOnClicked();//转向速度调节
+
+
         //隐藏控制按钮
         widgetHideAndShow(false, false, false, false);
+//        widgetHideAndShow(true, true, true, true);
         //加载fragment
         manager = getSupportFragmentManager();
         kjgFragment = new KJGFragment();
         FragmentUtils.add(manager, kjgFragment, R.id.flVideo);
         //创建mqtt连接
         createMqttBean();
-
+        executorService = ThreadPoolHelp.Builder
+                .schedule(1)
+                .scheduleBuilder();
         ivXJUp.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: //正常前行
-                        DeviceOPUtils.deviceUp(HomeAct.this, connection);
+                        if (isZC) {
+                            DeviceOPUtils.deviceUp(HomeAct.this, connection, SERIAL_NUMBER);
+                        } else {
+                            DeviceOPUtils.deviceUpLow(HomeAct.this, connection, SERIAL_NUMBER);
+                        }
+
                         break;
                     case MotionEvent.ACTION_UP://停止
-                        DeviceOPUtils.deviceStop(HomeAct.this, connection);
+                        DeviceOPUtils.deviceStop(HomeAct.this, connection, SERIAL_NUMBER);
                         break;
                 }
 
@@ -376,10 +424,15 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN://正常后退
-                        DeviceOPUtils.deviceDown(HomeAct.this, connection);
+                        if (isZC) {
+                            DeviceOPUtils.deviceDown(HomeAct.this, connection, SERIAL_NUMBER);
+                        } else {
+                            DeviceOPUtils.deviceDownLow(HomeAct.this, connection, SERIAL_NUMBER);
+                        }
+
                         break;
                     case MotionEvent.ACTION_UP://停止
-                        DeviceOPUtils.deviceStop(HomeAct.this, connection);
+                        DeviceOPUtils.deviceStop(HomeAct.this, connection, SERIAL_NUMBER);
                         break;
                 }
                 return false;
@@ -390,10 +443,18 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN://摄像头左转
-                        DeviceOPUtils.cameraLeft(HomeAct.this, connection, isHW);
+                        if (isHW) {
+                            sxtZS = (int) (mrProgress * 2.25);
+                        } else {
+                            sxtZS = mrProgress / 10;
+                        }
+                        beanZS = new PZCSBean.DataBean();
+                        beanZS.setSpeed(sxtZS);
+                        ToastUtils.showShort(beanZS.getSpeed() + "");
+                        DeviceOPUtils.cameraLeft(HomeAct.this, connection, isHW, SERIAL_NUMBER, beanZS);
                         break;
                     case MotionEvent.ACTION_UP://停止
-                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW);
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW, SERIAL_NUMBER);
                         break;
                 }
                 return false;
@@ -404,11 +465,19 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN://摄像头右转
-                        DeviceOPUtils.cameraRight(HomeAct.this, connection, isHW);
+                        if (isHW) {
+                            sxtZS = (int) (mrProgress * 2.25);
+                        } else {
+                            sxtZS = mrProgress / 10;
+                        }
+                        beanZS = new PZCSBean.DataBean();
+                        beanZS.setSpeed(sxtZS);
+                        ToastUtils.showShort(beanZS.getSpeed() + "");
+                        DeviceOPUtils.cameraRight(HomeAct.this, connection, isHW, SERIAL_NUMBER, beanZS);
 
                         break;
                     case MotionEvent.ACTION_UP://停止
-                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW);
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW, SERIAL_NUMBER);
                         break;
                 }
                 return false;
@@ -419,11 +488,19 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN://摄像头向上转
-                        DeviceOPUtils.cameraUp(HomeAct.this, connection, isHW);
+                        if (isHW) {
+                            sxtZS = (int) (mrProgress * 2.25);
+                        } else {
+                            sxtZS = mrProgress / 10;
+                        }
+                        beanZS = new PZCSBean.DataBean();
+                        beanZS.setSpeed(sxtZS);
+                        ToastUtils.showShort(beanZS.getSpeed() + "");
+                        DeviceOPUtils.cameraUp(HomeAct.this, connection, isHW, SERIAL_NUMBER, beanZS);
 
                         break;
                     case MotionEvent.ACTION_UP://停止
-                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW);
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW, SERIAL_NUMBER);
                         break;
                 }
                 return false;
@@ -434,10 +511,18 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN://摄像头向下转
-                        DeviceOPUtils.cameraDown(HomeAct.this, connection, isHW);
+                        if (isHW) {
+                            sxtZS = (int) (mrProgress * 2.25);
+                        } else {
+                            sxtZS = mrProgress / 10;
+                        }
+                        beanZS = new PZCSBean.DataBean();
+                        beanZS.setSpeed(sxtZS);
+                        ToastUtils.showShort(beanZS.getSpeed() + "");
+                        DeviceOPUtils.cameraDown(HomeAct.this, connection, isHW, SERIAL_NUMBER, beanZS);
                         break;
                     case MotionEvent.ACTION_UP://停止
-                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW);
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, isHW, SERIAL_NUMBER);
                         break;
                 }
                 return false;
@@ -447,18 +532,42 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     }
 
+    private int sxtZS = 0;//摄像头转速
+    private int mrProgress = 30;//摄像头默认转速为30%最高转速
+
+    private void setOnClicked() {
+        vsbZS.setOnSlideChangeListener(new VerticalSeekBar.SlideChangeListener() {
+            @Override
+            public void onStart(VerticalSeekBar slideView, int progress) {
+            }
+
+            @Override
+            public void onProgress(VerticalSeekBar slideView, int progress) {
+                mrProgress = progress;
+                tvZS.setText(mrProgress + "");
+            }
+
+            @Override
+            public void onStop(VerticalSeekBar slideView, int progress) {
+            }
+        });
+    }
+
     private boolean XLPopupShow = false;//线路popup是否显示
     private boolean XQPopupShow = false;//详情popup是否显示
     private boolean isHW = false;//是否为红外
+    private boolean isZC = false;//是否为正常速度
+    public static final String DTFX = "DTFX";
     public static final String XL_NUM = "XL_NUM";
     public static final String XL_Q = "XL_Q";
     public static final String XL_Z = "XL_Z";
     private int deviceStateNow = -1;//机器的当前配置状态（0-未配置 1-配置中 2-配置完成 3-配置修改）
     private int deviceStateDian = -1;//机器的配置中时状态（0-行走中 1-点配置 2-可见光角度配置 3-红外角度配置  4-配置校验）
+    private boolean affirmState = true;//当前是否为 位置确认 按钮
 
     @OnClick({R.id.lli, R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
-            R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.llWc,
-            R.id.ivTJAdd, R.id.ivTJMinus, R.id.tvCXT, R.id.btnXLOk})
+            R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.btnWc,
+            R.id.ivTJAdd, R.id.ivTJMinus, R.id.tvCXT, R.id.btnXLOk, R.id.btnXJSD})
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
@@ -471,17 +580,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
             case R.id.llb://可见光切换
                 if (isHW) {
-                    if (kjgFragment == null) {
-                        kjgFragment = new KJGFragment();
-                    }
-                    FragmentUtils.replace(manager, kjgFragment, R.id.flVideo);
-                    isHW = false;
+                    switchoverCamera(false);
                 } else {
-                    if (hwFragment == null) {
-                        hwFragment = new HWFragment();
-                    }
-                    FragmentUtils.replace(manager, hwFragment, R.id.flVideo);
-                    isHW = true;
+                    switchoverCamera(true);
                 }
                 break;
             case R.id.llj://连接
@@ -494,12 +595,13 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 if (XLPopupShow) {
                     updateXLPopupShow(false);
                     //点击使其隐藏
+
                 } else {
-                    updateXLPopupShow(true);
                     //点击使其显示
                     //查询线路配置信息
                     if (connectState) {
-                        DeviceOPUtils.queryXLPZXX(HomeAct.this,connection);
+                        updateXLPopupShow(true);
+                        DeviceOPUtils.queryXLPZXX(HomeAct.this, connection, SERIAL_NUMBER);
                     } else {
                         ToastUtils.showShort("当前未登录设备");
                     }
@@ -518,41 +620,75 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
 //                    adapter.notifyDataSetChanged();
                 }
-
-
                 break;
             case R.id.btnAffirm://位置确认
-                showQzPsdDialog();//确认为拍摄点
+                if (affirmState) {
+                    showPSDialog();
+                } else {
+                    showQzPsJdDialog();
+                }
 
                 break;
-            case R.id.llWc://完成
-//                showqhHwDialog();//可见光完成后dialog
-                showPzwcDialog();//配置全部完成
+            case R.id.btnWc://完成
+                if (isHW) {
+                    showPzwcDialog();//配置全部完成
+                } else {
+                    showqhHwDialog();//可见光完成后dialog
+                }
+
+
                 break;
             case R.id.ivTJAdd://加
-                DeviceOPUtils.cameraFocus(HomeAct.this,connection,true);
+                DeviceOPUtils.cameraFocus(HomeAct.this, connection, true, SERIAL_NUMBER);
                 break;
             case R.id.ivTJMinus://减
-                DeviceOPUtils.cameraFocus(HomeAct.this,connection,false);
+                DeviceOPUtils.cameraFocus(HomeAct.this, connection, false, SERIAL_NUMBER);
                 break;
             case R.id.tvCXT://调焦
 
                 break;
             case R.id.btnXLOk://确认添加（线路）
                 if (connectState) {
-                    //TODO 进入配置模式
                     if (deviceStateNow == 0) {
                         //进入配置模式
-                        DeviceOPUtils.inPZMS(HomeAct.this, connection);
+                        DeviceOPUtils.inPZMS(HomeAct.this, connection, SERIAL_NUMBER);
                     }
-
                 } else {
                     ToastUtils.showShort("当前未登录设备");
                 }
 
 
                 break;
+            case R.id.btnXJSD://行进档速
+                if (isZC) {
+                    isZC = false;
+                    btnXJSD.setText("慢速");
+                } else {
+                    isZC = true;
+                    btnXJSD.setText("正常");
+                }
+                break;
         }
+    }
+
+    //切换摄像头
+    private void switchoverCamera(boolean isH) {
+        if (isH) {
+            if (hwFragment == null) {
+                hwFragment = new HWFragment();
+            }
+            FragmentUtils.replace(manager, hwFragment, R.id.flVideo);
+            isHW = true;
+            tvQh.setText("红外");
+        } else {
+            if (kjgFragment == null) {
+                kjgFragment = new KJGFragment();
+            }
+            FragmentUtils.replace(manager, kjgFragment, R.id.flVideo);
+            isHW = false;
+            tvQh.setText("可见光");
+        }
+
     }
 
     /**
@@ -612,6 +748,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         View diaView = View.inflate(this, R.layout.dialog_connect, null);
         connectDialog = new Dialog(this);
         connectDialog.setContentView(diaView);
+        Window window = connectDialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         connectDialog.setCanceledOnTouchOutside(false);
         ivClose = diaView.findViewById(R.id.ivClose);
         etUserName = diaView.findViewById(R.id.etUserName);
@@ -658,12 +796,13 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
             Window window = dialog.getWindow();
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             window.setContentView(view);
             //设置dialog弹窗宽高
             WindowManager.LayoutParams params = window.getAttributes();
             //dialog宽高
-            params.height = ConvertUtils.dp2px(220);
-            params.width = ConvertUtils.dp2px(320);
+            params.height = ConvertUtils.dp2px(200);
+            params.width = ConvertUtils.dp2px(300);
             window.setAttributes(params);
             btnGo.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -672,14 +811,17 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     dialog = null;
                     widgetHideAndShow(true, true, true, true);
 
-
                 }
             });
         }
     }
 
     Dialog dialogPsd;
-
+    private int inDirection;
+    private int inCharge;
+    private int inType;
+    private String dqNum;
+    private String fzcNum;
     /**
      * 拍摄点信息录入dialog
      */
@@ -688,8 +830,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         dialogPsd = new Dialog(this);
         dialogPsd.setContentView(view);
         Button btnGo = view.findViewById(R.id.btnGo);
-        EditText etDQNum = view.findViewById(R.id.etDQNum);
-        EditText etFZCNum = view.findViewById(R.id.etFZCNum);
+        final EditText etDQNum = view.findViewById(R.id.etDQNum);
+        final EditText etFZCNum = view.findViewById(R.id.etFZCNum);
 
         Spinner spinner_CDZ = view.findViewById(R.id.spinner_CDZ);
         spinner_CDZ.setDropDownVerticalOffset(ConvertUtils.dp2px(30));
@@ -697,14 +839,14 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TextView positionTv = (TextView) view;
-                positionTv.setTextColor(getResources().getColor(R.color.yellow));
+                positionTv.setTextColor(getResources().getColor(R.color.black));
                 positionTv.setGravity(Gravity.CENTER);
                 switch (position) {
                     case 0://存在
-
+                        inCharge = 0;
                         break;
                     case 1://不存在
-
+                        inCharge = 1;
                         break;
                 }
             }
@@ -720,14 +862,14 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TextView positionTv = (TextView) view;
-                positionTv.setTextColor(getResources().getColor(R.color.yellow));
+                positionTv.setTextColor(getResources().getColor(R.color.black));
                 positionTv.setGravity(Gravity.CENTER);
                 switch (position) {
                     case 0://塔前
-
+                        inDirection = 0;
                         break;
                     case 1://塔后
-
+                        inDirection = 1;
                         break;
                 }
             }
@@ -743,14 +885,14 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TextView positionTv = (TextView) view;
-                positionTv.setTextColor(getResources().getColor(R.color.yellow));
+                positionTv.setTextColor(getResources().getColor(R.color.black));
                 positionTv.setGravity(Gravity.CENTER);
                 switch (position) {
                     case 0://直线塔
-
+                        inType = 0;
                         break;
                     case 1://耐张塔
-
+                        inType = 1;
                         break;
                 }
             }
@@ -764,6 +906,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         dialogPsd.setCanceledOnTouchOutside(false);
         dialogPsd.show();
         Window window = dialogPsd.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.setContentView(view);
         //设置dialog弹窗宽高
         WindowManager.LayoutParams params = window.getAttributes();
@@ -774,7 +917,22 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialogPsd.dismiss();
+                PZCSBean.DataBean bean = new PZCSBean.DataBean();
+                dqNum = etDQNum.getText().toString().trim();
+                fzcNum = etFZCNum.getText().toString().trim();
+                if (dqNum.equals("")) {
+                    ToastUtils.showShort("塔号不能为空");
+                } else {
+                    bean.setTower(Integer.parseInt(dqNum));
+                    bean.setDirection(inDirection);
+                    if (fzcNum.equals("")) {
+                        fzcNum = "0";
+                    }
+                    bean.setPdz(Integer.parseInt(fzcNum));
+                    bean.setCharge(inCharge);
+                    bean.setType(inType);
+                    DeviceOPUtils.inPSDXX(HomeAct.this, connection, SERIAL_NUMBER, bean);
+                }
 
 
             }
@@ -815,34 +973,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         });
     }
 
-    /**
-     * 确认为拍摄点Dialog
-     */
-    Dialog qzPsdDialog;
-
-    public void showQzPsdDialog() {
-        View dialogView = View.inflate(this, R.layout.dialog_qz_psd, null);
-        qzPsdDialog = new Dialog(this);
-        qzPsdDialog.setContentView(dialogView);
-        qzPsdDialog.show();
-        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-        Button btnOk = dialogView.findViewById(R.id.btnOk);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                qzPsdDialog.dismiss();
-            }
-        });
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                qzPsdDialog.dismiss();
-                //TODO 确定拍摄点逻辑
-
-            }
-        });
-
-    }
 
     /**
      * 确认添加拍摄角度Dialog
@@ -853,6 +983,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         View dialogView = View.inflate(this, R.layout.dialog_qz_psjd, null);
         qzPsJdDialog = new Dialog(this);
         qzPsJdDialog.setContentView(dialogView);
+        Window window = qzPsJdDialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         qzPsJdDialog.show();
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnOk = dialogView.findViewById(R.id.btnOk);
@@ -866,7 +998,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             @Override
             public void onClick(View v) {
                 qzPsJdDialog.dismiss();
-                //TODO 确定拍摄角度逻辑
+                //角度确认添加
+                DeviceOPUtils.inJDQR(HomeAct.this, connection, isHW, SERIAL_NUMBER);
+                //TODO 保存截图...
 
             }
         });
@@ -882,6 +1016,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         View dialogView = View.inflate(this, R.layout.dialog_qh_hw, null);
         qhHwDialog = new Dialog(this);
         qhHwDialog.setContentView(dialogView);
+        Window window = qhHwDialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         qhHwDialog.show();
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnOk = dialogView.findViewById(R.id.btnOk);
@@ -896,6 +1032,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public void onClick(View v) {
                 qhHwDialog.dismiss();
                 //TODO 切换红外影像，进行角度确认
+                switchoverCamera(true);
 
             }
         });
@@ -903,54 +1040,41 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     }
 
     /**
-     * 确认添加为红外巡检角度Dialog
-     */
-    Dialog hwJdDialog;
-
-    public void showHwJdDialog() {
-        View dialogView = View.inflate(this, R.layout.dialog_hw_qrjd, null);
-        hwJdDialog = new Dialog(this);
-        hwJdDialog.setContentView(dialogView);
-        hwJdDialog.show();
-        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-        Button btnOk = dialogView.findViewById(R.id.btnOk);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hwJdDialog.dismiss();
-            }
-        });
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hwJdDialog.dismiss();
-                //TODO 添加红外角度确认
-
-            }
-        });
-
-    }
-
-    /**
-     * 当前拍摄点配置完成Dialog
+     * 当前拍摄点配置角度全部完成Dialog
      */
     Dialog pzwcDialog;
-
+    private int mShootPointTotal;//已配置拍摄点数量
     public void showPzwcDialog() {
         View dialogView = View.inflate(this, R.layout.dialog_pzwc, null);
         pzwcDialog = new Dialog(this);
         pzwcDialog.setContentView(dialogView);
+        Window window = pzwcDialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         pzwcDialog.show();
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnOk = dialogView.findViewById(R.id.btnOk);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pzwcDialog.dismiss();
                 //TODO 当前拍摄点配置完成，等待机器到达下个拍摄点
+                int dqNum = SPUtils.getInstance().getInt(DQNUM);
+                int inDir = SPUtils.getInstance().getInt(INDIRECTION);
+
+                PZCSBean.DataBean bean = new PZCSBean.DataBean();
+                bean.setTower(dqNum);
+                bean.setDirection(inDir);
+                bean.setShootPointTotal(mShootPointTotal);
+                DeviceOPUtils.inPZOK(HomeAct.this, connection, SERIAL_NUMBER, bean);
 
             }
         });
-
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pzwcDialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -980,17 +1104,24 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     private void widgetHideAndShow(boolean xj, boolean sxt, boolean tj, boolean wc) {
         if (xj) {
             llXJ.setVisibility(View.VISIBLE);
+            btnXJSD.setVisibility(View.VISIBLE);
         } else {
             llXJ.setVisibility(View.GONE);
+            btnXJSD.setVisibility(View.GONE);
         }
         if (sxt) {
             llKJGH.setVisibility(View.VISIBLE);
             llKJGV.setVisibility(View.VISIBLE);
             btnAffirm.setVisibility(View.VISIBLE);
+            vsbZS.setVisibility(View.VISIBLE);
+            tvZS.setVisibility(View.VISIBLE);
+
         } else {
             llKJGH.setVisibility(View.GONE);
             llKJGV.setVisibility(View.GONE);
             btnAffirm.setVisibility(View.GONE);
+            vsbZS.setVisibility(View.GONE);
+            tvZS.setVisibility(View.GONE);
         }
         if (tj) {
             llTJ.setVisibility(View.VISIBLE);
@@ -998,9 +1129,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             llTJ.setVisibility(View.GONE);
         }
         if (wc) {
-            llWc.setVisibility(View.VISIBLE);
+            btnWc.setVisibility(View.VISIBLE);
         } else {
-            llWc.setVisibility(View.GONE);
+            btnWc.setVisibility(View.GONE);
         }
 
     }
@@ -1055,7 +1186,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     }
 
     @Override
-    public void mPublish(UTF8Buffer topic, Buffer body) {
+    public void mPublish(UTF8Buffer topic, final Buffer body) {
         switch (topic.toString()) {
             case TrackConstant.DEVICE_RT_STATE://机器实时状态
                 final HostBasicDetails hostBasicDetails = GsonUtils.getGson().fromJson(body.ascii().toString(), HostBasicDetails.class);
@@ -1102,22 +1233,13 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
             case TrackConstant.DEVICE_STATE://机器模式及配置状态
                 DeviceStateBean deviceStateBean = GsonUtils.getGson().fromJson(body.ascii().toString(), DeviceStateBean.class);
-                if (deviceStateBean.getModule() == 1) {
-                    if (deviceStateBean.getMianState() == 1) {
-                        if (deviceStateBean.getSubstate() == 1) {
-                            //点配置（到达拍摄点）
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showDDPSDDialog();//到达拍摄点
-                                }
-                            });
-                        }
+                switchDeviceState(deviceStateBean);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTest2.setText(body.ascii().toString());
                     }
-                } else if (deviceStateBean.getModule() == 0) {
-
-                }
-
+                });
                 break;
             case TrackConstant.DEVICE_RESULT:
                 final PZZTBean pzztBean = GsonUtils.getGson().fromJson(body.ascii().toString(), PZZTBean.class);
@@ -1126,6 +1248,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            mTest.setText(body.ascii().toString());
                             switchData(pzztBean);
                         }
                     });
@@ -1138,6 +1261,77 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
 
         }
+
+    }
+
+    /**
+     * 消息处理
+     */
+    private void switchDeviceState(DeviceStateBean deviceStateBean) {
+        String serialNum = deviceStateBean.getSerialNum();
+        int module = deviceStateBean.getModule();
+        int mianState = deviceStateBean.getMainState();
+        int substate = deviceStateBean.getSubState();
+        switch (module) {
+            case 0://机器状态
+                switch (mianState) {
+                    case 0://手动
+                        break;
+                    case 1://自动
+                        break;
+                    case 2://配置
+                        break;
+                    case 3://过障
+                        break;
+                    case 4://充电
+                        break;
+                    case 5://低电
+                        break;
+                    case 6://信息采集
+                        break;
+                }
+                break;
+            case 1://配置状态
+                switch (mianState) {
+                    case 0://未配置
+                        break;
+                    case 1://配置中
+                        switch (substate) {
+                            case 0://默认
+                                break;
+                            case 1://点配置
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showDDPSDDialog();//到达拍摄点
+                                    }
+                                });
+
+                                break;
+                            case 2://角度配置
+                                break;
+                            case 3://配置校验
+                                break;
+                            case 4://配置暂停
+                                break;
+                        }
+                        break;
+                    case 2://配置完成
+                        break;
+                    case 3://配置修改
+                        switch (substate) {
+                            case 0://配置覆盖
+                                break;
+                            case 1://单点修改
+                                break;
+                            case 2://恢复出厂
+                                break;
+                        }
+                        break;
+                }
+                break;
+        }
+
 
     }
 
@@ -1158,10 +1352,12 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     case 1://配置信息
                         if (data != null) {
                             int state = data.getState();
+                            int bigTowerDir = data.getBigTowerDir();
                             int lineNum = data.getLineNum();
                             int initialPoint = data.getInitialPoint();
                             int endPoint = data.getEndPoint();
                             if (state == 0) {
+                                etDTFX.setText("");
                                 etXLNum.setText("");
                                 etXLQ.setText("");
                                 etXLZ.setText("");
@@ -1170,6 +1366,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                                 etXLZ.setFocusableInTouchMode(true);
                                 btnXLOk.setVisibility(View.VISIBLE);
                             } else {
+                                etDTFX.setText("" + bigTowerDir);
                                 etXLNum.setText("" + lineNum);
                                 etXLQ.setText("" + initialPoint);
                                 etXLZ.setText("" + endPoint);
@@ -1231,8 +1428,20 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 }
                 break;
             case 1://机器人安装
+
                 switch (op) {
                     case 0://一键安装
+                        if (data != null) {
+                            int installResult = data.getInstallResult();
+                            if (installResult == 1) {
+                                showLRXJFXDialog();//行进方向录入Dialog
+                            } else if (installResult == 0) {
+//                                ToastUtils.showShort("一键安装失败！");
+                                //一键安装失败！重新进行一键安装
+                            }
+                        }
+
+
                         break;
                     case 1://一键拆卸
                         break;
@@ -1254,8 +1463,19 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     case 5://停止
                         break;
                     case 6://行进方向（小号到大号）
+                        if (lrxjfxDialog != null) {
+                            lrxjfxDialog.dismiss();
+                            lrxjfxDialog = null;
+                            ToastUtils.showShort("操作成功");
+                        }
+
                         break;
                     case 7://行进方向（大号到小号）
+                        if (lrxjfxDialog != null) {
+                            lrxjfxDialog.dismiss();
+                            lrxjfxDialog = null;
+                            ToastUtils.showShort("操作成功");
+                        }
                         break;
                 }
                 break;
@@ -1289,12 +1509,19 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             case 5://配置模式
                 switch (op) {
                     case 0://进入配置模式
-
                         //添加数据
-                        String xlNum = etXLNum.getText().toString().trim();
-                        String XLQ = etXLQ.getText().toString().trim();
-                        String XLZ = etXLZ.getText().toString().trim();
-                        getPresenter().addXL(xlNum, XLQ, XLZ, connection);
+                        final String dTFX = etDTFX.getText().toString().trim();
+                        final String xlNum = etXLNum.getText().toString().trim();
+                        final String XLQ = etXLQ.getText().toString().trim();
+                        final String XLZ = etXLZ.getText().toString().trim();
+                        getPresenter().addXL(SERIAL_NUMBER, dTFX, xlNum, XLQ, XLZ, connection);
+//                        executorService.schedule(new Runnable() {
+//                            @Override
+//                            public void run() {
+//
+//                            }
+//                        },3000, TimeUnit.MILLISECONDS);
+
 
                         break;
                     case 1://配置模式暂停
@@ -1317,6 +1544,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     case 4://云台停
                         break;
                     case 5://角度确认
+                        ToastUtils.showShort("红外摄像头角度添加成功");
                         break;
                     case 6://快照
                         break;
@@ -1340,6 +1568,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     case 6://缩小
                         break;
                     case 7://角度确认
+                        ToastUtils.showShort("可见光角度添加成功");
                         break;
                     case 8://快照
                         break;
@@ -1347,7 +1576,16 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
             case 8://拍摄点
                 switch (op) {
-                    case 0://配置开始
+                    case 0://配置拍摄点
+                        if (dialogPsd != null) {
+                            dialogPsd.dismiss();
+                            dialogPsd = null;
+                            ToastUtils.showShort("拍摄点信息录入成功");
+                            savePSDXX();//保存拍摄点录入的信息
+                            affirmState = false;
+                            btnAffirm.setText("角度确认");
+                        }
+
                         break;
                     case 1://配置完成
                         break;
@@ -1370,6 +1608,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             case 10://配置指令
                 switch (op) {
                     case 0://配置信息
+                        //一键安装
+                        DeviceOPUtils.inYJAZ(HomeAct.this, connection, SERIAL_NUMBER);
                         break;
                     case 1://恢复出厂设置
                         break;
@@ -1380,15 +1620,89 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     }
 
+    /**
+     * 保存拍摄点录入的信息
+     */
+    private String INDIRECTION = "INDIRECTION";
+    private String INCHARGE = "INCHARGE";
+    private String INTYPE = "INTYPE";
+    private String DQNUM = "DQNUM";
+    private String FZCNUM="FZCNUM";
+    private void savePSDXX() {
+        SPUtils.getInstance().put(DQNUM,dqNum);
+        SPUtils.getInstance().put(INTYPE,inType);
+        SPUtils.getInstance().put(INDIRECTION,inDirection);
+        SPUtils.getInstance().put(FZCNUM,fzcNum);
+        SPUtils.getInstance().put(INCHARGE,inCharge);
+
+    }
+
+    /**
+     * 行进方向录入Dialog
+     */
+    Dialog lrxjfxDialog;
+    int xjfxInfo = -1;
+
+    private void showLRXJFXDialog() {
+        View diaView = View.inflate(this, R.layout.dialog_lrxjfx, null);
+        lrxjfxDialog = new Dialog(this);
+        lrxjfxDialog.setContentView(diaView);
+        lrxjfxDialog.setCanceledOnTouchOutside(false);
+        ivClose = diaView.findViewById(R.id.ivClose);
+        Spinner spinner_xjfx = diaView.findViewById(R.id.spinner_xjfx);
+        btnConnect = diaView.findViewById(R.id.btnConnect);
+        Window window = lrxjfxDialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        lrxjfxDialog.show();
+
+        spinner_xjfx.setDropDownVerticalOffset(ConvertUtils.dp2px(30));
+        spinner_xjfx.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView positionTv = (TextView) view;
+                positionTv.setGravity(Gravity.CENTER);
+                positionTv.setTextColor(getResources().getColor(R.color.black));
+                switch (position) {
+                    case 0://正向
+                        xjfxInfo = 6;
+                        break;
+                    case 1://反向
+                        xjfxInfo = 7;
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        btnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeviceOPUtils.inXJFX(HomeAct.this, connection, xjfxInfo, SERIAL_NUMBER);
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lrxjfxDialog != null) {
+                    lrxjfxDialog.dismiss();
+                    lrxjfxDialog = null;
+                }
+            }
+        });
+    }
+
     @Override
     public void subscribeOk() {
-        EventBus.getDefault().postSticky(new PlayStateBean(connectState));
+        EventBus.getDefault().postSticky(new PlayStateBean(connectState));//通知播放实时视频
         updateUi(true);
         if (connectDialog != null) {
             connectDialog.dismiss();
         }
         //查询当前是否为配置状态
-        DeviceOPUtils.queryPZZT(HomeAct.this, connection);
+        DeviceOPUtils.queryPZZT(HomeAct.this, connection, SERIAL_NUMBER);
     }
 
     @Override

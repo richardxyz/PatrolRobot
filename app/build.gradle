@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 android {
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = false
+    }
     signingConfigs {
         config {
             keyAlias 'PatrolRobot'

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/dialog_shape"
+    android:background="@mipmap/dialog_bg_a"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_20"
@@ -14,13 +13,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:text="巡检拍摄点"
-        android:textColor="@color/yellow"
+        android:textColor="@color/white"
         android:textSize="@dimen/sp_18"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
+        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_5"
@@ -29,8 +29,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="当前塔号："
-            android:textColor="@color/yellow"
+            android:text="当前塔号 |"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_14" />
 
         <EditText
@@ -42,13 +42,14 @@
             android:hint="当前塔号"
             android:maxLines="1"
             android:textColor="@color/yellow"
-            android:textColorHint="@color/gray_10"
+            android:textColorHint="@color/light_gray"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
+        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_5"
@@ -57,8 +58,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="当前塔型："
-            android:textColor="@color/yellow"
+            android:text="当前塔型 |"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_14" />
 
         <Spinner
@@ -80,6 +81,7 @@
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
+        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_5"
@@ -88,8 +90,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="相对位置："
-            android:textColor="@color/yellow"
+            android:text="相对位置 |"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_14" />
 
         <Spinner
@@ -111,6 +113,7 @@
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
+        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_5"
@@ -119,8 +122,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="防震锤数："
-            android:textColor="@color/yellow"
+            android:text="防震锤数 |"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_14" />
 
         <EditText
@@ -132,13 +135,14 @@
             android:hint="防震锤数"
             android:maxLines="1"
             android:textColor="@color/yellow"
-            android:textColorHint="@color/gray_10"
+            android:textColorHint="@color/light_gray"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
+        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_5"
@@ -148,8 +152,8 @@
             android:layout_width="@dimen/dp_70"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:text="充电桩："
-            android:textColor="@color/yellow"
+            android:text="充电桩 |  "
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_14" />
 
         <Spinner
@@ -174,8 +178,8 @@
         android:layout_height="@dimen/dp_30"
         android:layout_marginTop="@dimen/dp_30"
         android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/btn_clicked"
+        android:background="@drawable/connect_button"
         android:text="确认添加"
-        android:textColor="@color/yellow"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 </LinearLayout>

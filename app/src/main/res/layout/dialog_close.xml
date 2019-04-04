@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="300dp"
         android:layout_height="180dp"
-        android:background="@drawable/dialog_shape"
+        android:background="@mipmap/dialog_bg_a"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_55"
             android:text="确定退出控制系统？"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_20"
             android:textStyle="bold" />
 
@@ -38,7 +38,7 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/connect_button"
                 android:text="取消"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <View
@@ -53,7 +53,7 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/connect_button"
                 android:text="确定"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <View

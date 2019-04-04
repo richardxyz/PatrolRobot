@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
@@ -36,21 +38,18 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 public class KJGFragment extends BaseFragment {
     @BindView(R.id.detail_player)
     EmptyControlVideo detailPlayer;
-    @BindView(R.id.tvNoVideo)
-    TextView tvNoVideo;
-    @BindView(R.id.cpb)
-    CircularProgressBar cpb;
+    @BindView(R.id.llNoVideo)
+    LinearLayout llNoVideo;
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void stateEvent(PlayStateBean stateBean) {
         if (stateBean.isPlayState()) {
-            tvNoVideo.setVisibility(View.GONE);
+            llNoVideo.setVisibility(View.GONE);
             RTSPVideoPlay();//流播放
-            cpb.setVisibility(View.VISIBLE);
+
         } else {
             detailPlayer.onVideoPause();
-            tvNoVideo.setVisibility(View.VISIBLE);
-            cpb.setVisibility(View.GONE);
+            llNoVideo.setVisibility(View.VISIBLE);
         }
 
     }
@@ -143,7 +142,7 @@ public class KJGFragment extends BaseFragment {
             public void onPrepared(String url, Object... objects) {
                 super.onPrepared(url, objects);
                 LogUtils.eTag("SJR", "onPrepared-->" + url);
-                cpb.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -151,8 +150,8 @@ public class KJGFragment extends BaseFragment {
                 super.onAutoComplete(url, objects);
                 LogUtils.eTag("SJR", "onAutoComplete");
                 //停止Service后回调
-                tvNoVideo.setVisibility(View.VISIBLE);
-                cpb.setVisibility(View.GONE);
+                llNoVideo.setVisibility(View.VISIBLE);
+
             }
 
             @Override
@@ -160,7 +159,7 @@ public class KJGFragment extends BaseFragment {
                 super.onPlayError(url, objects);
                 LogUtils.eTag("SJR", "onPlayError");
                 //服务端未开启
-                cpb.setVisibility(View.VISIBLE);
+                llNoVideo.setVisibility(View.VISIBLE);
             }
         });
 

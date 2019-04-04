@@ -3,6 +3,8 @@ package com.zkkc.patrolrobot.base;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -172,6 +174,8 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
         View dialogView = View.inflate(this, R.layout.dialog_close, null);
         closeDialog = new Dialog(this);
         closeDialog.setContentView(dialogView);
+        Window window = closeDialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         closeDialog.show();
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnOk = dialogView.findViewById(R.id.btnOk);

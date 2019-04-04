@@ -82,8 +82,8 @@ public class MainPresenter extends MainContract.Presenter {
     }
 
     @Override
-    public void addXL(String xlNum, String XLQ, String XLZ, CallbackConnection connection) {
-        model.addXL(xlNum, XLQ, XLZ, connection, new IBaseCallback() {
+    public void addXL(String serialNumber,String dTFX, String xlNum, String XLQ, String XLZ, CallbackConnection connection) {
+        model.addXL(serialNumber,dTFX, xlNum, XLQ, XLZ, connection, new IBaseCallback() {
             @Override
             public void onSuccess() {
                 getView().addXLSuccess();

@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
@@ -15,12 +16,14 @@ import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
+import com.zkkc.patrolrobot.moudle.home.activity.HomeAct;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
  * Created by ShiJunRan on 2019/3/26
+ * 我的设备页面
  */
 public class DeviceAct extends BaseActivity {
 
@@ -89,6 +92,7 @@ public class DeviceAct extends BaseActivity {
         }
     }
 
+    private static final String SERIAL_NUMBER = "SERIAL_NUMBER";
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -97,7 +101,15 @@ public class DeviceAct extends BaseActivity {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             if (data != null) {
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
-                ToastUtils.showLong(content);
+                String[] split = content.split(",");
+                String[] s = split[0].split(":");
+                String[] s2 = split[1].split(":");
+//                if (!s[1].equals("")) {
+//                    HomeAct.SERIAL_NUMBER = s[1];
+//                }
+                SPUtils.getInstance().put(SERIAL_NUMBER, s[1]);
+                finish();
+//                ToastUtils.showLong(HomeAct.SERIAL_NUMBER);
             }
         }
     }

@@ -8,35 +8,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/tvNoVideo"
+    <LinearLayout
+        android:id="@+id/llNoVideo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="无视频"
-        android:textColor="@color/gray_10"
-        android:textSize="@dimen/sp_35"
-        android:textStyle="bold" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <!--<ProgressBar-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:indeterminateDrawable="@drawable/progress_small" />-->
-    <fr.castorflex.android.circularprogressbar.CircularProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="@dimen/dp_45"
-        android:layout_height="@dimen/dp_45"
-        android:id="@+id/cpb"
-        android:layout_centerInParent="true"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:cpb_color="#FFee44"
-        app:cpb_colors="@array/progress_colors"
-        app:cpb_max_sweep_angle="300"
-        app:cpb_min_sweep_angle="10"
-        app:cpb_rotation_speed="1.5"
-        app:cpb_stroke_width="5dp"
-        app:cpb_sweep_speed="1.5" />
+        <ImageView
+            android:id="@+id/tvNoVideo"
+            android:layout_width="@dimen/dp_170"
+            android:layout_height="@dimen/dp_70"
+            android:src="@mipmap/bg_wsp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="无视频"
+            android:textColor="@color/tip_text"
+            android:textSize="@dimen/sp_20"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
 </RelativeLayout>
 

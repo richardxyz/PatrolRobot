@@ -2,24 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_15"
-    android:paddingRight="@dimen/dp_15"
-    android:paddingBottom="@dimen/dp_1">
-    <!--  android:background="@mipmap/wel_a"-->
+    android:orientation="vertical">
     <include layout="@layout/tab_item_top" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/main_shape">
+        android:background="@color/bg_color_2"
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/flVideo"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/dp_2">
+            android:layout_height="match_parent">
 
         </FrameLayout>
 

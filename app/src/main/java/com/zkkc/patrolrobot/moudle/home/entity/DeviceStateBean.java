@@ -15,8 +15,16 @@ public class DeviceStateBean {
 
     private String SerialNum;
     private int Module;
-    private int MianState;
-    private int Substate;
+    private int MainState;
+    private int SubState;
+
+    public int getMainState() {
+        return MainState;
+    }
+
+    public void setMainState(int mainState) {
+        MainState = mainState;
+    }
 
     public String getSerialNum() {
         return SerialNum;
@@ -34,19 +42,11 @@ public class DeviceStateBean {
         this.Module = Module;
     }
 
-    public int getMianState() {
-        return MianState;
+    public int getSubState() {
+        return SubState;
     }
 
-    public void setMianState(int MianState) {
-        this.MianState = MianState;
-    }
-
-    public int getSubstate() {
-        return Substate;
-    }
-
-    public void setSubstate(int Substate) {
-        this.Substate = Substate;
+    public void setSubState(int subState) {
+        SubState = subState;
     }
 }

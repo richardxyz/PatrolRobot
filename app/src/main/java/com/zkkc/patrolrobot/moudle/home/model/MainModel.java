@@ -9,9 +9,7 @@ import com.zkkc.patrolrobot.base.BaseModel;
 import com.zkkc.patrolrobot.moudle.home.callback.IAddXL;
 import com.zkkc.patrolrobot.moudle.home.callback.IBaseCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.IMQTTConnHost;
-import com.zkkc.patrolrobot.moudle.home.entity.DeviceConfigurationState;
 import com.zkkc.patrolrobot.moudle.home.entity.PZCSBean;
-import com.zkkc.patrolrobot.moudle.home.entity.PlayStateBean;
 
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -21,8 +19,8 @@ import org.fusesource.mqtt.client.Listener;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
-import org.greenrobot.eventbus.EventBus;
 
+import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.DTFX;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.NAME;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.PW;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.USER_NAME;
@@ -145,8 +143,9 @@ public class MainModel extends BaseModel {
 
     }
 
-    public void addXL(String xlNum, String XLQ, String XLZ, CallbackConnection connection, IBaseCallback baseCallback, IAddXL callback) {
+    public void addXL(String serialNumber,String dTFX,String xlNum, String XLQ, String XLZ, CallbackConnection connection, IBaseCallback baseCallback, IAddXL callback) {
         if (!"".equals(xlNum) && !"".equals(XLQ) && !"".equals(XLZ)) {
+            SPUtils.getInstance().put(DTFX, dTFX);
             SPUtils.getInstance().put(XL_NUM, xlNum);
             SPUtils.getInstance().put(XL_Q, XLQ);
             SPUtils.getInstance().put(XL_Z, XLZ);
@@ -158,8 +157,9 @@ public class MainModel extends BaseModel {
         PZCSBean pzcsBean = new PZCSBean();
         pzcsBean.setModule(10);
         pzcsBean.setOp(0);
-        pzcsBean.setSerialNum("");
+        pzcsBean.setSerialNum(serialNumber);
         PZCSBean.DataBean dataBean = new PZCSBean.DataBean();
+        dataBean.setBigTowerDir(Integer.parseInt(dTFX));
         dataBean.setLineNum(Integer.parseInt(xlNum));
         dataBean.setInitialPoint(Integer.parseInt(XLQ));
         dataBean.setEndPoint(Integer.parseInt(XLZ));
