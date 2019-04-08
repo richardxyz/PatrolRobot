@@ -17,14 +17,14 @@
             android:id="@+id/ivXQ"
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:src="@mipmap/ic_wdsb" />
+            android:src="@mipmap/tab_xq" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_o"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -42,14 +42,14 @@
             android:id="@+id/ivXL"
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:src="@mipmap/ic_wdsb" />
+            android:src="@mipmap/tab_xl" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_n"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -66,14 +66,14 @@
         <ImageView
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_wdsb" />
+            android:background="@mipmap/tab_wdsb" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_i"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -90,14 +90,14 @@
         <ImageView
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_set" />
+            android:background="@mipmap/tab_pzxx" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_a"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -114,7 +114,7 @@
         <ImageView
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_qh" />
+            android:background="@mipmap/tab_qh_kjg" />
 
         <TextView
             android:id="@+id/tvQh"
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_b"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -141,7 +141,7 @@
             android:id="@+id/ivLd"
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_ld" />
+            android:background="@mipmap/tab_jg_on" />
 
         <TextView
             android:id="@+id/tvLd"
@@ -149,7 +149,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_c"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -167,7 +167,7 @@
             android:id="@+id/ivKjg"
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_kjg" />
+            android:background="@mipmap/tab_kjg_on" />
 
         <TextView
             android:id="@+id/tvKjg"
@@ -175,7 +175,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_d"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -193,7 +193,7 @@
             android:id="@+id/ivHw"
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_hw" />
+            android:background="@mipmap/tab_hw_on" />
 
         <TextView
             android:id="@+id/tvHw"
@@ -201,7 +201,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_e"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -224,7 +224,7 @@
             android:id="@+id/ivPh"
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_ph" />
+            android:background="@mipmap/tab_ph_zc" />
 
         <TextView
             android:id="@+id/tvPh"
@@ -232,7 +232,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_f"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -249,7 +249,7 @@
         <ImageView
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_sd" />
+            android:background="@mipmap/tab_su" />
 
         <TextView
             android:id="@+id/tvSu"
@@ -257,7 +257,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_g"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -274,7 +274,7 @@
         <ImageView
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_wd" />
+            android:background="@mipmap/tab_wd" />
 
         <TextView
             android:id="@+id/tvWd"
@@ -282,7 +282,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_h"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -306,7 +306,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@mipmap/dianliang_a" />
+                android:src="@mipmap/tab_dl_sb_a" />
 
             <TextView
                 android:id="@+id/tvZDNum"
@@ -332,7 +332,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_k"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -355,7 +355,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@mipmap/dianliang_d" />
+                android:src="@mipmap/tab_dl_a" />
 
             <TextView
                 android:id="@+id/tvZJNum"
@@ -381,7 +381,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_l"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
@@ -399,7 +399,8 @@
             android:id="@+id/ivConn"
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_ljzt" />
+            android:src="@mipmap/tab_lj_off"
+           />
 
         <TextView
             android:id="@+id/tvConn"
@@ -424,14 +425,14 @@
         <ImageView
             android:layout_width="@dimen/image_width"
             android:layout_height="@dimen/image_height"
-            android:background="@mipmap/ic_guanji" />
+            android:background="@mipmap/tab_close" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
             android:text="@string/item_m"
-            android:textColor="@color/yellow"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>

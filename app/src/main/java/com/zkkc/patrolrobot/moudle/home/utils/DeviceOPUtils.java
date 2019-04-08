@@ -12,6 +12,22 @@ import org.fusesource.mqtt.client.CallbackConnection;
  */
 public class DeviceOPUtils {
     /**
+     * 查询当前机器状态
+     *
+     * @param mContext
+     * @param connection
+     */
+    public static void queryJQZT(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+        DeviceConfigurationState state = new DeviceConfigurationState();
+        state.setSerialNum(serialNumber);
+        state.setModule(0);
+        state.setOp(0);
+        mContext.getPresenter().sendPublishData(state, connection);
+    }
+
+
+
+    /**
      * 查询当前配置状态
      *
      * @param mContext

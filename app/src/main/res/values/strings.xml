@@ -11,7 +11,7 @@
     <string name="item_g">85%</string>
     <string name="item_h">35℃</string>
     <string name="item_i">我的设备</string>
-    <string name="item_j">连接中断</string>
+    <string name="item_j">未连接</string>
     <string name="item_k">终端电量</string>
     <string name="item_l">主机电量</string>
     <string name="item_m">关闭</string>

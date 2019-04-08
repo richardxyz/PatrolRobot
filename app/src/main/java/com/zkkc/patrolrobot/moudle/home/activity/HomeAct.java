@@ -65,7 +65,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -312,17 +311,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         batteryType = stateBean.batteryType;
         powNum = stateBean.powStr;
         tvZJNum.setText(powNum + "%");
-        if (powNum < 10) {
-            ivZJ.setImageResource(R.mipmap.dianliang_a);
-        } else if (powNum >= 10 && powNum < 20) {
-            ivZJ.setImageResource(R.mipmap.dianliang_b);
-        } else if (powNum >= 20 && powNum < 40) {
-            ivZJ.setImageResource(R.mipmap.dianliang_c);
-        } else if (powNum >= 40 && powNum < 90) {
-            ivZJ.setImageResource(R.mipmap.dianliang_d);
-        } else if (powNum >= 90) {
-            ivZJ.setImageResource(R.mipmap.dianliang_e);
-        }
+
         switch (batteryType) {
             case BATTERY_STATUS_CHARGING://充电中
                 ivZJcd.setVisibility(View.VISIBLE);
@@ -822,6 +811,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     private int inType;
     private String dqNum;
     private String fzcNum;
+
     /**
      * 拍摄点信息录入dialog
      */
@@ -955,6 +945,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                         btnConnect.setClickable(false);
                         btnConnect.setText("已登录主机");
                         btnConnect.setVisibility(View.INVISIBLE);
+                        ivConn.setImageResource(R.mipmap.tab_lj_on);
+                        tvConn.setText("已连接");
+                        tvConn.setTextColor(getResources().getColor(R.color.yellow));
                     } else {
                         etUserName.setFocusable(true);
                         etUserName.setFocusableInTouchMode(true);
@@ -966,6 +959,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                         btnConnect.setClickable(true);
                         btnConnect.setText("连接");
                         btnConnect.setVisibility(View.VISIBLE);
+                        ivConn.setImageResource(R.mipmap.tab_lj_off);
+                        tvConn.setText("未连接");
+                        tvConn.setTextColor(getResources().getColor(R.color.red));
                     }
 
                 }
@@ -1044,6 +1040,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
      */
     Dialog pzwcDialog;
     private int mShootPointTotal;//已配置拍摄点数量
+
     public void showPzwcDialog() {
         View dialogView = View.inflate(this, R.layout.dialog_pzwc, null);
         pzwcDialog = new Dialog(this);
@@ -1183,6 +1180,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     public void mDisconnected(String str) {
         ToastUtils.showShort(str);
         connectState = false;
+        updateUi(connectState);
     }
 
     @Override
@@ -1348,13 +1346,44 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             case 0://机器查询
                 switch (op) {
                     case 0://机器状态
+                        switch (data.getMainState()) {
+                            case 0://手动
+
+                                break;
+                            case 1://自动
+
+                                break;
+                            case 2://配置
+
+                                break;
+                            case 3://过障
+
+                                break;
+                            case 4://充电
+
+                                break;
+                            case 5://低电
+
+                                break;
+                            case 6://信息采集
+
+                                break;
+                            case 7://待机
+
+                                break;
+                            case 8://数据上传
+
+                                break;
+                        }
+
+
                         break;
                     case 1://配置信息
                         if (data != null) {
                             int state = data.getState();
                             int bigTowerDir = data.getBigTowerDir();
                             String lineNum = data.getLineNum();
-                            String  initialPoint = data.getInitialPoint();
+                            String initialPoint = data.getInitialPoint();
                             String endPoint = data.getEndPoint();
                             if (state == 0) {
                                 etDTFX.setText("");
@@ -1627,13 +1656,14 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     private String INCHARGE = "INCHARGE";
     private String INTYPE = "INTYPE";
     private String DQNUM = "DQNUM";
-    private String FZCNUM="FZCNUM";
+    private String FZCNUM = "FZCNUM";
+
     private void savePSDXX() {
-        SPUtils.getInstance().put(DQNUM,dqNum);
-        SPUtils.getInstance().put(INTYPE,inType);
-        SPUtils.getInstance().put(INDIRECTION,inDirection);
-        SPUtils.getInstance().put(FZCNUM,fzcNum);
-        SPUtils.getInstance().put(INCHARGE,inCharge);
+        SPUtils.getInstance().put(DQNUM, dqNum);
+        SPUtils.getInstance().put(INTYPE, inType);
+        SPUtils.getInstance().put(INDIRECTION, inDirection);
+        SPUtils.getInstance().put(FZCNUM, fzcNum);
+        SPUtils.getInstance().put(INCHARGE, inCharge);
 
     }
 
@@ -1701,6 +1731,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         if (connectDialog != null) {
             connectDialog.dismiss();
         }
+
         //查询当前是否为配置状态
         DeviceOPUtils.queryPZZT(HomeAct.this, connection, SERIAL_NUMBER);
     }
