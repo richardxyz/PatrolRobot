@@ -6,37 +6,36 @@ package com.zkkc.patrolrobot.moudle.home.entity;
 public class DeviceConfigurationState {
 
     /**
-     * SerialNum : xxxxxxxx
-     * Module : 1
-     * Op : 1
+     * serialNum :
+     * module : 1
+     * op : 1
      */
 
-    private String SerialNum;
-    private int Module;
-    private int Op;
-
+    private String serialNum;
+    private int module;
+    private int op;
 
     public String getSerialNum() {
-        return SerialNum;
+        return serialNum;
     }
 
-    public void setSerialNum(String SerialNum) {
-        this.SerialNum = SerialNum;
+    public void setSerialNum(String serialNum) {
+        this.serialNum = serialNum;
     }
 
     public int getModule() {
-        return Module;
+        return module;
     }
 
-    public void setModule(int Module) {
-        this.Module = Module;
+    public void setModule(int module) {
+        this.module = module;
     }
 
     public int getOp() {
-        return Op;
+        return op;
     }
 
-    public void setOp(int Op) {
-        this.Op = Op;
+    public void setOp(int op) {
+        this.op = op;
     }
 }

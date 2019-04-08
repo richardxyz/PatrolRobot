@@ -5,241 +5,241 @@ package com.zkkc.patrolrobot.moudle.home.entity;
  */
 public class HostBasicDetails {
 
-
     /**
-     * Electric : 50
-     * Humidity : 46
-     * Temperature : 24
-     * Balance : 0
-     * GPS : {"Date":"2018 - 05 - 31","Time ":"12: 00: 00 ","Latitude":"121.12345 ","Longitude":"121.12345"}
-     * Peripheral : {"Camera":0,"Ir":0,"Radar":0}
-     * Arm : {"Left":0,"Right":0,"OCDevice":0}
-     * Advance : {"Tower":14,"Direction":0}
+     * serialNum : 1000-1001-008-SXXX-171229
+     * electric : 50
+     * humidity : 46
+     * temperature : 24
+     * balance : 0
+     * gps : {"date":"2018 - 05 - 31","time ":"12: 00: 00 ","latitude":"121.12345 ","longitude":"121.12345"}
+     * peripheral : {"camera":0,"ir":0,"radar":0}
+     * arm : {"left":0,"right":0,"ocDevice":0}
+     * advance : {"tower":"14","direction":0}
      */
 
-    private String SerialNum;
-    private int Electric;
-    private int Humidity;
-    private int Temperature;
-    private int Balance;
-    private GPSBean GPS;
-    private PeripheralBean Peripheral;
-    private ArmBean Arm;
-    private AdvanceBean Advance;
+    private String serialNum;
+    private int electric;
+    private int humidity;
+    private int temperature;
+    private int balance;
+    private GpsBean gps;
+    private PeripheralBean peripheral;
+    private ArmBean arm;
+    private AdvanceBean advance;
 
     public String getSerialNum() {
-        return SerialNum;
+        return serialNum;
     }
 
     public void setSerialNum(String serialNum) {
-        SerialNum = serialNum;
+        this.serialNum = serialNum;
     }
 
     public int getElectric() {
-        return Electric;
+        return electric;
     }
 
-    public void setElectric(int Electric) {
-        this.Electric = Electric;
+    public void setElectric(int electric) {
+        this.electric = electric;
     }
 
     public int getHumidity() {
-        return Humidity;
+        return humidity;
     }
 
-    public void setHumidity(int Humidity) {
-        this.Humidity = Humidity;
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
     }
 
     public int getTemperature() {
-        return Temperature;
+        return temperature;
     }
 
-    public void setTemperature(int Temperature) {
-        this.Temperature = Temperature;
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
     }
 
     public int getBalance() {
-        return Balance;
+        return balance;
     }
 
-    public void setBalance(int Balance) {
-        this.Balance = Balance;
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
 
-    public GPSBean getGPS() {
-        return GPS;
+    public GpsBean getGps() {
+        return gps;
     }
 
-    public void setGPS(GPSBean GPS) {
-        this.GPS = GPS;
+    public void setGps(GpsBean gps) {
+        this.gps = gps;
     }
 
     public PeripheralBean getPeripheral() {
-        return Peripheral;
+        return peripheral;
     }
 
-    public void setPeripheral(PeripheralBean Peripheral) {
-        this.Peripheral = Peripheral;
+    public void setPeripheral(PeripheralBean peripheral) {
+        this.peripheral = peripheral;
     }
 
     public ArmBean getArm() {
-        return Arm;
+        return arm;
     }
 
-    public void setArm(ArmBean Arm) {
-        this.Arm = Arm;
+    public void setArm(ArmBean arm) {
+        this.arm = arm;
     }
 
     public AdvanceBean getAdvance() {
-        return Advance;
+        return advance;
     }
 
-    public void setAdvance(AdvanceBean Advance) {
-        this.Advance = Advance;
+    public void setAdvance(AdvanceBean advance) {
+        this.advance = advance;
     }
 
-    public static class GPSBean {
+    public static class GpsBean {
         /**
-         * Date : 2018 - 05 - 31
-         * Time  : 12: 00: 00
-         * Latitude : 121.12345
-         * Longitude : 121.12345
+         * date : 2018 - 05 - 31
+         * time  : 12: 00: 00
+         * latitude : 121.12345
+         * longitude : 121.12345
          */
 
-        private String Date;
-        private String Time;
-        private String Latitude;
-        private String Longitude;
+        private String date;
+        private String time;
+        private String latitude;
+        private String longitude;
 
         public String getDate() {
-            return Date;
+            return date;
         }
 
-        public void setDate(String Date) {
-            this.Date = Date;
+        public void setDate(String date) {
+            this.date = date;
         }
 
         public String getTime() {
-            return Time;
+            return time;
         }
 
-        public void setTime(String Time) {
-            this.Time = Time;
+        public void setTime(String time) {
+            this.time = time;
         }
 
         public String getLatitude() {
-            return Latitude;
+            return latitude;
         }
 
-        public void setLatitude(String Latitude) {
-            this.Latitude = Latitude;
+        public void setLatitude(String latitude) {
+            this.latitude = latitude;
         }
 
         public String getLongitude() {
-            return Longitude;
+            return longitude;
         }
 
-        public void setLongitude(String Longitude) {
-            this.Longitude = Longitude;
+        public void setLongitude(String longitude) {
+            this.longitude = longitude;
         }
     }
 
     public static class PeripheralBean {
         /**
-         * Camera : 0
-         * Ir : 0
-         * Radar : 0
+         * camera : 0
+         * ir : 0
+         * radar : 0
          */
 
-        private int Camera;
-        private int Ir;
-        private int Radar;
+        private int camera;
+        private int ir;
+        private int radar;
 
         public int getCamera() {
-            return Camera;
+            return camera;
         }
 
-        public void setCamera(int Camera) {
-            this.Camera = Camera;
+        public void setCamera(int camera) {
+            this.camera = camera;
         }
 
         public int getIr() {
-            return Ir;
+            return ir;
         }
 
-        public void setIr(int Ir) {
-            this.Ir = Ir;
+        public void setIr(int ir) {
+            this.ir = ir;
         }
 
         public int getRadar() {
-            return Radar;
+            return radar;
         }
 
-        public void setRadar(int Radar) {
-            this.Radar = Radar;
+        public void setRadar(int radar) {
+            this.radar = radar;
         }
     }
 
     public static class ArmBean {
         /**
-         * Left : 0
-         * Right : 0
-         * OCDevice : 0
+         * left : 0
+         * right : 0
+         * ocDevice : 0
          */
 
-        private int Left;
-        private int Right;
-        private int OCDevice;
+        private int left;
+        private int right;
+        private int ocDevice;
 
         public int getLeft() {
-            return Left;
+            return left;
         }
 
-        public void setLeft(int Left) {
-            this.Left = Left;
+        public void setLeft(int left) {
+            this.left = left;
         }
 
         public int getRight() {
-            return Right;
+            return right;
         }
 
-        public void setRight(int Right) {
-            this.Right = Right;
+        public void setRight(int right) {
+            this.right = right;
         }
 
-        public int getOCDevice() {
-            return OCDevice;
+        public int getOcDevice() {
+            return ocDevice;
         }
 
-        public void setOCDevice(int OCDevice) {
-            this.OCDevice = OCDevice;
+        public void setOcDevice(int ocDevice) {
+            this.ocDevice = ocDevice;
         }
     }
 
     public static class AdvanceBean {
         /**
-         * Tower : 14
-         * Direction : 0
+         * tower : 14
+         * direction : 0
          */
 
-        private int Tower;
-        private int Direction;
+        private String tower;
+        private int direction;
 
-        public int getTower() {
-            return Tower;
+        public String getTower() {
+            return tower;
         }
 
-        public void setTower(int Tower) {
-            this.Tower = Tower;
+        public void setTower(String tower) {
+            this.tower = tower;
         }
 
         public int getDirection() {
-            return Direction;
+            return direction;
         }
 
-        public void setDirection(int Direction) {
-            this.Direction = Direction;
+        public void setDirection(int direction) {
+            this.direction = direction;
         }
     }
 }

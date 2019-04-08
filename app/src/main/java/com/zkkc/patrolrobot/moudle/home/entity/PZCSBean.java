@@ -7,161 +7,162 @@ package com.zkkc.patrolrobot.moudle.home.entity;
 public class PZCSBean {
 
     /**
-     * SerialNum :
-     * Module : 10
-     * Op : 3
-     * Data : {"LineNum":1001,"InitialPoint":12,"EndPoint":45,"Tower":14,"Direction":1,"Pdz":3,"Charge":0,"Type":1,"Speed":14}
+     * serialNum :
+     * module : 8
+     * op : 0
+     * data : {"tower":"14","direction":1,"pdz":3,"charge":0,"type":1,"shootPointTotal":2,"speed":14,"bigTowerDir":1,"lineNum":"1001","initialPoint":"12","endPoint":"45"}
      */
 
-    private String SerialNum;
-    private int Module;
-    private int Op;
-    private DataBean Data;
+    private String serialNum;
+    private int module;
+    private int op;
+    private DataBean data;
 
     public String getSerialNum() {
-        return SerialNum;
+        return serialNum;
     }
 
-    public void setSerialNum(String SerialNum) {
-        this.SerialNum = SerialNum;
+    public void setSerialNum(String serialNum) {
+        this.serialNum = serialNum;
     }
 
     public int getModule() {
-        return Module;
+        return module;
     }
 
-    public void setModule(int Module) {
-        this.Module = Module;
+    public void setModule(int module) {
+        this.module = module;
     }
 
     public int getOp() {
-        return Op;
+        return op;
     }
 
-    public void setOp(int Op) {
-        this.Op = Op;
+    public void setOp(int op) {
+        this.op = op;
     }
 
     public DataBean getData() {
-        return Data;
+        return data;
     }
 
-    public void setData(DataBean Data) {
-        this.Data = Data;
+    public void setData(DataBean data) {
+        this.data = data;
     }
 
     public static class DataBean {
         /**
-         * BigTowerDir:0
-         * LineNum : 1001
-         * InitialPoint : 12
-         * EndPoint : 45
-         * Tower : 14
-         * Direction : 1
-         * Pdz : 3
-         * Charge : 0
-         * Type : 1
-         * Speed : 14
+         * tower : 14
+         * direction : 1
+         * pdz : 3
+         * charge : 0
+         * type : 1
+         * shootPointTotal : 2
+         * speed : 14
+         * bigTowerDir : 1
+         * lineNum : 1001
+         * initialPoint : 12
+         * endPoint : 45
          */
 
-        private int BigTowerDir;
-        private int LineNum;
-        private int InitialPoint;
-        private int EndPoint;
-        private int Tower;
-        private int Direction;
-        private int Pdz;
-        private int Charge;
-        private int Type;
-        private int Speed;
-        private int ShootPointTotal;
+        private String tower;
+        private int direction;
+        private int pdz;
+        private int charge;
+        private int type;
+        private int shootPointTotal;
+        private int speed;
+        private int bigTowerDir;
+        private String lineNum;
+        private String initialPoint;
+        private String endPoint;
 
-        public int getShootPointTotal() {
-            return ShootPointTotal;
+        public String getTower() {
+            return tower;
         }
 
-        public void setShootPointTotal(int shootPointTotal) {
-            ShootPointTotal = shootPointTotal;
-        }
-
-        public int getBigTowerDir() {
-            return BigTowerDir;
-        }
-
-        public void setBigTowerDir(int bigTowerDir) {
-            BigTowerDir = bigTowerDir;
-        }
-
-        public int getLineNum() {
-            return LineNum;
-        }
-
-        public void setLineNum(int LineNum) {
-            this.LineNum = LineNum;
-        }
-
-        public int getInitialPoint() {
-            return InitialPoint;
-        }
-
-        public void setInitialPoint(int InitialPoint) {
-            this.InitialPoint = InitialPoint;
-        }
-
-        public int getEndPoint() {
-            return EndPoint;
-        }
-
-        public void setEndPoint(int EndPoint) {
-            this.EndPoint = EndPoint;
-        }
-
-        public int getTower() {
-            return Tower;
-        }
-
-        public void setTower(int Tower) {
-            this.Tower = Tower;
+        public void setTower(String tower) {
+            this.tower = tower;
         }
 
         public int getDirection() {
-            return Direction;
+            return direction;
         }
 
-        public void setDirection(int Direction) {
-            this.Direction = Direction;
+        public void setDirection(int direction) {
+            this.direction = direction;
         }
 
         public int getPdz() {
-            return Pdz;
+            return pdz;
         }
 
-        public void setPdz(int Pdz) {
-            this.Pdz = Pdz;
+        public void setPdz(int pdz) {
+            this.pdz = pdz;
         }
 
         public int getCharge() {
-            return Charge;
+            return charge;
         }
 
-        public void setCharge(int Charge) {
-            this.Charge = Charge;
+        public void setCharge(int charge) {
+            this.charge = charge;
         }
 
         public int getType() {
-            return Type;
+            return type;
         }
 
-        public void setType(int Type) {
-            this.Type = Type;
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public int getShootPointTotal() {
+            return shootPointTotal;
+        }
+
+        public void setShootPointTotal(int shootPointTotal) {
+            this.shootPointTotal = shootPointTotal;
         }
 
         public int getSpeed() {
-            return Speed;
+            return speed;
         }
 
-        public void setSpeed(int Speed) {
-            this.Speed = Speed;
+        public void setSpeed(int speed) {
+            this.speed = speed;
+        }
+
+        public int getBigTowerDir() {
+            return bigTowerDir;
+        }
+
+        public void setBigTowerDir(int bigTowerDir) {
+            this.bigTowerDir = bigTowerDir;
+        }
+
+        public String getLineNum() {
+            return lineNum;
+        }
+
+        public void setLineNum(String lineNum) {
+            this.lineNum = lineNum;
+        }
+
+        public String getInitialPoint() {
+            return initialPoint;
+        }
+
+        public void setInitialPoint(String initialPoint) {
+            this.initialPoint = initialPoint;
+        }
+
+        public String getEndPoint() {
+            return endPoint;
+        }
+
+        public void setEndPoint(String endPoint) {
+            this.endPoint = endPoint;
         }
     }
 }

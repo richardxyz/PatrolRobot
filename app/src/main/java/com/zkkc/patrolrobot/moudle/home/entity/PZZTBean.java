@@ -4,141 +4,132 @@ package com.zkkc.patrolrobot.moudle.home.entity;
  * Created by ShiJunRan on 2019/3/27
  */
 public class PZZTBean {
-
     /**
-     * SerialNum :
-     * MsgCode : 200
-     * ResultMsg :
-     * Module : 8
-     * Op : 3
-     * Data : {"Tower":12,"Direction":1,"Move":2,"x":12,"y":34,"z":4,"MianState":0,"Substate":0,"State":0,"LineNum":1001,"InitialPoint":12,"EndPoint":45}
+     * serialNum :
+     * msgCode : 200
+     * resultMsg :
+     * module : 8
+     * op : 0
+     * data : {"tower":"12","direction":1,"move":2,"x":12,"y":34,"z":4,"mainState":0,"subState":0,"state":0,"bigTowerDir":1,"lineNum":"1001","initialPoint":"12","endPoint":"45"}
      */
 
-    private String SerialNum;
-    private int MsgCode;
-    private String ResultMsg;
-    private int Module;
-    private int Op;
-    private DataBean Data;
+    private String serialNum;
+    private int msgCode;
+    private String resultMsg;
+    private int module;
+    private int op;
+    private DataBean data;
 
     public String getSerialNum() {
-        return SerialNum;
+        return serialNum;
     }
 
-    public void setSerialNum(String SerialNum) {
-        this.SerialNum = SerialNum;
+    public void setSerialNum(String serialNum) {
+        this.serialNum = serialNum;
     }
 
     public int getMsgCode() {
-        return MsgCode;
+        return msgCode;
     }
 
-    public void setMsgCode(int MsgCode) {
-        this.MsgCode = MsgCode;
+    public void setMsgCode(int msgCode) {
+        this.msgCode = msgCode;
     }
 
     public String getResultMsg() {
-        return ResultMsg;
+        return resultMsg;
     }
 
-    public void setResultMsg(String ResultMsg) {
-        this.ResultMsg = ResultMsg;
+    public void setResultMsg(String resultMsg) {
+        this.resultMsg = resultMsg;
     }
 
     public int getModule() {
-        return Module;
+        return module;
     }
 
-    public void setModule(int Module) {
-        this.Module = Module;
+    public void setModule(int module) {
+        this.module = module;
     }
 
     public int getOp() {
-        return Op;
+        return op;
     }
 
-    public void setOp(int Op) {
-        this.Op = Op;
+    public void setOp(int op) {
+        this.op = op;
     }
 
     public DataBean getData() {
-        return Data;
+        return data;
     }
 
-    public void setData(DataBean Data) {
-        this.Data = Data;
+    public void setData(DataBean data) {
+        this.data = data;
     }
 
     public static class DataBean {
         /**
-         * Tower : 12
-         * Direction : 1
-         * Move : 2
+         * tower : 12
+         * direction : 1
+         * move : 2
          * x : 12
          * y : 34
          * z : 4
-         * MianState : 0
-         * Substate : 0
-         * State : 0
-         * BigTowerDir:0
-         * LineNum : 1001
-         * InitialPoint : 12
-         * EndPoint : 45
+         * mainState : 0
+         * subState : 0
+         * state : 0
+         * bigTowerDir : 1
+         * lineNum : 1001
+         * initialPoint : 12
+         * endPoint : 45
          */
 
-        private int BigTowerDir;
-        private int Tower;
-        private int Direction;
-        private int Move;
+        private String tower;
+        private int direction;
+        private int move;
         private int x;
         private int y;
         private int z;
-        private int MianState;
-        private int Substate;
-        private int State;
-        private int LineNum;
-        private int InitialPoint;
-        private int EndPoint;
-        private int InstallResult;
+        private int mainState;
+        private int subState;
+        private int state;
+        private int bigTowerDir;
+        private String lineNum;
+        private String initialPoint;
+        private String endPoint;
+        private int installResult;//0-失败 1-成功
 
         public int getInstallResult() {
-            return InstallResult;
+            return installResult;
         }
 
         public void setInstallResult(int installResult) {
-            InstallResult = installResult;
+            this.installResult = installResult;
         }
 
-        public int getBigTowerDir() {
-            return BigTowerDir;
+        public String getTower() {
+            return tower;
         }
 
-        public void setBigTowerDir(int bigTowerDir) {
-            BigTowerDir = bigTowerDir;
-        }
-
-        public int getTower() {
-            return Tower;
-        }
-
-        public void setTower(int Tower) {
-            this.Tower = Tower;
+        public void setTower(String tower) {
+            this.tower = tower;
         }
 
         public int getDirection() {
-            return Direction;
+            return direction;
         }
 
-        public void setDirection(int Direction) {
-            this.Direction = Direction;
+        public void setDirection(int direction) {
+            this.direction = direction;
         }
 
         public int getMove() {
-            return Move;
+            return move;
         }
 
-        public void setMove(int Move) {
-            this.Move = Move;
+        public void setMove(int move) {
+            this.move = move;
         }
 
         public int getX() {
@@ -165,52 +156,60 @@ public class PZZTBean {
             this.z = z;
         }
 
-        public int getMianState() {
-            return MianState;
+        public int getMainState() {
+            return mainState;
         }
 
-        public void setMianState(int MianState) {
-            this.MianState = MianState;
+        public void setMainState(int mainState) {
+            this.mainState = mainState;
         }
 
-        public int getSubstate() {
-            return Substate;
+        public int getSubState() {
+            return subState;
         }
 
-        public void setSubstate(int Substate) {
-            this.Substate = Substate;
+        public void setSubState(int subState) {
+            this.subState = subState;
         }
 
         public int getState() {
-            return State;
+            return state;
         }
 
-        public void setState(int State) {
-            this.State = State;
+        public void setState(int state) {
+            this.state = state;
         }
 
-        public int getLineNum() {
-            return LineNum;
+        public int getBigTowerDir() {
+            return bigTowerDir;
         }
 
-        public void setLineNum(int LineNum) {
-            this.LineNum = LineNum;
+        public void setBigTowerDir(int bigTowerDir) {
+            this.bigTowerDir = bigTowerDir;
         }
 
-        public int getInitialPoint() {
-            return InitialPoint;
+        public String getLineNum() {
+            return lineNum;
         }
 
-        public void setInitialPoint(int InitialPoint) {
-            this.InitialPoint = InitialPoint;
+        public void setLineNum(String lineNum) {
+            this.lineNum = lineNum;
         }
 
-        public int getEndPoint() {
-            return EndPoint;
+        public String getInitialPoint() {
+            return initialPoint;
         }
 
-        public void setEndPoint(int EndPoint) {
-            this.EndPoint = EndPoint;
+        public void setInitialPoint(String initialPoint) {
+            this.initialPoint = initialPoint;
+        }
+
+        public String getEndPoint() {
+            return endPoint;
+        }
+
+        public void setEndPoint(String endPoint) {
+            this.endPoint = endPoint;
         }
     }
 }

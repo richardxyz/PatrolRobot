@@ -923,7 +923,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 if (dqNum.equals("")) {
                     ToastUtils.showShort("塔号不能为空");
                 } else {
-                    bean.setTower(Integer.parseInt(dqNum));
+                    bean.setTower(dqNum);
                     bean.setDirection(inDirection);
                     if (fzcNum.equals("")) {
                         fzcNum = "0";
@@ -1058,7 +1058,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public void onClick(View v) {
                 pzwcDialog.dismiss();
                 //TODO 当前拍摄点配置完成，等待机器到达下个拍摄点
-                int dqNum = SPUtils.getInstance().getInt(DQNUM);
+                String dqNum = SPUtils.getInstance().getString(DQNUM);
                 int inDir = SPUtils.getInstance().getInt(INDIRECTION);
 
                 PZCSBean.DataBean bean = new PZCSBean.DataBean();
@@ -1270,11 +1270,11 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     private void switchDeviceState(DeviceStateBean deviceStateBean) {
         String serialNum = deviceStateBean.getSerialNum();
         int module = deviceStateBean.getModule();
-        int mianState = deviceStateBean.getMainState();
-        int substate = deviceStateBean.getSubState();
+        int mainState = deviceStateBean.getMainState();
+        int subState = deviceStateBean.getSubState();
         switch (module) {
             case 0://机器状态
-                switch (mianState) {
+                switch (mainState) {
                     case 0://手动
                         break;
                     case 1://自动
@@ -1292,11 +1292,11 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 }
                 break;
             case 1://配置状态
-                switch (mianState) {
+                switch (mainState) {
                     case 0://未配置
                         break;
                     case 1://配置中
-                        switch (substate) {
+                        switch (subState) {
                             case 0://默认
                                 break;
                             case 1://点配置
@@ -1319,7 +1319,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     case 2://配置完成
                         break;
                     case 3://配置修改
-                        switch (substate) {
+                        switch (subState) {
                             case 0://配置覆盖
                                 break;
                             case 1://单点修改
@@ -1353,9 +1353,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                         if (data != null) {
                             int state = data.getState();
                             int bigTowerDir = data.getBigTowerDir();
-                            int lineNum = data.getLineNum();
-                            int initialPoint = data.getInitialPoint();
-                            int endPoint = data.getEndPoint();
+                            String lineNum = data.getLineNum();
+                            String  initialPoint = data.getInitialPoint();
+                            String endPoint = data.getEndPoint();
                             if (state == 0) {
                                 etDTFX.setText("");
                                 etXLNum.setText("");
@@ -1366,10 +1366,10 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                                 etXLZ.setFocusableInTouchMode(true);
                                 btnXLOk.setVisibility(View.VISIBLE);
                             } else {
-                                etDTFX.setText("" + bigTowerDir);
-                                etXLNum.setText("" + lineNum);
-                                etXLQ.setText("" + initialPoint);
-                                etXLZ.setText("" + endPoint);
+                                etDTFX.setText(bigTowerDir);
+                                etXLNum.setText(lineNum);
+                                etXLQ.setText(initialPoint);
+                                etXLZ.setText(endPoint);
                                 etXLNum.setFocusableInTouchMode(false);
                                 etXLQ.setFocusableInTouchMode(false);
                                 etXLZ.setFocusableInTouchMode(false);
@@ -1380,18 +1380,18 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                         break;
                     case 2://配置状态
 //                        PZZTBean.DataBean data = pzztBean.getData();
-                        int mianState = data.getMianState();
-                        int substate = data.getSubstate();
-                        deviceStateNow = substate;
-                        switch (mianState) {
+                        int mainState = data.getMainState();
+                        int subState = data.getSubState();
+                        deviceStateNow = subState;
+                        switch (mainState) {
                             case 0://未配置
                                 ToastUtils.showShort("未配置");
                                 updateXLPopupShow(true);
                                 break;
                             case 1://配置中
                                 ToastUtils.showShort("配置中");
-                                deviceStateDian = substate;
-                                switch (substate) {
+                                deviceStateDian = subState;
+                                switch (subState) {
                                     case 0://默认(行走中)
                                         ToastUtils.showShort("行走中");
 

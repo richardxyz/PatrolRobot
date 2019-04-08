@@ -6,47 +6,48 @@ package com.zkkc.patrolrobot.moudle.home.entity;
  */
 public class DeviceStateBean {
 
+
     /**
-     * SerialNum : 1000-1001-008-SXXX-171229
-     * Module : 1
-     * MianState : 0
-     * Substate : 0
+     * serialNum : 1000-1001-008-SXXX-171229
+     * module : 1
+     * mainState : 0
+     * subState : 0
      */
 
-    private String SerialNum;
-    private int Module;
-    private int MainState;
-    private int SubState;
-
-    public int getMainState() {
-        return MainState;
-    }
-
-    public void setMainState(int mainState) {
-        MainState = mainState;
-    }
+    private String serialNum;
+    private int module;
+    private int mainState;
+    private int subState;
 
     public String getSerialNum() {
-        return SerialNum;
+        return serialNum;
     }
 
-    public void setSerialNum(String SerialNum) {
-        this.SerialNum = SerialNum;
+    public void setSerialNum(String serialNum) {
+        this.serialNum = serialNum;
     }
 
     public int getModule() {
-        return Module;
+        return module;
     }
 
-    public void setModule(int Module) {
-        this.Module = Module;
+    public void setModule(int module) {
+        this.module = module;
+    }
+
+    public int getMainState() {
+        return mainState;
+    }
+
+    public void setMainState(int mainState) {
+        this.mainState = mainState;
     }
 
     public int getSubState() {
-        return SubState;
+        return subState;
     }
 
     public void setSubState(int subState) {
-        SubState = subState;
+        this.subState = subState;
     }
 }
