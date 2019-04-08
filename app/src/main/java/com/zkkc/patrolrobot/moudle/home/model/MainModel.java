@@ -160,9 +160,9 @@ public class MainModel extends BaseModel {
         pzcsBean.setSerialNum(serialNumber);
         PZCSBean.DataBean dataBean = new PZCSBean.DataBean();
         dataBean.setBigTowerDir(Integer.parseInt(dTFX));
-        dataBean.setLineNum(Integer.parseInt(xlNum));
-        dataBean.setInitialPoint(Integer.parseInt(XLQ));
-        dataBean.setEndPoint(Integer.parseInt(XLZ));
+        dataBean.setLineNum(xlNum);
+        dataBean.setInitialPoint(XLQ);
+        dataBean.setEndPoint(XLZ);
         pzcsBean.setData(dataBean);
         sendPublishData(pzcsBean, connection, baseCallback);
     }

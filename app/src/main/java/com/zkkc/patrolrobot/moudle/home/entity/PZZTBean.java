@@ -98,13 +98,13 @@ public class PZZTBean {
         private String lineNum;
         private String initialPoint;
         private String endPoint;
-        private int installResult;//0-失败 1-成功
+        private String installResult;//0-失败 1-成功
 
-        public int getInstallResult() {
+        public String getInstallResult() {
             return installResult;
         }
 
-        public void setInstallResult(int installResult) {
+        public void setInstallResult(String installResult) {
             this.installResult = installResult;
         }
 

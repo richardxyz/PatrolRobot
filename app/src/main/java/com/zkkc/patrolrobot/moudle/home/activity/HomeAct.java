@@ -1432,11 +1432,11 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 switch (op) {
                     case 0://一键安装
                         if (data != null) {
-                            int installResult = data.getInstallResult();
-                            if (installResult == 1) {
+                            String installResult = data.getInstallResult();
+                            if (installResult.equals("0")) {
                                 showLRXJFXDialog();//行进方向录入Dialog
-                            } else if (installResult == 0) {
-//                                ToastUtils.showShort("一键安装失败！");
+                            } else if (installResult.equals("1")) {
+                                ToastUtils.showShort("一键安装失败,请检查机器是否安装正确！");
                                 //一键安装失败！重新进行一键安装
                             }
                         }
