@@ -240,6 +240,28 @@
         android:textColor="@color/yellow"
         android:textSize="@dimen/sp_14" />
 
+    <TextView
+        android:id="@+id/tvJQMS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="模式:待机"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/sp_14" />
+
+    <Button
+        android:id="@+id/btnInPZMS"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_30"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@drawable/btn_clicked"
+        android:text="配置暂停"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/sp_14" />
+
     <LinearLayout
         android:id="@+id/llKJGH"
         android:layout_width="@dimen/dp_150"

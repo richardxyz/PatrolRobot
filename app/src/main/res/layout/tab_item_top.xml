@@ -20,6 +20,7 @@
             android:src="@mipmap/tab_xq" />
 
         <TextView
+            android:id="@+id/tvXQ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
@@ -45,6 +46,7 @@
             android:src="@mipmap/tab_xl" />
 
         <TextView
+            android:id="@+id/tvXL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin_top"
