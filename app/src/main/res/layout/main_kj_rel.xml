@@ -4,6 +4,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="@dimen/dp_400"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginBottom="@dimen/dp_50">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mTest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black" />
+
+            <TextView
+                android:id="@+id/mTest2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </ScrollView>
+
     <LinearLayout
         android:id="@+id/llXLPopup"
         android:layout_width="220dp"
@@ -32,6 +68,7 @@
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_5"
+            android:gravity="center_vertical"
             android:background="@drawable/edit_shape_b"
             android:orientation="horizontal">
 
@@ -43,17 +80,25 @@
                 android:textSize="@dimen/sp_12"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/etDTFX"
+            <!--<EditText-->
+                <!--android:id="@+id/etDTFX"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/edit_shape"-->
+                <!--android:hint="大塔方向"-->
+                <!--android:maxLines="1"-->
+                <!--android:textSize="@dimen/sp_12"-->
+                <!--android:textStyle="bold" />-->
+            <Spinner
+                android:id="@+id/spinnerDTFX"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_20"
                 android:layout_weight="1"
-                android:background="@drawable/edit_shape"
-                android:hint="必填"
-                android:maxLines="1"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="bold" />
-
+                android:background="@drawable/spinner_shape"
+                android:dropDownSelector="@color/spinner_dropdown"
+                android:entries="@array/spinner_dtfx"
+                android:gravity="center" />
         </LinearLayout>
 
 
@@ -80,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/edit_shape"
-                android:hint="必填"
+                android:hint="线路编号"
                 android:maxLines="1"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="bold" />
@@ -110,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/edit_shape"
-                android:hint="必填"
+                android:hint="起始塔号"
                 android:maxLines="1"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="bold" />
@@ -140,7 +185,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/edit_shape"
-                android:hint="必填"
+                android:hint="终止塔号"
                 android:maxLines="1"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="bold" />
@@ -230,7 +275,7 @@
     <Button
         android:id="@+id/btnXJSD"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_30"
+        android:layout_height="@dimen/dp_35"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/dp_40"
         android:layout_marginBottom="@dimen/dp_9"
@@ -240,13 +285,98 @@
         android:textColor="@color/yellow"
         android:textSize="@dimen/sp_14" />
 
+    <LinearLayout
+        android:id="@+id/llXB"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_35"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/dp_190"
+        android:layout_marginBottom="@dimen/dp_9"
+        android:background="@drawable/xb_shape_bg"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/ivLeftYJ"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="@dimen/dp_8"
+            android:src="@mipmap/xuan_b" />
+
+        <View
+            android:layout_width="@dimen/dp_2"
+            android:layout_height="match_parent"
+            android:background="@color/yellow" />
+
+        <ImageView
+            android:id="@+id/ivLeftFS"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="@dimen/dp_6"
+            android:src="@mipmap/xuan_b" />
+
+        <View
+            android:layout_width="@dimen/dp_2"
+            android:layout_height="match_parent"
+            android:background="@color/yellow" />
+
+        <ImageView
+            android:id="@+id/ivRightYJ"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="@dimen/dp_8"
+            android:src="@mipmap/xuan_c" />
+
+        <View
+            android:layout_width="@dimen/dp_2"
+            android:layout_height="match_parent"
+            android:background="@color/yellow" />
+
+        <ImageView
+            android:id="@+id/ivRightFS"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="@dimen/dp_8"
+            android:src="@mipmap/xuan_d" />
+
+        <View
+            android:layout_width="@dimen/dp_2"
+            android:layout_height="match_parent"
+            android:background="@color/yellow" />
+
+        <ImageView
+            android:id="@+id/ivKZ"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="@dimen/dp_8"
+            android:src="@mipmap/xuan_e" />
+
+        <View
+            android:layout_width="@dimen/dp_2"
+            android:layout_height="match_parent"
+            android:background="@color/yellow" />
+
+        <ImageView
+            android:id="@+id/ivSS"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="@dimen/dp_8"
+            android:src="@mipmap/xuan_f" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tvJQMS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
-        android:text="模式:待机"
+        android:text=""
         android:textColor="@color/yellow"
         android:textSize="@dimen/sp_14" />
 
@@ -422,40 +552,5 @@
         android:textColor="@color/yellow"
         android:textSize="@dimen/sp_14" />
 
-    <ScrollView
-        android:layout_width="@dimen/dp_400"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/dp_50"
-        android:layout_marginBottom="@dimen/dp_50">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/mTest"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black" />
-
-            <TextView
-                android:id="@+id/mTest2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-    </ScrollView>
 
 </RelativeLayout>

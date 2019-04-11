@@ -316,8 +316,8 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void cameraFocus(HomeAct mContext, CallbackConnection connection, boolean adjust, String serialNumber) {
-        DeviceConfigurationState state = new DeviceConfigurationState();
+    public static void cameraFocus(HomeAct mContext, CallbackConnection connection, boolean adjust, String serialNumber,PZCSBean.DataBean bean) {
+        PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         state.setModule(7);
         if (adjust) {
@@ -325,6 +325,34 @@ public class DeviceOPUtils {
         } else {
             state.setOp(6);//缩小
         }
+        state.setData(bean);
         mContext.getPresenter().sendPublishData(state, connection);
     }
+    /**
+     * 配置模式暂停
+     *
+     * @param mContext
+     * @param connection
+     */
+    public static void pzmsStop(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+        DeviceConfigurationState state = new DeviceConfigurationState();
+        state.setSerialNum(serialNumber);
+        state.setModule(5);
+        state.setOp(1);
+        mContext.getPresenter().sendPublishData(state, connection);
+    }
+    /**
+     * 机器人悬臂控制
+     *
+     * @param mContext
+     * @param connection
+     */
+    public static void xbKZ(HomeAct mContext, CallbackConnection connection, String serialNumber,int num) {
+        DeviceConfigurationState state = new DeviceConfigurationState();
+        state.setSerialNum(serialNumber);
+        state.setModule(3);
+        state.setOp(num);
+        mContext.getPresenter().sendPublishData(state, connection);
+    }
+
 }

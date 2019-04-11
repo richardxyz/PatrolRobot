@@ -95,10 +95,20 @@ public class PZZTBean {
         private int subState;
         private int state;
         private int bigTowerDir;
+        private int installState;
+
         private String lineNum;
         private String initialPoint;
         private String endPoint;
         private String installResult;//0-失败 1-成功
+
+        public int getInstallState() {
+            return installState;
+        }
+
+        public void setInstallState(int installState) {
+            this.installState = installState;
+        }
 
         public String getInstallResult() {
             return installResult;

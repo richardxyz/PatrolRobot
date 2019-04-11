@@ -84,13 +84,4 @@
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/ivClose"
-        android:layout_width="@dimen/dp_25"
-        android:layout_height="@dimen/dp_25"
-        android:layout_alignRight="@id/ll"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_5"
-        android:background="@mipmap/ic_close_a" />
 </RelativeLayout>

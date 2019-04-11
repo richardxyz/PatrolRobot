@@ -23,5 +23,9 @@
         <item>正向</item>
         <item>反向</item>
     </array>
+    <array name="spinner_dtfx">
+        <item>正向</item>
+        <item>反向</item>
+    </array>
 
 </resources>
