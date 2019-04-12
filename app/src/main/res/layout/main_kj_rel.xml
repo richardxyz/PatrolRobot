@@ -286,10 +286,10 @@
         android:textSize="@dimen/sp_14" />
     <ImageView
         android:id="@+id/ivSXSP"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
-        android:src="@mipmap/ic_cd"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_35"
+        android:src="@mipmap/icon_refresh"
+        android:layout_marginTop="@dimen/dp_30"
         android:layout_marginLeft="@dimen/dp_5"
         android:background="@drawable/btn_clicked"/>
     <LinearLayout
