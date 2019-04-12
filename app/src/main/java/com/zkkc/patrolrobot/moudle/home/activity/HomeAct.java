@@ -66,7 +66,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URISyntaxException;
-import java.util.concurrent.ScheduledExecutorService;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -332,7 +331,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     FragmentManager manager;
     KJGFragment kjgFragment;
     HWFragment hwFragment;
-    ScheduledExecutorService executorService;
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void batteryEvent(BatteryStateBean stateBean) {
@@ -413,9 +411,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         FragmentUtils.add(manager, kjgFragment, R.id.flVideo);
         //创建mqtt连接
         createMqttBean();
-        executorService = ThreadPoolHelp.Builder
-                .schedule(1)
-                .scheduleBuilder();
         //线路信息录入spinner
         spinnerDTFX.setDropDownVerticalOffset(ConvertUtils.dp2px(30));
         spinnerDTFX.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -1900,9 +1895,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             case 1://配置中
                 //查询当前配置状态
                 DeviceOPUtils.queryPZZT(HomeAct.this, connection, SERIAL_NUMBER);
-                if (bigTowerDir==0){
+                if (bigTowerDir == 0) {
                     spinnerDTFX.setSelection(0);
-                }else {
+                } else {
                     spinnerDTFX.setSelection(1);
                 }
                 etXLNum.setText(lineNum);
@@ -1915,9 +1910,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
                 break;
             case 2://配置完成
-                if (bigTowerDir==0){
+                if (bigTowerDir == 0) {
                     spinnerDTFX.setSelection(0);
-                }else {
+                } else {
                     spinnerDTFX.setSelection(1);
                 }
                 etXLNum.setText(lineNum);
