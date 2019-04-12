@@ -303,6 +303,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     ImageView ivKZ;
     @BindView(R.id.ivSS)
     ImageView ivSS;
+    //视频刷新
+    @BindView(R.id.ivSXSP)
+    ImageView ivSXSP;
 
 
     @BindView(R.id.mTest)
@@ -409,6 +412,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         manager = getSupportFragmentManager();
         kjgFragment = new KJGFragment();
         FragmentUtils.add(manager, kjgFragment, R.id.flVideo);
+//        manager = getSupportFragmentManager();
+//       hwFragment = new HWFragment();
+//        FragmentUtils.add(manager, hwFragment, R.id.flVideo);
         //创建mqtt连接
         createMqttBean();
         //线路信息录入spinner
@@ -481,7 +487,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN://摄像头左转
                         if (isHW) {
-                            sxtZS = (int) (mrProgress * 2.25);
+                            sxtZS = (int) (mrProgress * 2.55);
                         } else {
                             sxtZS = mrProgress / 10;
                         }
@@ -503,7 +509,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN://摄像头右转
                         if (isHW) {
-                            sxtZS = (int) (mrProgress * 2.25);
+                            sxtZS = (int) (mrProgress * 2.55);
                         } else {
                             sxtZS = mrProgress / 10;
                         }
@@ -526,7 +532,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN://摄像头向上转
                         if (isHW) {
-                            sxtZS = (int) (mrProgress * 2.25);
+                            sxtZS = (int) (mrProgress * 2.55);
                         } else {
                             sxtZS = mrProgress / 10;
                         }
@@ -549,7 +555,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN://摄像头向下转
                         if (isHW) {
-                            sxtZS = (int) (mrProgress * 2.25);
+                            sxtZS = (int) (mrProgress * 2.55);
                         } else {
                             sxtZS = mrProgress / 10;
                         }
@@ -608,7 +614,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     @OnClick({R.id.lli, R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
             R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.btnWc,
             R.id.ivTJAdd, R.id.ivTJMinus, R.id.tvCXT, R.id.btnXLOk, R.id.btnXJSD, R.id.btnInPZMS, R.id.ivLeftYJ, R.id.ivLeftFS,
-            R.id.ivRightYJ, R.id.ivRightFS, R.id.ivKZ, R.id.ivSS})
+            R.id.ivRightYJ, R.id.ivRightFS, R.id.ivKZ, R.id.ivSS, R.id.ivSXSP})
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
@@ -748,6 +754,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             case R.id.ivSS://悬臂收缩
                 ToastUtils.showShort("悬臂收缩");
                 DeviceOPUtils.xbKZ(HomeAct.this, connection, SERIAL_NUMBER, 5);
+                break;
+            case R.id.ivSXSP://视频刷新
+
                 break;
         }
     }
@@ -1425,6 +1434,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                                 isFirst = false;
                             }
                             updateXLPopupShow(true);//显示线路信息录入Popup
+                            LogUtils.i("SJR", "意外弹出了线路信息录入Popup");
                         } else if (deviceStateNow == 1) {//中
                             pDialog = new SweetAlertDialog(HomeAct.this, SweetAlertDialog.PROGRESS_TYPE);
                             pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
@@ -1571,6 +1581,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     case 2://配置状态
                         int mainState = data.getMainState();
                         int subState = data.getSubState();
+                        int installState = data.getInstallState();
                         switch (mainState) {
                             case 0://未配置
                                 break;
@@ -1591,17 +1602,21 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                                         isPZMS = true;
                                         affirmState = true;
                                         btnAffirm.setText("位置确认");
-                                        showPSDialog();
+//                                        showPSDialog();
+                                        //控制按钮显示和隐藏
+                                        widgetHideAndShow(true, true, true, true, true);
                                         break;
                                     case 2://可见光角度配置
                                         ToastUtils.showShort("可见光角度配置");
                                         isPZMS = true;
                                         affirmState = false;
                                         btnAffirm.setText("角度确认");
-                                        showQzPsJdDialog();
+//                                        showQzPsJdDialog();
                                         if (isHW) {
                                             switchoverCamera(false);
                                         }
+                                        //控制按钮显示和隐藏
+                                        widgetHideAndShow(true, true, true, true, true);
                                         break;
                                     case 3://红外角度配置
                                         ToastUtils.showShort("红外角度配置");
@@ -1611,7 +1626,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                                         if (!isHW) {
                                             switchoverCamera(true);
                                         }
-                                        showQzPsJdDialog();
+//                                        showQzPsJdDialog();
+                                        //控制按钮显示和隐藏
+                                        widgetHideAndShow(true, true, true, true, true);
                                         break;
                                     case 4://配置暂停，上次未配置完的数据被抹除掉了，本地删除上次未配置完成的数据
                                         ToastUtils.showShort("配置暂停");
@@ -1625,11 +1642,14 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
                                         break;
                                     case 5://线路信息未配置完成
-                                        ToastUtils.showShort("线路信息未配置完成，请重新录入");
                                         isPZMS = true;
+                                        if (installState == 1) {
+                                            ToastUtils.showShort("线路信息未配置完成，请重新录入");
 //                                        //查询线路配置信息
 //                                        DeviceOPUtils.queryXLPZXX(HomeAct.this, connection, SERIAL_NUMBER);
-                                        updateXLPopupShow(true);//显示线路信息录入Popup
+                                            updateXLPopupShow(true);//显示线路信息录入Popup
+                                        }
+
 
                                         break;
                                 }
@@ -1836,6 +1856,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             pzwcDialog.dismiss();
                         }
                         widgetHideAndShow(false, false, false, false, false);
+                        switchoverCamera(false);
                         ToastUtils.showLong("当前拍摄点配置完成，请等待设备到达下个拍摄点");
                         pDialog = new SweetAlertDialog(HomeAct.this, SweetAlertDialog.PROGRESS_TYPE);
                         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.luoxudong.app.threadpool.ThreadPoolHelp;
 import com.zkkc.patrolrobot.R;
@@ -138,14 +139,14 @@ public class HWFragment extends BaseFragment implements MagDevice.IUsbConnCallba
     public void connectResult(int result) {
         if (result == MagDevice.CONN_SUCC) {
             /* 连接成功 */
-            ToastUtils.showShort("connectResult_连接成功");
+           LogUtils.i("connectResult_连接成功");
 //            play();
         } else if (result == MagDevice.CONN_FAIL) {
             /* 连接失败 */
-            ToastUtils.showShort("connectResult_连接失败");
+            LogUtils.i("connectResult_连接失败");
         } else if (result == MagDevice.CONN_DETACHED) {
             /* 设备拔出*/
-            ToastUtils.showShort("connectResult_设备拔出");
+            LogUtils.i("connectResult_设备拔出");
         }
 
     }
@@ -158,7 +159,7 @@ public class HWFragment extends BaseFragment implements MagDevice.IUsbConnCallba
             r = mDev.connect(mSelectedDev.intCameraIpOrUsbId);
         }
         if (r == MagDevice.CONN_SUCC) {
-            ToastUtils.showShort("连接成功");
+            LogUtils.i("热像仪连接成功");
             executorService.schedule(new Runnable() {
                 @Override
                 public void run() {
