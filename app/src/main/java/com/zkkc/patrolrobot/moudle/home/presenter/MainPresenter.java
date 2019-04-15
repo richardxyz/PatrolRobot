@@ -5,14 +5,18 @@ import android.content.Context;
 import com.zkkc.patrolrobot.moudle.home.callback.IAddXL;
 import com.zkkc.patrolrobot.moudle.home.callback.IBaseCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.IMQTTConnHost;
+import com.zkkc.patrolrobot.moudle.home.callback.ISaveAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.contract.MainContract;
 import com.zkkc.patrolrobot.moudle.home.model.MainModel;
+import com.zkkc.patrolrobot.widget.EmptyControlVideo;
 
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
 import org.fusesource.mqtt.client.CallbackConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Topic;
+
+import java.util.concurrent.ExecutorService;
 
 /**
  * Created by ShiJunRan on 2019/3/7
@@ -82,8 +86,8 @@ public class MainPresenter extends MainContract.Presenter {
     }
 
     @Override
-    public void addXL(String serialNumber,String dTFX, String xlNum, String XLQ, String XLZ, CallbackConnection connection) {
-        model.addXL(serialNumber,dTFX, xlNum, XLQ, XLZ, connection, new IBaseCallback() {
+    public void addXL(String serialNumber, String dTFX, String xlNum, String XLQ, String XLZ, CallbackConnection connection) {
+        model.addXL(serialNumber, dTFX, xlNum, XLQ, XLZ, connection, new IBaseCallback() {
             @Override
             public void onSuccess() {
                 getView().addXLSuccess();
@@ -97,6 +101,39 @@ public class MainPresenter extends MainContract.Presenter {
             @Override
             public void onFailure(String strErr) {
                 getView().sendPublishErr(strErr);
+            }
+        });
+
+    }
+
+    @Override
+    public void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, String serialNumber, String towerNo,
+                                int towerType, int cameraType, int cameraX, int cameraY, int cameraZ) {
+        model.saveAngleDetail(threadPool, detailPlayer, serialNumber, towerNo, towerType, cameraType, cameraX, cameraY, cameraZ, new ISaveAngleCallback() {
+            @Override
+            public void onSuccess() {
+                getView().saveAngleSuccess();
+            }
+
+            @Override
+            public void onFailure(String strErr) {
+                getView().saveAngleFailure(strErr);
+            }
+        });
+    }
+
+    @Override
+    public void saveLocationDetails(ExecutorService threadPool, String serialNumber, String towerNo, int towerType,
+                                    int direction, int inCharge, int fzcNum) {
+        model.saveLocationDetails(threadPool, serialNumber, towerNo, towerType, direction, inCharge, fzcNum, new ISaveAngleCallback() {
+            @Override
+            public void onSuccess() {
+                getView().saveLDSuccess();
+            }
+
+            @Override
+            public void onFailure(String strErr) {
+                getView().saveLDFailure(strErr);
             }
         });
 

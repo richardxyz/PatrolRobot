@@ -1,15 +1,31 @@
 package com.zkkc.patrolrobot.moudle.home.model;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.blankj.utilcode.util.UriUtils;
+import com.shuyu.gsyvideoplayer.listener.GSYVideoShotSaveListener;
+import com.zkkc.green.gen.LocationDetailsDaoDao;
+import com.zkkc.green.gen.ShootAngleDaoDao;
 import com.zkkc.patrolrobot.TrackConstant;
 import com.zkkc.patrolrobot.base.BaseModel;
+import com.zkkc.patrolrobot.common.GreenDaoManager;
+import com.zkkc.patrolrobot.entity.LocationDetailsDao;
+import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.home.callback.IAddXL;
 import com.zkkc.patrolrobot.moudle.home.callback.IBaseCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.IMQTTConnHost;
+import com.zkkc.patrolrobot.moudle.home.callback.ISaveAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.entity.PZCSBean;
+import com.zkkc.patrolrobot.widget.EmptyControlVideo;
 
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -19,6 +35,12 @@ import org.fusesource.mqtt.client.Listener;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.DTFX;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.NAME;
@@ -143,7 +165,19 @@ public class MainModel extends BaseModel {
 
     }
 
-    public void addXL(String serialNumber,String dTFX,String xlNum, String XLQ, String XLZ, CallbackConnection connection, IBaseCallback baseCallback, IAddXL callback) {
+    /**
+     * 添加线路信息
+     *
+     * @param serialNumber
+     * @param dTFX
+     * @param xlNum
+     * @param XLQ
+     * @param XLZ
+     * @param connection
+     * @param baseCallback
+     * @param callback
+     */
+    public void addXL(String serialNumber, String dTFX, String xlNum, String XLQ, String XLZ, CallbackConnection connection, IBaseCallback baseCallback, IAddXL callback) {
         if (!"".equals(xlNum) && !"".equals(XLQ) && !"".equals(XLZ)) {
             SPUtils.getInstance().put(DTFX, dTFX);
             SPUtils.getInstance().put(XL_NUM, xlNum);
@@ -167,5 +201,158 @@ public class MainModel extends BaseModel {
         sendPublishData(pzcsBean, connection, baseCallback);
     }
 
+    /**
+     * 保存拍摄点信息
+     *
+     * @param threadPool
+     * @param serialNumber
+     * @param towerNo
+     * @param towerType
+     * @param direction
+     * @param inCharge
+     * @param fzcNum
+     * @param callback
+     */
+    public void saveLocationDetails(ExecutorService threadPool, final String serialNumber, final String towerNo, final int towerType,
+                                    final int direction, final int inCharge, final int fzcNum, final ISaveAngleCallback callback) {
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                LocationDetailsDao lDDao = new LocationDetailsDao();
+                lDDao.setSerialNo(serialNumber);
+                lDDao.setTowerNo(towerNo);
+                lDDao.setTowerType(towerType);
+                lDDao.setDirection(direction);
+                lDDao.setFzcNum(fzcNum);
+                lDDao.setInCharge(inCharge);
+                getLDDao().insert(lDDao);
+                callback.onSuccess();
+            }
+        });
+    }
 
+    /**
+     * 保存角度信息和图片
+     *
+     * @param threadPool
+     * @param detailPlayer
+     * @param serialNumber
+     * @param towerNo
+     * @param towerType
+     * @param cameraType
+     * @param cameraX
+     * @param cameraY
+     * @param cameraZ
+     * @param callback
+     */
+    public void saveAngleDetail(ExecutorService threadPool, final EmptyControlVideo detailPlayer, final String serialNumber, final String towerNo,
+                                final int towerType, final int cameraType, final int cameraX, final int cameraY, final int cameraZ,
+                                final ISaveAngleCallback callback) {
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                detailPlayer.saveFrame(bitmapToFile(), true, new GSYVideoShotSaveListener() {
+                    @Override
+                    public void result(boolean success, File file) {
+                        if (success) {
+                            Uri uri = UriUtils.file2Uri(file);
+//                            Uri uri = Uri.parse((String) str);
+                            LocationDetailsDao locationDetailsDao = queryLDDao();
+                            if (locationDetailsDao!=null){
+                                ShootAngleDao shootAngleDao = new ShootAngleDao();
+                                shootAngleDao.setSerialNo(serialNumber);
+                                shootAngleDao.setTowerNo(locationDetailsDao.getTowerNo());
+                                shootAngleDao.setTowerType(locationDetailsDao.getTowerType());
+                                shootAngleDao.setCameraType(cameraType);
+                                shootAngleDao.setCameraX(cameraX);
+                                shootAngleDao.setCameraY(cameraY);
+                                shootAngleDao.setCameraZ(cameraZ);
+                                shootAngleDao.setPictureUri(uri.toString());
+                                getAngleDao().insert(shootAngleDao);
+                                callback.onSuccess();
+                            }else {
+                                callback.onFailure("获取拍摄点配置详情失败，无法保存角度信息");
+                            }
+                        } else {
+                            callback.onFailure("保存图片失败");
+                        }
+
+
+                    }
+                });
+
+
+            }
+        });
+
+
+    }
+
+    private LocationDetailsDao queryLDDao() {
+        List<LocationDetailsDao> locationDetailsDaos = getLDDao().loadAll();
+        if (locationDetailsDaos != null) {
+            return locationDetailsDaos.get(locationDetailsDaos.size() - 1);
+        }
+        return null;
+    }
+
+    private File bitmapToFile() {
+        String nowDate = getNowDate();
+        File filesDir = Environment.getExternalStorageDirectory();
+        File appDir = new File(filesDir, "a_track");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = nowDate + ".png";
+        File file = new File(appDir, fileName);
+        return file;
+    }
+
+    //角度
+    private ShootAngleDaoDao getAngleDao() {
+        return GreenDaoManager.getInstance().getSession().getShootAngleDaoDao();
+    }
+
+    //拍摄点
+    private LocationDetailsDaoDao getLDDao() {
+        return GreenDaoManager.getInstance().getSession().getLocationDetailsDaoDao();
+    }
+
+    /**
+     * 获取系统当前时间
+     */
+    private String getNowDate() {
+        String format = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System.currentTimeMillis()));
+        return format;
+    }
+
+    /**
+     * Try to return the absolute file path from the given Uri
+     *
+     * @param context
+     * @param uri
+     * @return the file path or null
+     */
+    public static String getRealFilePath(final Context context, final Uri uri) {
+        if (null == uri) return null;
+        final String scheme = uri.getScheme();
+        String data = null;
+        if (scheme == null)
+            data = uri.getPath();
+        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return data;
+    }
 }

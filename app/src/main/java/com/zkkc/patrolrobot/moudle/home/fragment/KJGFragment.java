@@ -36,7 +36,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  */
 public class KJGFragment extends BaseFragment {
     @BindView(R.id.detail_player)
-    EmptyControlVideo detailPlayer;
+    public EmptyControlVideo detailPlayer;
     @BindView(R.id.llNoVideo)
     LinearLayout llNoVideo;
 

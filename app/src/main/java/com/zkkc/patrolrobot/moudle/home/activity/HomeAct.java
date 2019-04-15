@@ -66,6 +66,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutorService;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -334,7 +335,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     FragmentManager manager;
     KJGFragment kjgFragment;
     HWFragment hwFragment;
-
+    private ExecutorService threadPool;
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void batteryEvent(BatteryStateBean stateBean) {
         batteryType = stateBean.batteryType;
@@ -403,7 +404,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         vsbZS.setThumbSize(35, 25);
         vsbZS.setProgress(30);
         setOnClicked();//转向速度调节
-
+        threadPool = ThreadPoolHelp.Builder
+                .cached()
+                .builder();
 
         //隐藏控制按钮
         widgetHideAndShow(false, false, false, false, false);
@@ -412,9 +415,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         manager = getSupportFragmentManager();
         kjgFragment = new KJGFragment();
         FragmentUtils.add(manager, kjgFragment, R.id.flVideo);
-//        manager = getSupportFragmentManager();
-//       hwFragment = new HWFragment();
-//        FragmentUtils.add(manager, hwFragment, R.id.flVideo);
         //创建mqtt连接
         createMqttBean();
         //线路信息录入spinner
@@ -1134,7 +1134,18 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public void onClick(View v) {
                 //角度确认添加
                 DeviceOPUtils.inJDQR(HomeAct.this, connection, isHW, SERIAL_NUMBER);
-                //TODO 保存截图...
+//                //TODO 保存截图...
+//                if (isHW){
+//
+//                }else {
+//                    if (kjgFragment!=null){
+//                        getPresenter().saveAngleDetail(threadPool,kjgFragment.detailPlayer,);
+//                    }
+//                }
+
+
+
+
 
             }
         });
@@ -1193,13 +1204,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public void onClick(View v) {
 //                pzwcDialog.dismiss();
                 //TODO 当前拍摄点配置完成，等待机器到达下个拍摄点
-                String dqNum = SPUtils.getInstance().getString(DQNUM);
-                int inDir = SPUtils.getInstance().getInt(INDIRECTION);
-
                 PZCSBean.DataBean bean = new PZCSBean.DataBean();
-                bean.setTower(dqNum);
-                bean.setDirection(inDir);
-                bean.setShootPointTotal(mShootPointTotal);
                 DeviceOPUtils.inPZOK(HomeAct.this, connection, SERIAL_NUMBER, bean);
 
             }
@@ -1798,6 +1803,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             int x = data.getX();
                             int y = data.getY();
                             ToastUtils.showShort("红外摄像头角度添加成功--" + x + "--" + y);
+                            //TODO 保存截图...
+
                         }
 
                         break;
@@ -1831,6 +1838,11 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             int y = data.getY();
                             int z = data.getZ();
                             ToastUtils.showShort("可见光角度添加成功--" + x + "--" + y + "--" + z);
+                            //TODO 保存截图...
+                            if (kjgFragment!=null){
+                                getPresenter().saveAngleDetail(threadPool,kjgFragment.detailPlayer,SERIAL_NUMBER,"塔号",
+                                        1,1,x,y,z);
+                            }
                         }
 
                         break;
@@ -1841,14 +1853,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             case 8://拍摄点
                 switch (op) {
                     case 0://配置拍摄点
-                        if (dialogPsd != null) {
-                            dialogPsd.dismiss();
-                            dialogPsd = null;
-                            ToastUtils.showShort("拍摄点信息录入成功");
-                            savePSDXX();//保存拍摄点录入的信息
-                            affirmState = false;
-                            btnAffirm.setText("角度确认");
-                        }
+                        //保存拍摄点录入的信息
+                        getPresenter().saveLocationDetails(threadPool,SERIAL_NUMBER,dqNum,inType,inDirection,inCharge,Integer.parseInt(fzcNum));
+
 
                         break;
                     case 1://配置完成
@@ -2021,24 +2028,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     }
 
     /**
-     * 保存拍摄点录入的信息
-     */
-    private String INDIRECTION = "INDIRECTION";
-    private String INCHARGE = "INCHARGE";
-    private String INTYPE = "INTYPE";
-    private String DQNUM = "DQNUM";
-    private String FZCNUM = "FZCNUM";
-
-    private void savePSDXX() {
-        SPUtils.getInstance().put(DQNUM, dqNum);
-        SPUtils.getInstance().put(INTYPE, inType);
-        SPUtils.getInstance().put(INDIRECTION, inDirection);
-        SPUtils.getInstance().put(FZCNUM, fzcNum);
-        SPUtils.getInstance().put(INCHARGE, inCharge);
-
-    }
-
-    /**
      * 行进方向录入Dialog
      */
     Dialog lrxjfxDialog;
@@ -2137,6 +2126,32 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
             }
         });
+
+    }
+
+    @Override
+    public void saveAngleSuccess() {
+
+    }
+
+    @Override
+    public void saveAngleFailure(String err) {
+
+    }
+
+    @Override
+    public void saveLDSuccess() {
+        if (dialogPsd != null) {
+            dialogPsd.dismiss();
+            dialogPsd = null;
+            affirmState = false;
+            btnAffirm.setText("角度确认");
+        }
+        ToastUtils.showShort("拍摄点信息录入成功");
+    }
+
+    @Override
+    public void saveLDFailure(String err) {
 
     }
 }
