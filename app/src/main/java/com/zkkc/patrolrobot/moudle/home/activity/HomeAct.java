@@ -1385,6 +1385,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     public void run() {
                         switchDeviceState(deviceStateBean);
                         mTest2.setText(body.ascii().toString());
+                        LogUtils.i("SJRSJR_2",body.ascii().toString());
                     }
                 });
                 break;
@@ -1396,6 +1397,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                         @Override
                         public void run() {
                             mTest.setText(body.ascii().toString());
+                            LogUtils.i("SJRSJR",body.ascii().toString());
                             switchData(pzztBean);
                         }
                     });
