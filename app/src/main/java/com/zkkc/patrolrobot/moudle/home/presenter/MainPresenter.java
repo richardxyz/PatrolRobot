@@ -107,9 +107,9 @@ public class MainPresenter extends MainContract.Presenter {
     }
 
     @Override
-    public void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, String serialNumber, String towerNo,
-                                int towerType, int cameraType, int cameraX, int cameraY, int cameraZ) {
-        model.saveAngleDetail(threadPool, detailPlayer, serialNumber, towerNo, towerType, cameraType, cameraX, cameraY, cameraZ, new ISaveAngleCallback() {
+    public void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, String serialNumber,
+                                int cameraType, int cameraX, int cameraY, int cameraZ) {
+        model.saveAngleDetail(threadPool, detailPlayer, serialNumber, cameraType, cameraX, cameraY, cameraZ, new ISaveAngleCallback() {
             @Override
             public void onSuccess() {
                 getView().saveAngleSuccess();

@@ -56,8 +56,8 @@ public interface MainContract {
 
         public abstract void addXL(String serialNumber, String dTFX, String xlNum, String XLQ, String XLZ, CallbackConnection connection);
 
-        public abstract void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, String serialNumber, String towerNo,
-                                             int towerType, int cameraType, int cameraX, int cameraY, int cameraZ);
+        public abstract void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, String serialNumber,
+                                             int cameraType, int cameraX, int cameraY, int cameraZ);
 
         public abstract void saveLocationDetails(ExecutorService threadPool, String serialNumber, String towerNo, int towerType,
                                                  int direction, int inCharge, int fzcNum);

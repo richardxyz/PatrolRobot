@@ -34,10 +34,13 @@ import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.cazaea.sweetalert.SweetAlertDialog;
 import com.luoxudong.app.threadpool.ThreadPoolHelp;
+import com.zkkc.green.gen.LocationDetailsDaoDao;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.TrackConstant;
 import com.zkkc.patrolrobot.base.BaseActivity;
+import com.zkkc.patrolrobot.common.GreenDaoManager;
 import com.zkkc.patrolrobot.entity.BatteryStateBean;
+import com.zkkc.patrolrobot.entity.LocationDetailsDao;
 import com.zkkc.patrolrobot.moudle.details.activity.DetailsAct;
 import com.zkkc.patrolrobot.moudle.devices.DeviceAct;
 import com.zkkc.patrolrobot.moudle.home.adapter.XQAdapter;
@@ -66,6 +69,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import butterknife.BindView;
@@ -1503,6 +1507,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     }
 
     boolean isFirst = true;
+//    LocationDetailsDao locationDetailsDao;
 
     /**
      * 接收消息处理
@@ -1831,9 +1836,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             int z = data.getZ();
                             ToastUtils.showShort("可见光角度添加成功--" + x + "--" + y + "--" + z);
                             //TODO 保存截图...
-                            if (kjgFragment != null) {
-                                getPresenter().saveAngleDetail(threadPool, kjgFragment.detailPlayer, SERIAL_NUMBER, "1",
-                                        1, 1, x, y, z);
+                            if (kjgFragment != null && kjgFragment.detailPlayer != null) {
+                                getPresenter().saveAngleDetail(threadPool, kjgFragment.detailPlayer, SERIAL_NUMBER, 1, x, y, z);
                             }
                         }
 

@@ -239,16 +239,14 @@ public class MainModel extends BaseModel {
      * @param threadPool
      * @param detailPlayer
      * @param serialNumber
-     * @param towerNo
-     * @param towerType
      * @param cameraType
      * @param cameraX
      * @param cameraY
      * @param cameraZ
      * @param callback
      */
-    public void saveAngleDetail(ExecutorService threadPool, final EmptyControlVideo detailPlayer, final String serialNumber, final String towerNo,
-                                final int towerType, final int cameraType, final int cameraX, final int cameraY, final int cameraZ,
+    public void saveAngleDetail(ExecutorService threadPool, final EmptyControlVideo detailPlayer, final String serialNumber,
+                                final int cameraType, final int cameraX, final int cameraY, final int cameraZ,
                                 final ISaveAngleCallback callback) {
         threadPool.execute(new Runnable() {
             @Override
@@ -306,7 +304,12 @@ public class MainModel extends BaseModel {
             }
         }
         if (locationDetailsDaos != null) {
-            return locationDetailsDaos.get(locationDetailsDaos.size() - 1);
+            if (locationDetailsDaos.size() > 0) {
+                return locationDetailsDaos.get(locationDetailsDaos.size() - 1);
+            } else {
+                return null;
+            }
+
         }
         return null;
     }
