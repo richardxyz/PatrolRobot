@@ -2,9 +2,11 @@ package com.zkkc.patrolrobot.moudle.home.presenter;
 
 import android.content.Context;
 
+import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.home.callback.IAddXL;
 import com.zkkc.patrolrobot.moudle.home.callback.IBaseCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.IMQTTConnHost;
+import com.zkkc.patrolrobot.moudle.home.callback.IQueryAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.ISaveAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.contract.MainContract;
 import com.zkkc.patrolrobot.moudle.home.model.MainModel;
@@ -16,6 +18,7 @@ import org.fusesource.mqtt.client.CallbackConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Topic;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -118,6 +121,21 @@ public class MainPresenter extends MainContract.Presenter {
             @Override
             public void onFailure(String strErr) {
                 getView().saveAngleFailure(strErr);
+            }
+        });
+    }
+
+    @Override
+    public void queryAngleDetail(ExecutorService threadPool, String serialNumber) {
+        model.queryAngleDetail(threadPool, serialNumber, new IQueryAngleCallback() {
+            @Override
+            public void onSuccess(List<ShootAngleDao> list) {
+                getView().queryAngleSuccess(list);
+            }
+
+            @Override
+            public void onFailure(String strErr) {
+                getView().queryAngleFailure(strErr);
             }
         });
     }

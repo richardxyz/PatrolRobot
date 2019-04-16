@@ -3,6 +3,7 @@ package com.zkkc.patrolrobot.moudle.home.contract;
 
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
+import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.home.callback.ISaveAngleCallback;
 import com.zkkc.patrolrobot.widget.EmptyControlVideo;
 
@@ -12,6 +13,7 @@ import org.fusesource.mqtt.client.CallbackConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Topic;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 
@@ -45,6 +47,10 @@ public interface MainContract {
         void saveLDSuccess();
 
         void saveLDFailure(String err);
+
+        void queryAngleSuccess(List<ShootAngleDao> list);
+        void queryAngleFailure(String err);
+
     }
 
     abstract class Presenter extends BasePresenter<View> {
@@ -58,6 +64,8 @@ public interface MainContract {
 
         public abstract void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, String serialNumber,
                                              int cameraType, int cameraX, int cameraY, int cameraZ);
+
+        public abstract void queryAngleDetail(ExecutorService threadPool, String serialNumber);
 
         public abstract void saveLocationDetails(ExecutorService threadPool, String serialNumber, String towerNo, int towerType,
                                                  int direction, int inCharge, int fzcNum);

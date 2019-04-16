@@ -15,19 +15,21 @@ public class ShootAngleDao {
     private String serialNo;//序列号
     private String towerNo;//塔号
     private int towerType;//塔型 1直线塔  2耐张塔
+    private int direction;//方向
     private int cameraType;//摄像头类型 1可见光 2红外
     private int cameraX;
     private int cameraY;
     private int cameraZ;//焦距
     private String pictureUri;//图片uri
-    @Generated(hash = 1146379807)
+    @Generated(hash = 1295260212)
     public ShootAngleDao(Long id, String serialNo, String towerNo, int towerType,
-            int cameraType, int cameraX, int cameraY, int cameraZ,
+            int direction, int cameraType, int cameraX, int cameraY, int cameraZ,
             String pictureUri) {
         this.id = id;
         this.serialNo = serialNo;
         this.towerNo = towerNo;
         this.towerType = towerType;
+        this.direction = direction;
         this.cameraType = cameraType;
         this.cameraX = cameraX;
         this.cameraY = cameraY;
@@ -90,5 +92,11 @@ public class ShootAngleDao {
     }
     public void setPictureUri(String pictureUri) {
         this.pictureUri = pictureUri;
+    }
+    public int getDirection() {
+        return this.direction;
+    }
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 }

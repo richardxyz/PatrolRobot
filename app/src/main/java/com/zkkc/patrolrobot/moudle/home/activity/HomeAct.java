@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,6 +42,7 @@ import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.common.GreenDaoManager;
 import com.zkkc.patrolrobot.entity.BatteryStateBean;
 import com.zkkc.patrolrobot.entity.LocationDetailsDao;
+import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.details.activity.DetailsAct;
 import com.zkkc.patrolrobot.moudle.devices.DeviceAct;
 import com.zkkc.patrolrobot.moudle.home.adapter.XQAdapter;
@@ -69,6 +71,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -334,7 +337,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     private boolean connectState = false;//mqtt连接状态
     CallbackConnection connection;
 
-    XQAdapter adapter;
+    XQAdapter xqAdapter;
+    List<ShootAngleDao> lists = new ArrayList<>();
     //fragment
     FragmentManager manager;
     KJGFragment kjgFragment;
@@ -412,7 +416,10 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         threadPool = ThreadPoolHelp.Builder
                 .cached()
                 .builder();
-
+        //详情Popup
+        rvXQ.setLayoutManager(new LinearLayoutManager(this));
+        xqAdapter = new XQAdapter(R.layout.item_xq, lists);
+        rvXQ.setAdapter(xqAdapter);
         //隐藏控制按钮
         widgetHideAndShow(false, false, false, false, false);
 //        widgetHideAndShow(true, true, true, true);
@@ -576,7 +583,40 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 return false;
             }
         });
+        ivTJAdd.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN://调焦加
+                        PZCSBean.DataBean bean = new PZCSBean.DataBean();
+                        bean.setSpeed(10);
+                        DeviceOPUtils.cameraFocus(HomeAct.this, connection, true, SERIAL_NUMBER, bean);
+                        break;
+                    case MotionEvent.ACTION_UP://停止
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, false, SERIAL_NUMBER);
+                        break;
+                }
 
+                return false;
+            }
+        });
+        ivTJMinus.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN://调焦减
+                        PZCSBean.DataBean beanTwo = new PZCSBean.DataBean();
+                        beanTwo.setSpeed(10);
+                        DeviceOPUtils.cameraFocus(HomeAct.this, connection, false, SERIAL_NUMBER, beanTwo);
+                        break;
+                    case MotionEvent.ACTION_UP://停止
+                        DeviceOPUtils.cameraStop(HomeAct.this, connection, false, SERIAL_NUMBER);
+                        break;
+                }
+
+                return false;
+            }
+        });
 
     }
 
@@ -618,7 +658,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     @OnClick({R.id.lli, R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
             R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.btnWc,
-            R.id.ivTJAdd, R.id.ivTJMinus, R.id.tvCXT, R.id.btnXLOk, R.id.btnXJSD, R.id.btnInPZMS, R.id.ivLeftYJ, R.id.ivLeftFS,
+            R.id.tvCXT, R.id.btnXLOk, R.id.btnXJSD, R.id.btnInPZMS, R.id.ivLeftYJ, R.id.ivLeftFS,
             R.id.ivRightYJ, R.id.ivRightFS, R.id.ivKZ, R.id.ivSS, R.id.ivSXSP})
     public void onViewClicked(View view) {
 
@@ -669,8 +709,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     updateXQPopupShow(true);
                     //点击使其显示
                     //TODO 数据变化更新
-
-//                    adapter.notifyDataSetChanged();
+                    getPresenter().queryAngleDetail(threadPool, SERIAL_NUMBER);
                 }
                 break;
             case R.id.btnAffirm://位置确认
@@ -689,16 +728,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 }
 
 
-                break;
-            case R.id.ivTJAdd://加
-                PZCSBean.DataBean bean = new PZCSBean.DataBean();
-                bean.setSpeed(10);
-                DeviceOPUtils.cameraFocus(HomeAct.this, connection, true, SERIAL_NUMBER, bean);
-                break;
-            case R.id.ivTJMinus://减
-                PZCSBean.DataBean beanTwo = new PZCSBean.DataBean();
-                beanTwo.setSpeed(10);
-                DeviceOPUtils.cameraFocus(HomeAct.this, connection, false, SERIAL_NUMBER, beanTwo);
                 break;
             case R.id.tvCXT://调焦
 
@@ -2151,6 +2180,17 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     @Override
     public void saveLDFailure(String err) {
 
+    }
+
+    @Override
+    public void queryAngleSuccess(List<ShootAngleDao> list) {
+        lists = list;
+        xqAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void queryAngleFailure(String err) {
+        ToastUtils.showShort(err);
     }
 
     /**

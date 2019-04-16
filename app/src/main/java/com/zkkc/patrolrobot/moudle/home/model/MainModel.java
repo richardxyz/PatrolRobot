@@ -23,6 +23,7 @@ import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.home.callback.IAddXL;
 import com.zkkc.patrolrobot.moudle.home.callback.IBaseCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.IMQTTConnHost;
+import com.zkkc.patrolrobot.moudle.home.callback.IQueryAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.ISaveAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.entity.PZCSBean;
 import com.zkkc.patrolrobot.widget.EmptyControlVideo;
@@ -35,6 +36,8 @@ import org.fusesource.mqtt.client.Listener;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
+import org.greenrobot.greendao.query.Query;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -251,45 +254,86 @@ public class MainModel extends BaseModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                detailPlayer.saveFrame(bitmapToFile(), true, new GSYVideoShotSaveListener() {
-                    @Override
-                    public void result(boolean success, File file) {
-                        if (success) {
-                            Uri uri = UriUtils.file2Uri(file);
+                if (cameraType == 1) {//可见光
+                    detailPlayer.saveFrame(bitmapToFile(), true, new GSYVideoShotSaveListener() {
+                        @Override
+                        public void result(boolean success, File file) {
+                            if (success) {
+                                Uri uri = UriUtils.file2Uri(file);
 //                            Uri uri = Uri.parse((String) str);
-                            LocationDetailsDao locationDetailsDao = queryLDDao();
-                            if (locationDetailsDao != null) {
-                                ShootAngleDao shootAngleDao = new ShootAngleDao();
-                                shootAngleDao.setSerialNo(serialNumber);
-                                shootAngleDao.setTowerNo(locationDetailsDao.getTowerNo());
-                                shootAngleDao.setTowerType(locationDetailsDao.getTowerType());
-                                shootAngleDao.setCameraType(cameraType);
-                                shootAngleDao.setCameraX(cameraX);
-                                shootAngleDao.setCameraY(cameraY);
-                                shootAngleDao.setCameraZ(cameraZ);
-                                shootAngleDao.setPictureUri(uri.toString());
-                                getAngleDao().insert(shootAngleDao);
-                                //------test--------
-                                List<ShootAngleDao> shootAngleDaos = getAngleDao().loadAll();
-                                if (shootAngleDaos != null) {
-                                    for (ShootAngleDao b : shootAngleDaos) {
-                                        LogUtils.i("JSON_LOG_ANGLE", GsonUtils.toJson(b));
+                                LocationDetailsDao locationDetailsDao = queryLDDao();
+                                if (locationDetailsDao != null) {
+                                    ShootAngleDao shootAngleDao = new ShootAngleDao();
+                                    shootAngleDao.setSerialNo(serialNumber);
+                                    shootAngleDao.setTowerNo(locationDetailsDao.getTowerNo());
+                                    shootAngleDao.setTowerType(locationDetailsDao.getTowerType());
+                                    shootAngleDao.setDirection(locationDetailsDao.getDirection());
+                                    shootAngleDao.setCameraType(cameraType);
+                                    shootAngleDao.setCameraX(cameraX);
+                                    shootAngleDao.setCameraY(cameraY);
+                                    shootAngleDao.setCameraZ(cameraZ);
+                                    shootAngleDao.setPictureUri(uri.toString());
+                                    getAngleDao().insert(shootAngleDao);
+                                    //------test--------
+                                    List<ShootAngleDao> shootAngleDaos = getAngleDao().loadAll();
+                                    if (shootAngleDaos != null) {
+                                        for (ShootAngleDao b : shootAngleDaos) {
+                                            LogUtils.i("JSON_LOG_ANGLE", GsonUtils.toJson(b));
+                                        }
                                     }
+                                    //------test--------
+                                    callback.onSuccess();
+                                } else {
+                                    callback.onFailure("获取拍摄点配置详情失败，无法保存角度信息");
                                 }
-                                //------test--------
-                                callback.onSuccess();
                             } else {
-                                callback.onFailure("获取拍摄点配置详情失败，无法保存角度信息");
+                                callback.onFailure("保存图片失败");
                             }
+
+
+                        }
+                    });
+                } else {//红外
+
+
+                }
+
+            }
+        });
+    }
+
+    /**
+     * 查询当前拍摄点已配置的角度信息
+     *
+     * @param threadPool
+     * @param serialNumber
+     */
+    public void queryAngleDetail(ExecutorService threadPool, String serialNumber, final IQueryAngleCallback callback) {
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                LocationDetailsDao locationDetailsDao = queryLDDao();
+                if (locationDetailsDao != null) {
+                    Query<ShootAngleDao> queryBuilder = getAngleDao().queryBuilder()
+                            .where(ShootAngleDaoDao.Properties.SerialNo.eq(locationDetailsDao.getSerialNo()),
+                                    ShootAngleDaoDao.Properties.TowerNo.eq(locationDetailsDao.getTowerNo()),
+                                    ShootAngleDaoDao.Properties.Direction.eq(locationDetailsDao.getDirection()))
+                            .build();
+                    List<ShootAngleDao> list = queryBuilder.list();
+                    if (list != null) {
+                        if (list.size() > 0) {
+                            callback.onSuccess(list);
                         } else {
-                            callback.onFailure("保存图片失败");
+                            callback.onFailure("暂无数据");
                         }
 
-
+                    } else {
+                        callback.onFailure("暂无数据");
                     }
-                });
 
-
+                } else {
+                    callback.onFailure("暂无数据");
+                }
             }
         });
 
@@ -342,35 +386,5 @@ public class MainModel extends BaseModel {
     private String getNowDate() {
         String format = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System.currentTimeMillis()));
         return format;
-    }
-
-    /**
-     * Try to return the absolute file path from the given Uri
-     *
-     * @param context
-     * @param uri
-     * @return the file path or null
-     */
-    public static String getRealFilePath(final Context context, final Uri uri) {
-        if (null == uri) return null;
-        final String scheme = uri.getScheme();
-        String data = null;
-        if (scheme == null)
-            data = uri.getPath();
-        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            data = uri.getPath();
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
-            if (null != cursor) {
-                if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    if (index > -1) {
-                        data = cursor.getString(index);
-                    }
-                }
-                cursor.close();
-            }
-        }
-        return data;
     }
 }
