@@ -336,6 +336,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     KJGFragment kjgFragment;
     HWFragment hwFragment;
     private ExecutorService threadPool;
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void batteryEvent(BatteryStateBean stateBean) {
         batteryType = stateBean.batteryType;
@@ -1136,9 +1137,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 DeviceOPUtils.inJDQR(HomeAct.this, connection, isHW, SERIAL_NUMBER);
 
 
-
-
-
             }
         });
 
@@ -1377,7 +1375,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     public void run() {
                         switchDeviceState(deviceStateBean);
                         mTest2.setText(body.ascii().toString());
-                        LogUtils.i("SJRSJR_2",body.ascii().toString());
+                        LogUtils.i("SJRSJR_2", body.ascii().toString());
                     }
                 });
                 break;
@@ -1389,7 +1387,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                         @Override
                         public void run() {
                             mTest.setText(body.ascii().toString());
-                            LogUtils.i("SJRSJR",body.ascii().toString());
+                            LogUtils.i("SJRSJR", body.ascii().toString());
                             switchData(pzztBean);
                         }
                     });
@@ -1833,9 +1831,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             int z = data.getZ();
                             ToastUtils.showShort("可见光角度添加成功--" + x + "--" + y + "--" + z);
                             //TODO 保存截图...
-                            if (kjgFragment!=null){
-                                getPresenter().saveAngleDetail(threadPool,kjgFragment.detailPlayer,SERIAL_NUMBER,"1",
-                                        1,1,x,y,z);
+                            if (kjgFragment != null) {
+                                getPresenter().saveAngleDetail(threadPool, kjgFragment.detailPlayer, SERIAL_NUMBER, "1",
+                                        1, 1, x, y, z);
                             }
                         }
 
@@ -1848,7 +1846,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 switch (op) {
                     case 0://配置拍摄点
                         //保存拍摄点录入的信息
-                        getPresenter().saveLocationDetails(threadPool,SERIAL_NUMBER,dqNum,inType,inDirection,inCharge,Integer.parseInt(fzcNum));
+                        getPresenter().saveLocationDetails(threadPool, SERIAL_NUMBER, dqNum, inType, inDirection, inCharge, Integer.parseInt(fzcNum));
 
 
                         break;
@@ -2150,4 +2148,12 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     public void saveLDFailure(String err) {
 
     }
+
+    /**
+     * 红外摄像头相关
+     */
+    public void initHWCamera() {
+
+    }
+
 }
