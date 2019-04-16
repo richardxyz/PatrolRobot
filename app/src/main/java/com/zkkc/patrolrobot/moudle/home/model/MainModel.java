@@ -153,9 +153,11 @@ public class MainModel extends BaseModel {
      * @param callback
      */
     public void sendPublishData(Object b, CallbackConnection connection, final IBaseCallback callback) {
+        LogUtils.i("SJR_PUSH", GsonUtils.toJson(b));
         connection.publish(TrackConstant.DEVICE_OP, GsonUtils.toJson(b).getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
             public void onSuccess(Void v) {
                 callback.onSuccess();
+
             }
 
             public void onFailure(Throwable value) {
@@ -258,7 +260,7 @@ public class MainModel extends BaseModel {
                             Uri uri = UriUtils.file2Uri(file);
 //                            Uri uri = Uri.parse((String) str);
                             LocationDetailsDao locationDetailsDao = queryLDDao();
-                            if (locationDetailsDao!=null){
+                            if (locationDetailsDao != null) {
                                 ShootAngleDao shootAngleDao = new ShootAngleDao();
                                 shootAngleDao.setSerialNo(serialNumber);
                                 shootAngleDao.setTowerNo(locationDetailsDao.getTowerNo());
@@ -269,8 +271,16 @@ public class MainModel extends BaseModel {
                                 shootAngleDao.setCameraZ(cameraZ);
                                 shootAngleDao.setPictureUri(uri.toString());
                                 getAngleDao().insert(shootAngleDao);
+                                //------test--------
+                                List<ShootAngleDao> shootAngleDaos = getAngleDao().loadAll();
+                                if (shootAngleDaos != null) {
+                                    for (ShootAngleDao b : shootAngleDaos) {
+                                        LogUtils.i("JSON_LOG_ANGLE", GsonUtils.toJson(b));
+                                    }
+                                }
+                                //------test--------
                                 callback.onSuccess();
-                            }else {
+                            } else {
                                 callback.onFailure("获取拍摄点配置详情失败，无法保存角度信息");
                             }
                         } else {
@@ -290,6 +300,11 @@ public class MainModel extends BaseModel {
 
     private LocationDetailsDao queryLDDao() {
         List<LocationDetailsDao> locationDetailsDaos = getLDDao().loadAll();
+        if (locationDetailsDaos != null) {
+            for (LocationDetailsDao b : locationDetailsDaos) {
+                LogUtils.i("JSON_LOG_LD", GsonUtils.toJson(b));
+            }
+        }
         if (locationDetailsDaos != null) {
             return locationDetailsDaos.get(locationDetailsDaos.size() - 1);
         }

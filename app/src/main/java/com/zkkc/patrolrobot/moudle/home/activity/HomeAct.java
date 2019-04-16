@@ -1134,14 +1134,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             public void onClick(View v) {
                 //角度确认添加
                 DeviceOPUtils.inJDQR(HomeAct.this, connection, isHW, SERIAL_NUMBER);
-//                //TODO 保存截图...
-//                if (isHW){
-//
-//                }else {
-//                    if (kjgFragment!=null){
-//                        getPresenter().saveAngleDetail(threadPool,kjgFragment.detailPlayer,);
-//                    }
-//                }
 
 
 
@@ -1842,7 +1834,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             ToastUtils.showShort("可见光角度添加成功--" + x + "--" + y + "--" + z);
                             //TODO 保存截图...
                             if (kjgFragment!=null){
-                                getPresenter().saveAngleDetail(threadPool,kjgFragment.detailPlayer,SERIAL_NUMBER,"塔号",
+                                getPresenter().saveAngleDetail(threadPool,kjgFragment.detailPlayer,SERIAL_NUMBER,"1",
                                         1,1,x,y,z);
                             }
                         }
@@ -2098,9 +2090,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 DeviceOPUtils.queryJQZT(HomeAct.this, connection, SERIAL_NUMBER);
             }
         });
-
-        //查询当前是否为配置状态
-//        DeviceOPUtils.queryPZZT(HomeAct.this, connection, SERIAL_NUMBER);
     }
 
     @Override
@@ -2143,13 +2132,18 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     @Override
     public void saveLDSuccess() {
-        if (dialogPsd != null) {
-            dialogPsd.dismiss();
-            dialogPsd = null;
-            affirmState = false;
-            btnAffirm.setText("角度确认");
-        }
-        ToastUtils.showShort("拍摄点信息录入成功");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (dialogPsd != null) {
+                    dialogPsd.dismiss();
+                    dialogPsd = null;
+                    affirmState = false;
+                    btnAffirm.setText("角度确认");
+                }
+                ToastUtils.showShort("拍摄点信息录入成功");
+            }
+        });
     }
 
     @Override
