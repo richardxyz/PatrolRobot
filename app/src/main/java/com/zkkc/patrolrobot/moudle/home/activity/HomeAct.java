@@ -803,7 +803,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
             case R.id.ivSXSP://视频刷新
                 if (isHW){
-                    play();
+                    hwStop();
+                    initHWCamera();
                 }else {
                     EventBus.getDefault().postSticky(new PlayStateBean(connectState));//通知播放实时视频
                 }
@@ -859,12 +860,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             FragmentUtils.replace(manager, mVideoFragment, R.id.flVideo);
             initHWCamera();
         } else {
-            //停止红外
-            mDev.stop();
-            mDev.disconnect();
-            mVideoFragment.stopDrawingThread();
-            mDev = null;
-
+            hwStop();
             if (kjgFragment == null) {
                 kjgFragment = new KJGFragment();
             }
@@ -2224,14 +2220,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     /**
      * 红外摄像头相关
      */
-    //const
-    private static final int START_TIMER_ID = 0;
-    private static final int TIMER_INTERVAL = 500;//ms
-
-    private static final int STATUS_IDLE = 0;
-    private static final int STATUS_LINK = 1;
-    private static final int STATUS_TRANSFER = 2;
-
     //non-const
     private MagDevice mDev;
     private EnumerationInfo[] mDevices;
@@ -2263,7 +2251,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                  timer.schedule(new TimerTask() {
                      @Override
                      public void run() {
-                         play();
+                         hwPlay();
                      }
                  },200);
 
@@ -2279,10 +2267,17 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 //--------end--------------
     }
 
-    private void play() {
+    private void hwPlay() {
         mDev.setColorPalette(MagDevice.ColorPalette.PaletteIronBow);
         if (mDev.play(mVideoFragment, 0, 0, MagDevice.StreamType.StreamTemperature)) {
             mVideoFragment.startDrawingThread(mDev);
         }
+    }
+    private void hwStop(){
+        //停止红外
+        mDev.stop();
+        mDev.disconnect();
+        mVideoFragment.stopDrawingThread();
+        mDev = null;
     }
 }
