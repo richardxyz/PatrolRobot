@@ -802,7 +802,11 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 DeviceOPUtils.xbKZ(HomeAct.this, connection, SERIAL_NUMBER, 5);
                 break;
             case R.id.ivSXSP://视频刷新
-
+                if (isHW){
+                    play();
+                }else {
+                    EventBus.getDefault().postSticky(new PlayStateBean(connectState));//通知播放实时视频
+                }
                 break;
         }
     }
