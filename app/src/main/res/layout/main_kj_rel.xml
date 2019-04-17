@@ -3,43 +3,6 @@
     android:id="@+id/llKJREL"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <ScrollView
-        android:layout_width="@dimen/dp_400"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_50"
-        android:layout_marginBottom="@dimen/dp_50">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/mTest"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black" />
-
-            <TextView
-                android:id="@+id/mTest2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-    </ScrollView>
-
     <LinearLayout
         android:id="@+id/llXLPopup"
         android:layout_width="220dp"
@@ -274,10 +237,10 @@
 
     <Button
         android:id="@+id/btnXJSD"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_35"
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_30"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_9"
         android:layout_toRightOf="@id/llXJ"
         android:background="@drawable/btn_clicked"
@@ -291,13 +254,13 @@
         android:src="@mipmap/icon_refresh"
         android:layout_marginTop="@dimen/dp_30"
         android:layout_marginLeft="@dimen/dp_5"
-        android:background="@drawable/btn_clicked"/>
+        android:background="@drawable/ll_clicked"/>
     <LinearLayout
         android:id="@+id/llXB"
         android:layout_width="@dimen/dp_300"
-        android:layout_height="@dimen/dp_35"
+        android:layout_height="@dimen/dp_30"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="@dimen/dp_190"
+        android:layout_marginLeft="145dp"
         android:layout_marginBottom="@dimen/dp_9"
         android:background="@drawable/xb_shape_bg"
         android:visibility="visible">
@@ -307,7 +270,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="@dimen/dp_8"
+            android:padding="@dimen/dp_1"
             android:src="@mipmap/xuan_b" />
 
         <View
@@ -320,7 +283,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="@dimen/dp_6"
+            android:padding="@dimen/dp_1"
             android:src="@mipmap/xuan_b" />
 
         <View
@@ -333,7 +296,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="@dimen/dp_8"
+            android:padding="@dimen/dp_1"
             android:src="@mipmap/xuan_c" />
 
         <View
@@ -346,7 +309,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="@dimen/dp_8"
+            android:padding="@dimen/dp_1"
             android:src="@mipmap/xuan_d" />
 
         <View
@@ -359,7 +322,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="@dimen/dp_8"
+            android:padding="@dimen/dp_1"
             android:src="@mipmap/xuan_e" />
 
         <View
@@ -372,7 +335,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="@dimen/dp_8"
+            android:padding="@dimen/dp_1"
             android:src="@mipmap/xuan_f" />
 
     </LinearLayout>
@@ -381,11 +344,11 @@
         android:id="@+id/tvJQMS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_5"
         android:text=""
         android:textColor="@color/yellow"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_12" />
 
     <Button
         android:id="@+id/btnInPZMS"

@@ -249,8 +249,7 @@ public class MainModel extends BaseModel {
      * @param callback
      */
     public void saveAngleDetail(ExecutorService threadPool, final EmptyControlVideo detailPlayer, final String serialNumber,
-                                final int cameraType, final int cameraX, final int cameraY, final int cameraZ,
-                                final ISaveAngleCallback callback) {
+                                final int cameraType, final int cameraX, final int cameraY, final int cameraZ, final ISaveAngleCallback callback) {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {

@@ -77,6 +77,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 
 import butterknife.BindView;
@@ -323,10 +325,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     ImageView ivSXSP;
 
 
-    @BindView(R.id.mTest)
-    TextView mTest;
-    @BindView(R.id.mTest2)
-    TextView mTest2;
     public static String SERIAL_NUMBER = "";
     //电池广播接收数据
     private static final String BATTERY_STATUS_CHARGING = "BATTERY_STATUS_CHARGING";
@@ -436,7 +434,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         });
         //隐藏控制按钮
         widgetHideAndShow(false, false, false, false, false);
-//        widgetHideAndShow(true, true, true, true);
+//        widgetHideAndShow(true, true, true, true,true);
         //加载fragment
         manager = getSupportFragmentManager();
         kjgFragment = new KJGFragment();
@@ -804,7 +802,11 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 DeviceOPUtils.xbKZ(HomeAct.this, connection, SERIAL_NUMBER, 5);
                 break;
             case R.id.ivSXSP://视频刷新
-
+                if (isHW){
+                    play();
+                }else {
+                    EventBus.getDefault().postSticky(new PlayStateBean(connectState));//通知播放实时视频
+                }
                 break;
         }
     }
@@ -855,11 +857,13 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 mVideoFragment = new VideoFragment();
             }
             FragmentUtils.replace(manager, mVideoFragment, R.id.flVideo);
-            initHWCamera(mVideoFragment);
+            initHWCamera();
         } else {
             //停止红外
             mDev.stop();
+            mDev.disconnect();
             mVideoFragment.stopDrawingThread();
+            mDev = null;
 
             if (kjgFragment == null) {
                 kjgFragment = new KJGFragment();
@@ -1432,7 +1436,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     @Override
                     public void run() {
                         switchDeviceState(deviceStateBean);
-                        mTest2.setText(body.ascii().toString());
                         LogUtils.i("SJRSJR_2", body.ascii().toString());
                     }
                 });
@@ -1444,7 +1447,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mTest.setText(body.ascii().toString());
                             LogUtils.i("SJRSJR", body.ascii().toString());
                             switchData(pzztBean);
                         }
@@ -1889,7 +1891,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             int y = data.getY();
                             int z = data.getZ();
                             ToastUtils.showShort("可见光角度添加成功--" + x + "--" + y + "--" + z);
-                            //TODO 保存截图...
+                            //保存角度信息和截图...
                             if (kjgFragment != null && kjgFragment.detailPlayer != null) {
                                 getPresenter().saveAngleDetail(threadPool, kjgFragment.detailPlayer, SERIAL_NUMBER, 1, x, y, z);
                             }
@@ -2235,8 +2237,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     private EnumerationInfo[] mDevices;
     private VideoFragment mVideoFragment;
     private EnumerationInfo mSelectedDev;
-
-    public void initHWCamera(VideoFragment vf) {
+    Timer timer;
+    public void initHWCamera() {
         /* new object */
         mDev = new MagDevice();
         mDevices = new EnumerationInfo[128];
@@ -2256,7 +2258,15 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         if (mSelectedDev.intCameraType == MagService.TYPE_NET) {
             int connResult = mDev.connect(mSelectedDev.intCameraIpOrUsbId);
             if (connResult == MagDevice.CONN_SUCC) {
-                play(vf);
+                ToastUtils.showShort("红外连接成功");
+                 timer = new Timer();
+                 timer.schedule(new TimerTask() {
+                     @Override
+                     public void run() {
+                         play();
+                     }
+                 },200);
+
             } else if (connResult == MagDevice.CONN_FAIL) {
                 ToastUtils.showShort("红外连接失败");
 
@@ -2269,9 +2279,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 //--------end--------------
     }
 
-    private void play(VideoFragment vf) {
+    private void play() {
         mDev.setColorPalette(MagDevice.ColorPalette.PaletteIronBow);
-        if (mDev.play(vf, 0, 0, MagDevice.StreamType.StreamTemperature)) {
+        if (mDev.play(mVideoFragment, 0, 0, MagDevice.StreamType.StreamTemperature)) {
             mVideoFragment.startDrawingThread(mDev);
         }
     }
