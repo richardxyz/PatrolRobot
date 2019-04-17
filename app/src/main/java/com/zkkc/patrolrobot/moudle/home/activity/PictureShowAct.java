@@ -1,5 +1,6 @@
 package com.zkkc.patrolrobot.moudle.home.activity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 
@@ -8,6 +9,10 @@ import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
+import com.zkkc.patrolrobot.entity.ShootAngleDao;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +28,11 @@ public class PictureShowAct extends BaseActivity {
     @BindView(R.id.ivClose)
     ImageView ivClose;
 
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void mEvent(ShootAngleDao shootAngleDao) {
+        Uri uri = Uri.parse(shootAngleDao.getPictureUri());
+        photoView.setImageURI(uri);
+    }
 
     @Override
     public int getLayoutId() {
@@ -41,8 +51,6 @@ public class PictureShowAct extends BaseActivity {
 
     @Override
     public void init() {
-//        photoView.setImageURI();
-        photoView.setImageResource(R.mipmap.wel_a);
     }
 
     @Override

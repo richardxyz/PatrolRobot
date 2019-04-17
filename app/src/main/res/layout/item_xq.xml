@@ -61,26 +61,14 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sp_14" />
 
-    <!--<ImageView-->
-        <!--android:id="@+id/ivTP"-->
-        <!--android:layout_width="@dimen/dp_38"-->
-        <!--android:layout_height="@dimen/dp_38"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_marginRight="@dimen/dp_5"-->
-        <!--android:background="@drawable/ll_clicked"-->
-        <!--android:src="@mipmap/ic_xt" />-->
-
-    <com.wx.roundimageview.RoundImageView
-        xmlns:app="http://schemas.android.com/apk/res/com.wx.roundimageview.demo"
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/ivTP"
         android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/dp_5"
-        android:src="@mipmap/ic_launcher"
-        app:border_color="#0587C2"
-        app:border_width="2dp"
-        app:circle="true" />
+        android:layout_height="@dimen/dp_40"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#0776D3"/>
 </RelativeLayout>

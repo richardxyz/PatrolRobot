@@ -5,11 +5,12 @@ import android.support.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.wx.ovalimageview.RoundImageView;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.entity.ShootAngleDao;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by ShiJunRan on 2019/3/11
@@ -26,7 +27,7 @@ public class XQAdapter extends BaseQuickAdapter<ShootAngleDao, BaseViewHolder> {
         helper.setText(R.id.tvJjBs, "焦距倍数：" + item.getCameraZ());
         helper.setText(R.id.tvLeftJd, "左旋角度：" + item.getCameraX());
         helper.setText(R.id.tvRightJd, "右旋角度：" + item.getCameraY());
-        RoundImageView imageView = helper.getView(R.id.ivTP);
+        CircleImageView imageView = helper.getView(R.id.ivTP);
         Uri uri = Uri.parse(item.getPictureUri());
         Glide.with(mContext).load(uri).into(imageView);
     }

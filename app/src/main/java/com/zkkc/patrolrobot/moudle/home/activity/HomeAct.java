@@ -34,6 +34,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.cazaea.sweetalert.SweetAlertDialog;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.luoxudong.app.threadpool.ThreadPoolHelp;
 import com.zkkc.green.gen.LocationDetailsDaoDao;
 import com.zkkc.patrolrobot.R;
@@ -420,6 +421,13 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         rvXQ.setLayoutManager(new LinearLayoutManager(this));
         xqAdapter = new XQAdapter(R.layout.item_xq, lists);
         rvXQ.setAdapter(xqAdapter);
+        xqAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                EventBus.getDefault().postSticky(lists.get(position));
+
+            }
+        });
         //隐藏控制按钮
         widgetHideAndShow(false, false, false, false, false);
 //        widgetHideAndShow(true, true, true, true);
