@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -56,6 +58,7 @@ import com.zkkc.patrolrobot.moudle.home.entity.PZZTBean;
 import com.zkkc.patrolrobot.moudle.home.entity.PlayStateBean;
 import com.zkkc.patrolrobot.moudle.home.fragment.HWFragment;
 import com.zkkc.patrolrobot.moudle.home.fragment.KJGFragment;
+import com.zkkc.patrolrobot.moudle.home.fragment.VideoFragment;
 import com.zkkc.patrolrobot.moudle.home.presenter.MainPresenter;
 import com.zkkc.patrolrobot.moudle.home.utils.DeviceOPUtils;
 import com.zkkc.patrolrobot.receiver.BatteryChangedReceiver;
@@ -78,6 +81,9 @@ import java.util.concurrent.ExecutorService;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.com.magnity.sdk.MagDevice;
+import cn.com.magnity.sdk.MagService;
+import cn.com.magnity.sdk.types.EnumerationInfo;
 
 
 public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presenter> implements MainContract.View {
@@ -837,13 +843,24 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     //切换摄像头
     private void switchoverCamera(boolean isH) {
         if (isH) {
-            if (hwFragment == null) {
-                hwFragment = new HWFragment();
-            }
-            FragmentUtils.replace(manager, hwFragment, R.id.flVideo);
+//            if (hwFragment == null) {
+//                hwFragment = new HWFragment();
+//            }
+//            FragmentUtils.replace(manager, hwFragment, R.id.flVideo);
+
             isHW = true;
             tvQh.setText("红外");
+
+            if (mVideoFragment==null){
+                mVideoFragment = new VideoFragment();
+            }
+            FragmentUtils.replace(manager, mVideoFragment, R.id.flVideo);
+            initHWCamera(mVideoFragment);
         } else {
+            //停止红外
+            mDev.stop();
+            mVideoFragment.stopDrawingThread();
+
             if (kjgFragment == null) {
                 kjgFragment = new KJGFragment();
             }
@@ -2201,11 +2218,61 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         ToastUtils.showShort(err);
     }
 
+
     /**
      * 红外摄像头相关
      */
-    public void initHWCamera() {
+    //const
+    private static final int START_TIMER_ID = 0;
+    private static final int TIMER_INTERVAL = 500;//ms
 
+    private static final int STATUS_IDLE = 0;
+    private static final int STATUS_LINK = 1;
+    private static final int STATUS_TRANSFER = 2;
+
+    //non-const
+    private MagDevice mDev;
+    private EnumerationInfo[] mDevices;
+    private VideoFragment mVideoFragment;
+    private EnumerationInfo mSelectedDev;
+
+    public void initHWCamera(VideoFragment vf) {
+        /* new object */
+        mDev = new MagDevice();
+        mDevices = new EnumerationInfo[128];
+        /* restore list status */
+        MagService.enumCameras();
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ex) {
+        }
+        int num = MagService.getDevices(this, 33596, 2, mDevices);
+        if (num > 0) {
+            mSelectedDev = mDevices[0];
+        }
+        if (mSelectedDev == null) {
+            return;
+        }
+        if (mSelectedDev.intCameraType == MagService.TYPE_NET) {
+            int connResult = mDev.connect(mSelectedDev.intCameraIpOrUsbId);
+            if (connResult == MagDevice.CONN_SUCC) {
+                play(vf);
+            } else if (connResult == MagDevice.CONN_FAIL) {
+                ToastUtils.showShort("红外连接失败");
+
+            } else if (connResult == MagDevice.CONN_PENDING) {
+                ToastUtils.showShort("红外连接状态未知");
+            }
+        }
+
+
+//--------end--------------
     }
 
+    private void play(VideoFragment vf) {
+        mDev.setColorPalette(MagDevice.ColorPalette.PaletteIronBow);
+        if (mDev.play(vf, 0, 0, MagDevice.StreamType.StreamTemperature)) {
+            mVideoFragment.startDrawingThread(mDev);
+        }
+    }
 }

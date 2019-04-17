@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.zkkc.patrolrobot.moudle.home.fragment.VideoFragment">
 
-    <cn.com.magnity.groupsdksample.MagSurfaceView
+    <com.zkkc.patrolrobot.widget.MagSurfaceView
         android:id="@+id/video"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
