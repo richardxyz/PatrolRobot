@@ -16,6 +16,8 @@ import org.fusesource.mqtt.client.Topic;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import cn.com.magnity.sdk.MagDevice;
+
 
 /**
  * Created by ShiJunRan on 2019/3/7
@@ -62,7 +64,7 @@ public interface MainContract {
 
         public abstract void addXL(String serialNumber, String dTFX, String xlNum, String XLQ, String XLZ, CallbackConnection connection);
 
-        public abstract void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, String serialNumber,
+        public abstract void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, MagDevice mDev, String serialNumber,
                                              int cameraType, int cameraX, int cameraY, int cameraZ);
 
         public abstract void queryAngleDetail(ExecutorService threadPool, String serialNumber);

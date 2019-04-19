@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_shape_d"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:padding="@dimen/dp_30">
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_10"
+            android:gravity="center_vertical"
+            android:text="设备名称："
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="@dimen/dp_300"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/tv1"
+            android:layout_alignBottom="@id/tv1"
+            android:background="@drawable/edit_shape_a"
+            android:hint="设备名"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_below="@id/tv1"
+            android:gravity="center_vertical"
+            android:text="设备序列号："
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSer"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_50"
+            android:layout_alignBottom="@id/tv2"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/tv2"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:text="xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/tv3"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@id/tv2"
+            android:gravity="center_vertical"
+            android:text="WIFI名称："
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvWIFIName"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_alignBottom="@id/tv3"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/tv3"
+            android:gravity="center_vertical"
+            android:text="LG_5G_E34B"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="normal" />
+
+        <LinearLayout
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv3"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="130dp"
+                android:layout_height="@dimen/dp_40"
+                android:background="@drawable/edit_shape_c"
+                android:text="取消"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnOk"
+                android:layout_width="130dp"
+                android:layout_height="@dimen/dp_40"
+                android:background="@drawable/edit_shape_c"
+                android:text="确定"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

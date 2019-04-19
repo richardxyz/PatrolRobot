@@ -5,10 +5,13 @@
     <color name="colorAccent">#D81B60</color>
     <color name="light_gray">#857e7e7e</color>
     <color name="gray">#999999</color>
+    <color name="gray_device">#bfbfbf</color>
+    <color name="gray_device_a">#8a8a8a</color>
     <color name="gray_5">#1AFFFFFF</color>
     <color name="gray_10">#33FFFFFF</color>
     <color name="gray_20">#99FFEF5B</color>
     <color name="gray_8">#8AFAED70</color>
+    <color name="gray_15">#F2F0EA</color>
     <color name="bg_color">#01111B</color>
     <color name="bg_color_2">#F2F2F2</color>
 
@@ -23,6 +26,7 @@
     <color name="light_white">#BEF5F3F3</color>
     <color name="popup_white">#E6486475</color>
     <color name="popup_item_white">#4DFFFFFF</color>
+    <color name="orange_light">#663300</color>
     <color name="violet">#673AB7</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="orange">#FF6902</color>

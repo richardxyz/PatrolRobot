@@ -16,7 +16,7 @@ public class GreenDaoManager {
     private GreenDaoManager(){
         if (mInstance == null) {
             //此处为自己需要处理的表
-            DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(TrackApp.getContext(), "angle-db", null);
+            DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(TrackApp.getContext(), "robot-db", null);
             mDaoMaster = new DaoMaster(devOpenHelper.getWritableDatabase());
             mDaoSession = mDaoMaster.newSession();
         }

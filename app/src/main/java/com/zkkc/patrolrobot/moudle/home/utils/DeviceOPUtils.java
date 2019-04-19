@@ -1,6 +1,7 @@
 package com.zkkc.patrolrobot.moudle.home.utils;
 
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.zkkc.patrolrobot.moudle.home.activity.HomeAct;
 import com.zkkc.patrolrobot.moudle.home.entity.DeviceConfigurationState;
 import com.zkkc.patrolrobot.moudle.home.entity.PZCSBean;
@@ -24,7 +25,6 @@ public class DeviceOPUtils {
         state.setOp(0);
         mContext.getPresenter().sendPublishData(state, connection);
     }
-
 
 
     /**
@@ -316,7 +316,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void cameraFocus(HomeAct mContext, CallbackConnection connection, boolean adjust, String serialNumber,PZCSBean.DataBean bean) {
+    public static void cameraFocus(HomeAct mContext, CallbackConnection connection, boolean adjust, String serialNumber, PZCSBean.DataBean bean) {
         PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         state.setModule(7);
@@ -328,6 +328,7 @@ public class DeviceOPUtils {
         state.setData(bean);
         mContext.getPresenter().sendPublishData(state, connection);
     }
+
     /**
      * 配置模式暂停
      *
@@ -341,18 +342,24 @@ public class DeviceOPUtils {
         state.setOp(1);
         mContext.getPresenter().sendPublishData(state, connection);
     }
+
     /**
      * 机器人悬臂控制
      *
      * @param mContext
      * @param connection
      */
-    public static void xbKZ(HomeAct mContext, CallbackConnection connection, String serialNumber,int num) {
-        DeviceConfigurationState state = new DeviceConfigurationState();
-        state.setSerialNum(serialNumber);
-        state.setModule(3);
-        state.setOp(num);
-        mContext.getPresenter().sendPublishData(state, connection);
+    public static void xbKZ(HomeAct mContext, CallbackConnection connection, String serialNumber, int num) {
+        if (connection != null) {
+            DeviceConfigurationState state = new DeviceConfigurationState();
+            state.setSerialNum(serialNumber);
+            state.setModule(3);
+            state.setOp(num);
+            mContext.getPresenter().sendPublishData(state, connection);
+        } else {
+            ToastUtils.showShort("当前未登录");
+        }
+
     }
 
 }

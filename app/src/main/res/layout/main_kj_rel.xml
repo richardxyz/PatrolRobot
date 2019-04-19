@@ -263,7 +263,7 @@
         android:layout_marginLeft="145dp"
         android:layout_marginBottom="@dimen/dp_9"
         android:background="@drawable/xb_shape_bg"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/ivLeftYJ"

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
@@ -44,6 +45,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+
+import cn.com.magnity.sdk.MagDevice;
 
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.DTFX;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.NAME;
@@ -242,13 +245,13 @@ public class MainModel extends BaseModel {
      * @param threadPool
      * @param detailPlayer
      * @param serialNumber
-     * @param cameraType
+     * @param cameraType   1-可见光  2-红外
      * @param cameraX
      * @param cameraY
      * @param cameraZ
      * @param callback
      */
-    public void saveAngleDetail(ExecutorService threadPool, final EmptyControlVideo detailPlayer, final String serialNumber,
+    public void saveAngleDetail(ExecutorService threadPool, final EmptyControlVideo detailPlayer, final MagDevice mDev, final String serialNumber,
                                 final int cameraType, final int cameraX, final int cameraY, final int cameraZ, final ISaveAngleCallback callback) {
         threadPool.execute(new Runnable() {
             @Override
@@ -286,14 +289,47 @@ public class MainModel extends BaseModel {
                                     callback.onFailure("获取拍摄点配置详情失败，无法保存角度信息");
                                 }
                             } else {
-                                callback.onFailure("保存图片失败");
+                                callback.onFailure("保存本地图片失败");
                             }
 
 
                         }
                     });
                 } else {//红外
+                    File mFile = bitmapToFile();
+                    boolean success = mDev.saveBMP(0, FileUtils.getFileName(mFile));
+                        if (success){
+                            Uri uri = UriUtils.file2Uri(mFile);
+                            LocationDetailsDao locationDetailsDao = queryLDDao();
+                            if (locationDetailsDao != null) {
+                                ShootAngleDao shootAngleDao = new ShootAngleDao();
+                                shootAngleDao.setSerialNo(serialNumber);
+                                shootAngleDao.setTowerNo(locationDetailsDao.getTowerNo());
+                                shootAngleDao.setTowerType(locationDetailsDao.getTowerType());
+                                shootAngleDao.setDirection(locationDetailsDao.getDirection());
+                                shootAngleDao.setCameraType(cameraType);
+                                shootAngleDao.setCameraX(cameraX);
+                                shootAngleDao.setCameraY(cameraY);
+                                shootAngleDao.setCameraZ(cameraZ);
+                                shootAngleDao.setPictureUri(uri.toString());
+                                getAngleDao().insert(shootAngleDao);
+                                //------test--------
+                                List<ShootAngleDao> shootAngleDaos = getAngleDao().loadAll();
+                                if (shootAngleDaos != null) {
+                                    for (ShootAngleDao b : shootAngleDaos) {
+                                        LogUtils.i("JSON_LOG_ANGLE", GsonUtils.toJson(b));
+                                    }
+                                }
+                                //------test--------
+                                callback.onSuccess();
+                            } else {
+                                callback.onFailure("获取拍摄点配置详情失败，无法保存角度信息");
+                            }
 
+
+                        }else {
+                            callback.onFailure("保存本地图片失败");
+                        }
 
                 }
 

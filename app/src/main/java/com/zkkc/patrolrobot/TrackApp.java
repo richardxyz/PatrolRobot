@@ -6,6 +6,7 @@ import android.content.Context;
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager;
 import com.shuyu.gsyvideoplayer.player.PlayerFactory;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
+import com.zkkc.patrolrobot.common.GreenDaoManager;
 
 
 /**
@@ -19,6 +20,8 @@ public class TrackApp extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+        //greenDao全局配置,只希望有一个数据库操作对象
+        GreenDaoManager.getInstance();
         initVideoPlayer();
     }
 

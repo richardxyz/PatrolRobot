@@ -326,6 +326,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
 
     public static String SERIAL_NUMBER = "";
+    public static String XB_STATE = "";
     //电池广播接收数据
     private static final String BATTERY_STATUS_CHARGING = "BATTERY_STATUS_CHARGING";
     private static final String BATTERY_STATUS_FULL = "BATTERY_STATUS_FULL";
@@ -370,11 +371,22 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void xbEvent(String str) {
+        if (str.equals("xb_show_state")) {
+            SERIAL_NUMBER = SPUtils.getInstance().getString("SERIAL_NUMBER");
+            XB_STATE = SPUtils.getInstance().getString("XB_STATE");
+            if (XB_STATE.equals("0")) {
+                llXB.setVisibility(View.GONE);
+            } else {
+                llXB.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        SERIAL_NUMBER = SPUtils.getInstance().getString("SERIAL_NUMBER");
-//        ToastUtils.showShort(SERIAL_NUMBER);
     }
 
     @Override
@@ -418,6 +430,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
         vsbZS.setThumbSize(35, 25);
         vsbZS.setProgress(30);
         setOnClicked();//转向速度调节
+
         threadPool = ThreadPoolHelp.Builder
                 .cached()
                 .builder();
@@ -433,8 +446,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             }
         });
         //隐藏控制按钮
-        widgetHideAndShow(false, false, false, false, false);
-//        widgetHideAndShow(true, true, true, true,true);
+//        widgetHideAndShow(false, false, false, false, false);
+        widgetHideAndShow(true, true, true, true,true);
         //加载fragment
         manager = getSupportFragmentManager();
         kjgFragment = new KJGFragment();
@@ -699,7 +712,6 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 if (XLPopupShow) {
                     updateXLPopupShow(false);
                     //点击使其隐藏
-
                 } else {
                     //点击使其显示
                     //查询线路配置信息
@@ -718,10 +730,15 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     updateXQPopupShow(false);
                     //点击使其隐藏
                 } else {
-                    updateXQPopupShow(true);
-                    //点击使其显示
-                    //TODO 数据变化更新
-                    getPresenter().queryAngleDetail(threadPool, SERIAL_NUMBER);
+                    if (connectState) {
+                        updateXQPopupShow(true);
+                        //点击使其显示
+                        //TODO 数据变化更新
+                        getPresenter().queryAngleDetail(threadPool, SERIAL_NUMBER);
+                    } else {
+                        ToastUtils.showShort("当前未登录设备");
+                    }
+
                 }
                 break;
             case R.id.btnAffirm://位置确认
@@ -802,10 +819,10 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 DeviceOPUtils.xbKZ(HomeAct.this, connection, SERIAL_NUMBER, 5);
                 break;
             case R.id.ivSXSP://视频刷新
-                if (isHW){
+                if (isHW) {
                     hwStop();
                     initHWCamera();
-                }else {
+                } else {
                     EventBus.getDefault().postSticky(new PlayStateBean(connectState));//通知播放实时视频
                 }
                 break;
@@ -854,7 +871,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             isHW = true;
             tvQh.setText("红外");
 
-            if (mVideoFragment==null){
+            if (mVideoFragment == null) {
                 mVideoFragment = new VideoFragment();
             }
             FragmentUtils.replace(manager, mVideoFragment, R.id.flVideo);
@@ -1322,7 +1339,13 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             btnWc.setVisibility(View.GONE);
         }
         if (xb) {
-            llXB.setVisibility(View.VISIBLE);
+            SERIAL_NUMBER = SPUtils.getInstance().getString("SERIAL_NUMBER");
+            XB_STATE = SPUtils.getInstance().getString("XB_STATE");
+            if (XB_STATE.equals("0")) {
+                llXB.setVisibility(View.GONE);
+            } else {
+                llXB.setVisibility(View.VISIBLE);
+            }
         } else {
             llXB.setVisibility(View.GONE);
         }
@@ -1852,8 +1875,10 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             int x = data.getX();
                             int y = data.getY();
                             ToastUtils.showShort("红外摄像头角度添加成功--" + x + "--" + y);
-                            //TODO 保存截图...
-
+                            //TODO 保存红外截图...
+                            if (mVideoFragment != null && mDev != null) {
+                                getPresenter().saveAngleDetail(threadPool, null, mDev, SERIAL_NUMBER, 1, x, y, -1);
+                            }
                         }
 
                         break;
@@ -1889,7 +1914,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             ToastUtils.showShort("可见光角度添加成功--" + x + "--" + y + "--" + z);
                             //保存角度信息和截图...
                             if (kjgFragment != null && kjgFragment.detailPlayer != null) {
-                                getPresenter().saveAngleDetail(threadPool, kjgFragment.detailPlayer, SERIAL_NUMBER, 1, x, y, z);
+                                getPresenter().saveAngleDetail(threadPool, kjgFragment.detailPlayer, null, SERIAL_NUMBER, 1, x, y, z);
                             }
                         }
 
@@ -2226,6 +2251,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     private VideoFragment mVideoFragment;
     private EnumerationInfo mSelectedDev;
     Timer timer;
+
     public void initHWCamera() {
         /* new object */
         mDev = new MagDevice();
@@ -2247,13 +2273,13 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             int connResult = mDev.connect(mSelectedDev.intCameraIpOrUsbId);
             if (connResult == MagDevice.CONN_SUCC) {
                 ToastUtils.showShort("红外连接成功");
-                 timer = new Timer();
-                 timer.schedule(new TimerTask() {
-                     @Override
-                     public void run() {
-                         hwPlay();
-                     }
-                 },200);
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        hwPlay();
+                    }
+                }, 200);
 
             } else if (connResult == MagDevice.CONN_FAIL) {
                 ToastUtils.showShort("红外连接失败");
@@ -2273,7 +2299,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             mVideoFragment.startDrawingThread(mDev);
         }
     }
-    private void hwStop(){
+
+    private void hwStop() {
         //停止红外
         mDev.stop();
         mDev.disconnect();

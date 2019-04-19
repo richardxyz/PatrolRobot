@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_5"
+    android:background="@drawable/item_device_shape"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_35"
+        android:gravity="center"
+        android:text="设备001"
+        android:textColor="@color/orange_light"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@mipmap/ic_line" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:text="设备序列号："
+            android:textColor="@color/orange_light"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/tvSerNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv1"
+            android:layout_toRightOf="@id/tv1"
+            android:text="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv1"
+            android:layout_alignRight="@id/tv1"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:text="WIFI："
+            android:textColor="@color/orange_light"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvWIFIName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv2"
+            android:layout_toRightOf="@id/tv1"
+            android:text="ADFERTGD_57713DA"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnLJ"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_28"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@drawable/edit_shape_c"
+            android:text="连接"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@mipmap/ic_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_35"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:text="悬臂按钮显示状态"
+            android:textColor="@color/orange_light"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.suke.widget.SwitchButton
+            android:id="@+id/switchButton"
+            android:layout_width="@dimen/dp_55"
+            android:layout_height="@dimen/dp_28"
+            android:layout_marginRight="@dimen/dp_10"
+            app:sb_background="@color/light_gray"
+            app:sb_button_color="@color/white"
+            app:sb_checked="false"
+            app:sb_checked_color="@color/yellow"
+            app:sb_enable_effect="true" />
+
+    </LinearLayout>
+</LinearLayout>

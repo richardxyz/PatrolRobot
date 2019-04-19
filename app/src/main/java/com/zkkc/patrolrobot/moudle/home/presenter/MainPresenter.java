@@ -21,6 +21,8 @@ import org.fusesource.mqtt.client.Topic;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import cn.com.magnity.sdk.MagDevice;
+
 /**
  * Created by ShiJunRan on 2019/3/7
  */
@@ -110,9 +112,9 @@ public class MainPresenter extends MainContract.Presenter {
     }
 
     @Override
-    public void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, String serialNumber,
+    public void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, MagDevice mDev,String serialNumber,
                                 int cameraType, int cameraX, int cameraY, int cameraZ) {
-        model.saveAngleDetail(threadPool, detailPlayer, serialNumber, cameraType, cameraX, cameraY, cameraZ, new ISaveAngleCallback() {
+        model.saveAngleDetail(threadPool, detailPlayer,mDev, serialNumber, cameraType, cameraX, cameraY, cameraZ, new ISaveAngleCallback() {
             @Override
             public void onSuccess() {
                 getView().saveAngleSuccess();
