@@ -20,7 +20,6 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.cazaea.sweetalert.SweetAlertDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.luoxudong.app.threadpool.ThreadPoolHelp;
-import com.suke.widget.SwitchButton;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;

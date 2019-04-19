@@ -9,11 +9,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.flyco.tablayout.SlidingTabLayout;
+import com.luoxudong.app.threadpool.ThreadPoolHelp;
+import com.zkkc.green.gen.LocationDetailsDaoDao;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
+import com.zkkc.patrolrobot.common.GreenDaoManager;
+import com.zkkc.patrolrobot.entity.LocationDetailsDao;
 import com.zkkc.patrolrobot.moudle.details.adapter.PZAdapter;
 import com.zkkc.patrolrobot.moudle.details.entity.PZBean;
 import com.zkkc.patrolrobot.moudle.details.fragment.PSD2Fragment;
@@ -21,6 +26,7 @@ import com.zkkc.patrolrobot.moudle.details.fragment.PSDFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -53,6 +59,9 @@ public class DetailsAct extends BaseActivity {
 
 
     private List<PZBean> pzBeans = new ArrayList<>();
+    List<LocationDetailsDao> locationDetailsDaos = new ArrayList<>();
+    PZAdapter pzAdapter;
+    private ExecutorService threadPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +86,9 @@ public class DetailsAct extends BaseActivity {
 
     @Override
     public void init() {
+        threadPool = ThreadPoolHelp.Builder
+                .cached()
+                .builder();
         //测试数据
         for (int i = 0; i < 10; i++) {
             PZBean pzBean = new PZBean();
@@ -88,9 +100,26 @@ public class DetailsAct extends BaseActivity {
         }
         //测试数据
 
-        PZAdapter pzAdapter = new PZAdapter(R.layout.item_details_left, pzBeans);
+        pzAdapter = new PZAdapter(R.layout.item_details_left, locationDetailsDaos);
         rvPZ.setLayoutManager(new LinearLayoutManager(this));
         rvPZ.setAdapter(pzAdapter);
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                locationDetailsDaos = queryPSDData();
+                if (locationDetailsDaos != null) {
+                    if (locationDetailsDaos.size() > 0) {
+                        pzAdapter.notifyDataSetChanged();
+                    } else {
+                        ToastUtils.showShort("暂无数据");
+                    }
+                } else {
+                    ToastUtils.showShort("暂无数据");
+                }
+
+            }
+        });
+
 
         String[] arr = {"拍摄点1", "拍摄点2"};
         ArrayList<Fragment> fragments = new ArrayList<>();
@@ -103,6 +132,13 @@ public class DetailsAct extends BaseActivity {
 
     }
 
+    /**
+     * 查询拍摄点数据
+     */
+    private List<LocationDetailsDao> queryPSDData() {
+        return getLDDao().loadAll();
+    }
+
     @OnClick({R.id.btnClose})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -110,5 +146,10 @@ public class DetailsAct extends BaseActivity {
                 finish();
                 break;
         }
+    }
+
+    //拍摄点
+    private LocationDetailsDaoDao getLDDao() {
+        return GreenDaoManager.getInstance().getSession().getLocationDetailsDaoDao();
     }
 }

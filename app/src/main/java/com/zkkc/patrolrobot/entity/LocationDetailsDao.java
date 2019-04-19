@@ -18,9 +18,12 @@ public class LocationDetailsDao {
     private int direction;//方向
     private int inCharge;//是否存在充电桩
     private int fzcNum;//防震锤数量
-    @Generated(hash = 37798372)
+    private String mDate;//录入时间
+    private String mCZR;//录入时间
+    @Generated(hash = 1868982343)
     public LocationDetailsDao(Long id, String serialNo, String towerNo,
-            int towerType, int direction, int inCharge, int fzcNum) {
+            int towerType, int direction, int inCharge, int fzcNum, String mDate,
+            String mCZR) {
         this.id = id;
         this.serialNo = serialNo;
         this.towerNo = towerNo;
@@ -28,6 +31,8 @@ public class LocationDetailsDao {
         this.direction = direction;
         this.inCharge = inCharge;
         this.fzcNum = fzcNum;
+        this.mDate = mDate;
+        this.mCZR = mCZR;
     }
     @Generated(hash = 1748225134)
     public LocationDetailsDao() {
@@ -74,6 +79,17 @@ public class LocationDetailsDao {
     public void setFzcNum(int fzcNum) {
         this.fzcNum = fzcNum;
     }
-
+    public String getMDate() {
+        return this.mDate;
+    }
+    public void setMDate(String mDate) {
+        this.mDate = mDate;
+    }
+    public String getMCZR() {
+        return this.mCZR;
+    }
+    public void setMCZR(String mCZR) {
+        this.mCZR = mCZR;
+    }
 
 }

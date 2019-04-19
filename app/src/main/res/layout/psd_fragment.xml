@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="塔号："
-            android:textColor="@color/yellow"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_13" />
 
         <TextView
@@ -24,14 +24,14 @@
             android:layout_marginRight="@dimen/dp_15"
             android:text="15"
             android:textStyle="italic"
-            android:textColor="@color/green"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="塔型："
-            android:textColor="@color/yellow"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_13" />
 
         <TextView
@@ -41,14 +41,14 @@
             android:layout_marginRight="@dimen/dp_15"
             android:text="直线塔"
             android:textStyle="italic"
-            android:textColor="@color/green"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="位置："
-            android:textColor="@color/yellow"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_13" />
 
         <TextView
@@ -58,14 +58,14 @@
             android:layout_marginRight="@dimen/dp_15"
             android:text="塔前"
             android:textStyle="italic"
-            android:textColor="@color/green"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="防震锤数量："
-            android:textColor="@color/yellow"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_13" />
 
         <TextView
@@ -75,14 +75,14 @@
             android:layout_marginRight="@dimen/dp_15"
             android:text="26"
             android:textStyle="italic"
-            android:textColor="@color/green"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_12" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="充电桩："
-            android:textColor="@color/yellow"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_13" />
 
         <TextView
@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:text="不存在"
             android:textStyle="italic"
-            android:textColor="@color/green"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_12" />
 
     </LinearLayout>

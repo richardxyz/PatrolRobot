@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="角度1"
-        android:textColor="@color/yellow"
+        android:textColor="@color/orange_light"
         android:textSize="@dimen/sp_12" />
 
     <RelativeLayout
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:text="左旋角度：36°"
             android:layout_alignTop="@id/ivShowPic"
-            android:textColor="@color/yellow"
+            android:textColor="@color/orange_light"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -51,7 +51,7 @@
             android:layout_below="@id/tvLeft"
             android:layout_centerVertical="true"
             android:text="右旋角度：36°"
-            android:textColor="@color/yellow"
+            android:textColor="@color/orange_light"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/ivShowPic"
             android:text="焦距倍数：2.0"
-            android:textColor="@color/yellow"
+            android:textColor="@color/orange_light"
             android:textSize="@dimen/sp_12" />
 
 

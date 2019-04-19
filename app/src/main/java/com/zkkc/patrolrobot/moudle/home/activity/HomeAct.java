@@ -825,6 +825,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 } else {
                     EventBus.getDefault().postSticky(new PlayStateBean(connectState));//通知播放实时视频
                 }
+
+////                getPresenter().saveLocationDetails(threadPool, SERIAL_NUMBER, dqNum, inType, inDirection, inCharge, Integer.parseInt(fzcNum));
+//                getPresenter().saveLocationDetails(threadPool, SERIAL_NUMBER, "1", 1, 1, 0, Integer.parseInt("2"));
                 break;
         }
     }

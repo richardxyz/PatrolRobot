@@ -31,6 +31,8 @@ public class LocationDetailsDaoDao extends AbstractDao<LocationDetailsDao, Long>
         public final static Property Direction = new Property(4, int.class, "direction", false, "DIRECTION");
         public final static Property InCharge = new Property(5, int.class, "inCharge", false, "IN_CHARGE");
         public final static Property FzcNum = new Property(6, int.class, "fzcNum", false, "FZC_NUM");
+        public final static Property MDate = new Property(7, String.class, "mDate", false, "M_DATE");
+        public final static Property MCZR = new Property(8, String.class, "mCZR", false, "M_CZR");
     }
 
 
@@ -52,7 +54,9 @@ public class LocationDetailsDaoDao extends AbstractDao<LocationDetailsDao, Long>
                 "\"TOWER_TYPE\" INTEGER NOT NULL ," + // 3: towerType
                 "\"DIRECTION\" INTEGER NOT NULL ," + // 4: direction
                 "\"IN_CHARGE\" INTEGER NOT NULL ," + // 5: inCharge
-                "\"FZC_NUM\" INTEGER NOT NULL );"); // 6: fzcNum
+                "\"FZC_NUM\" INTEGER NOT NULL ," + // 6: fzcNum
+                "\"M_DATE\" TEXT," + // 7: mDate
+                "\"M_CZR\" TEXT);"); // 8: mCZR
     }
 
     /** Drops the underlying database table. */
@@ -83,6 +87,16 @@ public class LocationDetailsDaoDao extends AbstractDao<LocationDetailsDao, Long>
         stmt.bindLong(5, entity.getDirection());
         stmt.bindLong(6, entity.getInCharge());
         stmt.bindLong(7, entity.getFzcNum());
+ 
+        String mDate = entity.getMDate();
+        if (mDate != null) {
+            stmt.bindString(8, mDate);
+        }
+ 
+        String mCZR = entity.getMCZR();
+        if (mCZR != null) {
+            stmt.bindString(9, mCZR);
+        }
     }
 
     @Override
@@ -107,6 +121,16 @@ public class LocationDetailsDaoDao extends AbstractDao<LocationDetailsDao, Long>
         stmt.bindLong(5, entity.getDirection());
         stmt.bindLong(6, entity.getInCharge());
         stmt.bindLong(7, entity.getFzcNum());
+ 
+        String mDate = entity.getMDate();
+        if (mDate != null) {
+            stmt.bindString(8, mDate);
+        }
+ 
+        String mCZR = entity.getMCZR();
+        if (mCZR != null) {
+            stmt.bindString(9, mCZR);
+        }
     }
 
     @Override
@@ -123,7 +147,9 @@ public class LocationDetailsDaoDao extends AbstractDao<LocationDetailsDao, Long>
             cursor.getInt(offset + 3), // towerType
             cursor.getInt(offset + 4), // direction
             cursor.getInt(offset + 5), // inCharge
-            cursor.getInt(offset + 6) // fzcNum
+            cursor.getInt(offset + 6), // fzcNum
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // mDate
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // mCZR
         );
         return entity;
     }
@@ -137,6 +163,8 @@ public class LocationDetailsDaoDao extends AbstractDao<LocationDetailsDao, Long>
         entity.setDirection(cursor.getInt(offset + 4));
         entity.setInCharge(cursor.getInt(offset + 5));
         entity.setFzcNum(cursor.getInt(offset + 6));
+        entity.setMDate(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setMCZR(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

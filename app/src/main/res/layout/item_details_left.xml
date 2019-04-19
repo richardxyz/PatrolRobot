@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_1"
         android:text="塔号--"
-        android:textColor="@color/yellow"
+        android:textColor="@color/black"
         android:textSize="@dimen/sp_14" />
 
     <LinearLayout
@@ -28,7 +28,7 @@
             android:layout_weight="0.8"
             android:gravity="right"
             android:text="配置人员："
-            android:textColor="@color/yellow"
+            android:textColor="@color/orange_light"
             android:textSize="@dimen/sp_14" />
 
         <TextView
@@ -38,7 +38,7 @@
             android:layout_marginLeft="@dimen/dp_1"
             android:layout_weight="1"
             android:text="--"
-            android:textColor="@color/yellow"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
@@ -54,7 +54,7 @@
             android:layout_weight="0.8"
             android:gravity="right"
             android:text="拍摄点数量："
-            android:textColor="@color/yellow"
+            android:textColor="@color/orange_light"
             android:textSize="@dimen/sp_14" />
 
         <TextView
@@ -64,7 +64,7 @@
             android:layout_marginLeft="@dimen/dp_1"
             android:layout_weight="1"
             android:text="--"
-            android:textColor="@color/yellow"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
@@ -81,7 +81,7 @@
             android:layout_weight="0.8"
             android:gravity="right"
             android:text="配置完成时间："
-            android:textColor="@color/yellow"
+            android:textColor="@color/orange_light"
             android:textSize="@dimen/sp_14" />
 
         <TextView
@@ -91,7 +91,7 @@
             android:layout_marginLeft="@dimen/dp_1"
             android:layout_weight="1"
             android:text="--"
-            android:textColor="@color/yellow"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 </LinearLayout>

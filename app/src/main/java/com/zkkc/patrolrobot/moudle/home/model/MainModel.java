@@ -233,6 +233,8 @@ public class MainModel extends BaseModel {
                 lDDao.setDirection(direction);
                 lDDao.setFzcNum(fzcNum);
                 lDDao.setInCharge(inCharge);
+                lDDao.setMDate(getNowDate());
+                lDDao.setMCZR(SPUtils.getInstance().getString(USER_NAME));
                 getLDDao().insert(lDDao);
                 callback.onSuccess();
             }
@@ -262,7 +264,6 @@ public class MainModel extends BaseModel {
                         public void result(boolean success, File file) {
                             if (success) {
                                 Uri uri = UriUtils.file2Uri(file);
-//                            Uri uri = Uri.parse((String) str);
                                 LocationDetailsDao locationDetailsDao = queryLDDao();
                                 if (locationDetailsDao != null) {
                                     ShootAngleDao shootAngleDao = new ShootAngleDao();
