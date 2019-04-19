@@ -446,8 +446,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             }
         });
         //隐藏控制按钮
-//        widgetHideAndShow(false, false, false, false, false);
-        widgetHideAndShow(true, true, true, true,true);
+        widgetHideAndShow(false, false, false, false, false);
+//        widgetHideAndShow(true, true, true, true,true);
         //加载fragment
         manager = getSupportFragmentManager();
         kjgFragment = new KJGFragment();
