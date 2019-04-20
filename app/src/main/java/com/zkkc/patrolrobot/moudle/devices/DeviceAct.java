@@ -25,10 +25,12 @@ import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 import com.zkkc.green.gen.DeviceDaoDao;
 import com.zkkc.patrolrobot.R;
+import com.zkkc.patrolrobot.TrackApp;
 import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
 import com.zkkc.patrolrobot.common.GreenDaoManager;
+import com.zkkc.patrolrobot.common.WifiUtils;
 import com.zkkc.patrolrobot.entity.DeviceDao;
 import com.zkkc.patrolrobot.moudle.home.activity.HomeAct;
 
@@ -65,11 +67,11 @@ public class DeviceAct extends BaseActivity {
     private static final String XB_STATE = "XB_STATE";
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void mEvent(EventStateBean bean) {
-        mList= bean.getDatas();
-        int position = bean.getUpdate_position();
+    public void mEvent(EventStateBean mBean) {
+        mList = mBean.getDatas();
+        int position = mBean.getUpdate_position();
         getDeviceDao().updateInTx(mList);
-        if (bean.getUpdate_state().equals("connect_state")) {
+        if (mBean.getUpdate_state().equals("connect_state")) {
             SPUtils.getInstance().put(SERIAL_NUMBER, mList.get(position).getDSer());
             SPUtils.getInstance().put(XB_STATE, mList.get(position).getIsShowXb() + "");
             adapter.notifyDataSetChanged();
@@ -84,6 +86,22 @@ public class DeviceAct extends BaseActivity {
 
                 }
             }
+        }
+    }
+    SweetAlertDialog pDialog;
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void mAdapterEvent(String str){
+        switch (str){
+            case "show_dialog":
+                pDialog = new SweetAlertDialog(DeviceAct.this, SweetAlertDialog.PROGRESS_TYPE);
+                pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                pDialog.setTitleText("努力连接WIFI中,请稍后");
+                pDialog.setCancelable(false);
+                pDialog.show();
+                break;
+            case "hide_dialog":
+                pDialog.cancel();
+                break;
         }
 
     }
@@ -109,13 +127,12 @@ public class DeviceAct extends BaseActivity {
     public BaseView createView() {
         return null;
     }
-
     @Override
     public void init() {
         threadPool = ThreadPoolHelp.Builder
                 .cached()
                 .builder();
-        adapter = new DeviceAdapter(R.layout.item_device, mList);
+        adapter = new DeviceAdapter(R.layout.item_device, mList, threadPool);
         rvShowDevice.setLayoutManager(new LinearLayoutManager(this));
         rvShowDevice.setAdapter(adapter);
         adapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
@@ -125,6 +142,7 @@ public class DeviceAct extends BaseActivity {
                 return false;
             }
         });
+
     }
 
     private void showDelDialog(final DeviceDao dd, final int position) {
