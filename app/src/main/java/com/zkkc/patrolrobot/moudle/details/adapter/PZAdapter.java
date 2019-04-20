@@ -6,7 +6,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.entity.LocationDetailsDao;
-import com.zkkc.patrolrobot.moudle.details.entity.PZBean;
 
 import java.util.List;
 

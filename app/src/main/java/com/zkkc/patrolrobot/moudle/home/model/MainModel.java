@@ -1,17 +1,12 @@
 package com.zkkc.patrolrobot.moudle.home.model;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.UriUtils;
 import com.shuyu.gsyvideoplayer.listener.GSYVideoShotSaveListener;
 import com.zkkc.green.gen.LocationDetailsDaoDao;
@@ -40,7 +35,11 @@ import org.fusesource.mqtt.client.Topic;
 import org.greenrobot.greendao.query.Query;
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -51,6 +50,8 @@ import cn.com.magnity.sdk.MagDevice;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.DTFX;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.NAME;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.PW;
+import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.TOWER_NO;
+import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.TOWER_TOTAL;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.USER_NAME;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.XL_NUM;
 import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.XL_Q;
@@ -226,6 +227,11 @@ public class MainModel extends BaseModel {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
+                String tower_no = SPUtils.getInstance().getString(TOWER_NO);
+                int tower_total = SPUtils.getInstance().getInt(TOWER_TOTAL);
+                if (!towerNo.equals(tower_no)) {
+                    tower_total++;
+                }
                 LocationDetailsDao lDDao = new LocationDetailsDao();
                 lDDao.setSerialNo(serialNumber);
                 lDDao.setTowerNo(towerNo);
@@ -236,6 +242,8 @@ public class MainModel extends BaseModel {
                 lDDao.setMDate(getNowDate());
                 lDDao.setMCZR(SPUtils.getInstance().getString(USER_NAME));
                 getLDDao().insert(lDDao);
+                SPUtils.getInstance().put(TOWER_NO, towerNo);
+                SPUtils.getInstance().put(TOWER_TOTAL, tower_total);
                 callback.onSuccess();
             }
         });
@@ -299,38 +307,38 @@ public class MainModel extends BaseModel {
                 } else {//红外
                     File mFile = bitmapToFile();
                     boolean success = mDev.saveBMP(0, FileUtils.getFileName(mFile));
-                        if (success){
-                            Uri uri = UriUtils.file2Uri(mFile);
-                            LocationDetailsDao locationDetailsDao = queryLDDao();
-                            if (locationDetailsDao != null) {
-                                ShootAngleDao shootAngleDao = new ShootAngleDao();
-                                shootAngleDao.setSerialNo(serialNumber);
-                                shootAngleDao.setTowerNo(locationDetailsDao.getTowerNo());
-                                shootAngleDao.setTowerType(locationDetailsDao.getTowerType());
-                                shootAngleDao.setDirection(locationDetailsDao.getDirection());
-                                shootAngleDao.setCameraType(cameraType);
-                                shootAngleDao.setCameraX(cameraX);
-                                shootAngleDao.setCameraY(cameraY);
-                                shootAngleDao.setCameraZ(cameraZ);
-                                shootAngleDao.setPictureUri(uri.toString());
-                                getAngleDao().insert(shootAngleDao);
-                                //------test--------
-                                List<ShootAngleDao> shootAngleDaos = getAngleDao().loadAll();
-                                if (shootAngleDaos != null) {
-                                    for (ShootAngleDao b : shootAngleDaos) {
-                                        LogUtils.i("JSON_LOG_ANGLE", GsonUtils.toJson(b));
-                                    }
+                    if (success) {
+                        Uri uri = UriUtils.file2Uri(mFile);
+                        LocationDetailsDao locationDetailsDao = queryLDDao();
+                        if (locationDetailsDao != null) {
+                            ShootAngleDao shootAngleDao = new ShootAngleDao();
+                            shootAngleDao.setSerialNo(serialNumber);
+                            shootAngleDao.setTowerNo(locationDetailsDao.getTowerNo());
+                            shootAngleDao.setTowerType(locationDetailsDao.getTowerType());
+                            shootAngleDao.setDirection(locationDetailsDao.getDirection());
+                            shootAngleDao.setCameraType(cameraType);
+                            shootAngleDao.setCameraX(cameraX);
+                            shootAngleDao.setCameraY(cameraY);
+                            shootAngleDao.setCameraZ(cameraZ);
+                            shootAngleDao.setPictureUri(uri.toString());
+                            getAngleDao().insert(shootAngleDao);
+                            //------test--------
+                            List<ShootAngleDao> shootAngleDaos = getAngleDao().loadAll();
+                            if (shootAngleDaos != null) {
+                                for (ShootAngleDao b : shootAngleDaos) {
+                                    LogUtils.i("JSON_LOG_ANGLE", GsonUtils.toJson(b));
                                 }
-                                //------test--------
-                                callback.onSuccess();
-                            } else {
-                                callback.onFailure("获取拍摄点配置详情失败，无法保存角度信息");
                             }
-
-
-                        }else {
-                            callback.onFailure("保存本地图片失败");
+                            //------test--------
+                            callback.onSuccess();
+                        } else {
+                            callback.onFailure("获取拍摄点配置详情失败，无法保存角度信息");
                         }
+
+
+                    } else {
+                        callback.onFailure("保存本地图片失败");
+                    }
 
                 }
 

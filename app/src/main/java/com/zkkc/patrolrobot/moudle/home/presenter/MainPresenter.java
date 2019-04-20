@@ -1,6 +1,7 @@
 package com.zkkc.patrolrobot.moudle.home.presenter;
 
 import android.content.Context;
+import android.view.View;
 
 import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.home.callback.IAddXL;
@@ -112,7 +113,7 @@ public class MainPresenter extends MainContract.Presenter {
     }
 
     @Override
-    public void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, MagDevice mDev,String serialNumber,
+    public void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, MagDevice mDev, String serialNumber,
                                 int cameraType, int cameraX, int cameraY, int cameraZ) {
         model.saveAngleDetail(threadPool, detailPlayer,mDev, serialNumber, cameraType, cameraX, cameraY, cameraZ, new ISaveAngleCallback() {
             @Override

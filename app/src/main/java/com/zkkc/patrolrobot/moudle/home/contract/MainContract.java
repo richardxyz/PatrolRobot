@@ -1,6 +1,8 @@
 package com.zkkc.patrolrobot.moudle.home.contract;
 
 
+import android.view.View;
+
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
 import com.zkkc.patrolrobot.entity.ShootAngleDao;

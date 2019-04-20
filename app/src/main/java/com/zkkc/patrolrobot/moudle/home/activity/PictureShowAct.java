@@ -11,6 +11,7 @@ import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
 import com.zkkc.patrolrobot.entity.ShootAngleDao;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -58,6 +59,13 @@ public class PictureShowAct extends BaseActivity {
         super.onCreate(savedInstanceState);
         fullscreen(true);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     @OnClick(R.id.ivClose)

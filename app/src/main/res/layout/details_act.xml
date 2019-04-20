@@ -65,7 +65,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvZzth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="终止塔号："
@@ -74,6 +73,7 @@
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/tvZzth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_25"
@@ -83,7 +83,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvTzs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="塔总数："
@@ -92,6 +91,7 @@
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/tvTzs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_25"

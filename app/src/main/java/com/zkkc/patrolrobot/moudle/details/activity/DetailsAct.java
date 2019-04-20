@@ -9,7 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.luoxudong.app.threadpool.ThreadPoolHelp;
 import com.zkkc.green.gen.LocationDetailsDaoDao;
@@ -20,9 +22,9 @@ import com.zkkc.patrolrobot.base.BaseView;
 import com.zkkc.patrolrobot.common.GreenDaoManager;
 import com.zkkc.patrolrobot.entity.LocationDetailsDao;
 import com.zkkc.patrolrobot.moudle.details.adapter.PZAdapter;
-import com.zkkc.patrolrobot.moudle.details.entity.PZBean;
-import com.zkkc.patrolrobot.moudle.details.fragment.PSD2Fragment;
 import com.zkkc.patrolrobot.moudle.details.fragment.PSDFragment;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.concurrent.ExecutorService;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
 
 /**
  * Created by ShiJunRan on 2019/3/19
@@ -58,7 +61,6 @@ public class DetailsAct extends BaseActivity {
     ViewPager viewPager;
 
 
-    private List<PZBean> pzBeans = new ArrayList<>();
     List<LocationDetailsDao> locationDetailsDaos = new ArrayList<>();
     PZAdapter pzAdapter;
     private ExecutorService threadPool;
@@ -89,27 +91,32 @@ public class DetailsAct extends BaseActivity {
         threadPool = ThreadPoolHelp.Builder
                 .cached()
                 .builder();
-        //测试数据
-        for (int i = 0; i < 10; i++) {
-            PZBean pzBean = new PZBean();
-            pzBean.setThNum("塔号" + (i + 1));
-            pzBean.setPzName("张三");
-            pzBean.setPsdNum("" + (34 - i));
-            pzBean.setWcDate("2019-03-19 12:35:14");
-            pzBeans.add(pzBean);
-        }
-        //测试数据
+        mainData();
 
         pzAdapter = new PZAdapter(R.layout.item_details_left, locationDetailsDaos);
         rvPZ.setLayoutManager(new LinearLayoutManager(this));
         rvPZ.setAdapter(pzAdapter);
+        pzAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                EventBus.getDefault().post(locationDetailsDaos.get(position));
+                ToastUtils.showShort(position+"");
+            }
+        });
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 locationDetailsDaos = queryPSDData();
                 if (locationDetailsDaos != null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvPsdzs.setText(locationDetailsDaos.size() + "");
+                        }
+                    });
                     if (locationDetailsDaos.size() > 0) {
-                        pzAdapter.notifyDataSetChanged();
+//                        pzAdapter.notifyDataSetChanged();
+                        pzAdapter.setNewData(locationDetailsDaos);
                     } else {
                         ToastUtils.showShort("暂无数据");
                     }
@@ -121,15 +128,36 @@ public class DetailsAct extends BaseActivity {
         });
 
 
-        String[] arr = {"拍摄点1", "拍摄点2"};
+        String[] arr = {"拍摄点详情"};
         ArrayList<Fragment> fragments = new ArrayList<>();
         PSDFragment psdFragment = new PSDFragment();
-        PSD2Fragment psd2Fragment = new PSD2Fragment();
         fragments.add(psdFragment);
-        fragments.add(psd2Fragment);
         stl.setViewPager(viewPager, arr, this, fragments);
 
 
+    }
+
+    private void mainData() {
+        String xl_num = SPUtils.getInstance().getString("XL_NUM");
+        String xl_q = SPUtils.getInstance().getString("XL_Q");
+        String xl_z = SPUtils.getInstance().getString("XL_Z");
+        int tower_total = SPUtils.getInstance().getInt("TOWER_TOTAL");
+        if (xl_num.equals("")) {
+            tvXlbh.setText("--");
+        } else {
+            tvXlbh.setText(xl_num);
+        }
+        if (xl_q.equals("")) {
+            tvQsth.setText("--");
+        } else {
+            tvQsth.setText(xl_q);
+        }
+        if (xl_z.equals("")) {
+            tvZzth.setText("--");
+        } else {
+            tvZzth.setText(xl_z);
+        }
+        tvTzs.setText((tower_total + 1) + "");
     }
 
     /**

@@ -36,11 +36,32 @@
             app:radius="3dp" />
 
         <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/ivShowPic"
+            android:text="左旋角度："
+            android:textColor="@color/orange_light"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
             android:id="@+id/tvLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="左旋角度：36°"
             android:layout_alignTop="@id/ivShowPic"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_toRightOf="@id/tv1"
+            android:text="36°"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvLeft"
+            android:layout_centerVertical="true"
+            android:text="右旋角度："
             android:textColor="@color/orange_light"
             android:textSize="@dimen/sp_12" />
 
@@ -50,17 +71,28 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvLeft"
             android:layout_centerVertical="true"
-            android:text="右旋角度：36°"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_toRightOf="@id/tv2"
+            android:text="36°"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_12" />
+        <TextView
+            android:id="@+id/tv3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/ivShowPic"
+            android:text="焦距倍数："
             android:textColor="@color/orange_light"
             android:textSize="@dimen/sp_12" />
-
         <TextView
             android:id="@+id/tvBs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/ivShowPic"
-            android:text="焦距倍数：2.0"
-            android:textColor="@color/orange_light"
+            android:layout_toRightOf="@id/tv3"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:text="2.0"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_12" />
 
 

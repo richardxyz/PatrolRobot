@@ -442,7 +442,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 EventBus.getDefault().postSticky(lists.get(position));
-
+                startActivity(new Intent(HomeAct.this,PictureShowAct.class));
             }
         });
         //隐藏控制按钮
@@ -674,6 +674,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     public static final String XL_NUM = "XL_NUM";
     public static final String XL_Q = "XL_Q";
     public static final String XL_Z = "XL_Z";
+    public static final String TOWER_NO = "TOWER_NO";
+    public static final String TOWER_TOTAL = "TOWER_TOTAL";
+
     private int deviceStateNow = -1;//机器的当前配置状态（0-未配置 1-配置中 2-配置完成 3-配置修改）
     private int deviceStateDian = -1;//机器的配置中时状态（0-行走中 1-点配置 2-可见光角度配置 3-红外角度配置  4-配置校验）
     private int deviceMainState = -1;//机器的主状态（0-行走中 1-点配置 2-可见光角度配置 3-红外角度配置  4-配置校验）
@@ -825,12 +828,11 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 } else {
                     EventBus.getDefault().postSticky(new PlayStateBean(connectState));//通知播放实时视频
                 }
-
-////                getPresenter().saveLocationDetails(threadPool, SERIAL_NUMBER, dqNum, inType, inDirection, inCharge, Integer.parseInt(fzcNum));
-//                getPresenter().saveLocationDetails(threadPool, SERIAL_NUMBER, "1", 1, 1, 0, Integer.parseInt("2"));
                 break;
         }
     }
+
+    int asd;
 
     /**
      * 配置模式暂停提示Dialog
@@ -1880,7 +1882,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             ToastUtils.showShort("红外摄像头角度添加成功--" + x + "--" + y);
                             //TODO 保存红外截图...
                             if (mVideoFragment != null && mDev != null) {
-                                getPresenter().saveAngleDetail(threadPool, null, mDev, SERIAL_NUMBER, 1, x, y, -1);
+                                getPresenter().saveAngleDetail(threadPool, null, mDev, SERIAL_NUMBER, 2, x, y, -1);
                             }
                         }
 
