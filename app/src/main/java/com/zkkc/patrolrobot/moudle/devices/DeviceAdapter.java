@@ -55,7 +55,7 @@ public class DeviceAdapter extends BaseQuickAdapter<DeviceDao, BaseViewHolder> {
                             boolean is = wifiUtils.connectWifi(item.getDWifi(), null);
                             EventBus.getDefault().post("hide_dialog");
                             if (!is){
-                                ToastUtils.showLong("当前设备WIFI连接失败，请手动连接");
+                                ToastUtils.showLong("设备WIFI连接失败，请重试");
                             }else {
                                 List<DeviceDao> data = getData();
                                 for (int i = 0; i < data.size(); i++) {

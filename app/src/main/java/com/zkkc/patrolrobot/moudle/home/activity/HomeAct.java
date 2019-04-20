@@ -8,8 +8,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,19 +36,15 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.cazaea.sweetalert.SweetAlertDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.luoxudong.app.threadpool.ThreadPoolHelp;
-import com.zkkc.green.gen.LocationDetailsDaoDao;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.TrackConstant;
 import com.zkkc.patrolrobot.base.BaseActivity;
-import com.zkkc.patrolrobot.common.GreenDaoManager;
 import com.zkkc.patrolrobot.entity.BatteryStateBean;
-import com.zkkc.patrolrobot.entity.LocationDetailsDao;
 import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.details.activity.DetailsAct;
 import com.zkkc.patrolrobot.moudle.devices.DeviceAct;
 import com.zkkc.patrolrobot.moudle.home.adapter.XQAdapter;
 import com.zkkc.patrolrobot.moudle.home.contract.MainContract;
-import com.zkkc.patrolrobot.moudle.home.entity.DeviceConfigurationState;
 import com.zkkc.patrolrobot.moudle.home.entity.DeviceStateBean;
 import com.zkkc.patrolrobot.moudle.home.entity.HostBasicDetails;
 import com.zkkc.patrolrobot.moudle.home.entity.PZCSBean;
@@ -100,6 +94,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
      */
     @BindView(R.id.tvQh)
     TextView tvQh;
+    @BindView(R.id.ivQH)
+    ImageView ivQH;
     @BindView(R.id.llb)
     LinearLayout llb;
     /**
@@ -700,6 +696,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
             case R.id.llb://可见光切换
                 if (isHW) {
+
                     switchoverCamera(false);
                 } else {
                     switchoverCamera(true);
@@ -875,7 +872,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
 
             isHW = true;
             tvQh.setText("红外");
-
+            ivQH.setImageResource(R.mipmap.tab_qh_hw);
             if (mVideoFragment == null) {
                 mVideoFragment = new VideoFragment();
             }
@@ -889,6 +886,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             FragmentUtils.replace(manager, kjgFragment, R.id.flVideo);
             isHW = false;
             tvQh.setText("可见光");
+            ivQH.setImageResource(R.mipmap.tab_qh_kjg);
         }
 
     }

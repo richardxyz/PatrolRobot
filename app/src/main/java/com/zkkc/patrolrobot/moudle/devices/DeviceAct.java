@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.cazaea.sweetalert.SweetAlertDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.luoxudong.app.threadpool.ThreadPoolHelp;
@@ -25,14 +24,11 @@ import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 import com.zkkc.green.gen.DeviceDaoDao;
 import com.zkkc.patrolrobot.R;
-import com.zkkc.patrolrobot.TrackApp;
 import com.zkkc.patrolrobot.base.BaseActivity;
 import com.zkkc.patrolrobot.base.BasePresenter;
 import com.zkkc.patrolrobot.base.BaseView;
 import com.zkkc.patrolrobot.common.GreenDaoManager;
-import com.zkkc.patrolrobot.common.WifiUtils;
 import com.zkkc.patrolrobot.entity.DeviceDao;
-import com.zkkc.patrolrobot.moudle.home.activity.HomeAct;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
