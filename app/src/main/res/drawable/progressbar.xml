@@ -36,7 +36,7 @@
                     android:angle="0"
                     android:centerY="0.75"
                     android:endColor="#EDF0EF"
-                    android:startColor="#e2030e" />
+                    android:startColor="#FF0210" />
             </shape>
         </clip>
     </item>
