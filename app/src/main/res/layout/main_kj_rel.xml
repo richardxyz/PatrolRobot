@@ -3,6 +3,7 @@
     android:id="@+id/llKJREL"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:id="@+id/llXLPopup"
         android:layout_width="220dp"
@@ -31,8 +32,8 @@
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_5"
-            android:gravity="center_vertical"
             android:background="@drawable/edit_shape_b"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
@@ -44,15 +45,15 @@
                 android:textStyle="bold" />
 
             <!--<EditText-->
-                <!--android:id="@+id/etDTFX"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:background="@drawable/edit_shape"-->
-                <!--android:hint="大塔方向"-->
-                <!--android:maxLines="1"-->
-                <!--android:textSize="@dimen/sp_12"-->
-                <!--android:textStyle="bold" />-->
+            <!--android:id="@+id/etDTFX"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/edit_shape"-->
+            <!--android:hint="大塔方向"-->
+            <!--android:maxLines="1"-->
+            <!--android:textSize="@dimen/sp_12"-->
+            <!--android:textStyle="bold" />-->
             <Spinner
                 android:id="@+id/spinnerDTFX"
                 android:layout_width="0dp"
@@ -247,14 +248,16 @@
         android:text="慢速"
         android:textColor="@color/yellow"
         android:textSize="@dimen/sp_14" />
+
     <ImageView
         android:id="@+id/ivSXSP"
-        android:layout_width="@dimen/dp_35"
-        android:layout_height="@dimen/dp_35"
-        android:src="@mipmap/icon_refresh"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_width="@dimen/dp_28"
+        android:layout_height="@dimen/dp_28"
         android:layout_marginLeft="@dimen/dp_5"
-        android:background="@drawable/ll_clicked"/>
+        android:layout_marginTop="@dimen/dp_30"
+        android:background="@drawable/ll_clicked"
+        android:src="@mipmap/icon_refresh" />
+
     <LinearLayout
         android:id="@+id/llXB"
         android:layout_width="@dimen/dp_300"
@@ -352,15 +355,152 @@
 
     <Button
         android:id="@+id/btnInPZMS"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_30"
+        android:layout_width="@dimen/dp_28"
+        android:layout_height="@dimen/dp_28"
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
-        android:background="@drawable/btn_clicked"
-        android:text="配置暂停"
+        android:background="@mipmap/icon_menu_a"
         android:textColor="@color/yellow"
         android:textSize="@dimen/sp_14" />
+
+    <RelativeLayout
+        android:id="@+id/rlCD"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/btnInPZMS"
+        android:layout_marginRight="@dimen/dp_15"
+        android:layout_toLeftOf="@id/btnInPZMS"
+        android:background="@drawable/popup_shape"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/lla"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btn_a"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_30"
+                android:background="@drawable/connect_button"
+                android:text="配置暂停"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btn_b"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_30"
+                android:background="@drawable/connect_button"
+                android:text="配置完成"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lla"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btn_c"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_30"
+                android:background="@drawable/connect_button"
+                android:text="唤醒"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btn_d"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_30"
+                android:background="@drawable/connect_button"
+                android:text="手动模式"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <!--<LinearLayout-->
+        <!--android:id="@+id/llc"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/llb"-->
+        <!--android:layout_marginTop="@dimen/dp_10"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<View-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/btn_e"-->
+        <!--android:layout_width="@dimen/dp_90"-->
+        <!--android:layout_height="@dimen/dp_30"-->
+        <!--android:background="@drawable/connect_button"-->
+        <!--android:text="配置完成"-->
+        <!--android:textColor="@color/black"-->
+        <!--android:textStyle="bold" />-->
+
+        <!--<View-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/btn_f"-->
+        <!--android:layout_width="@dimen/dp_90"-->
+        <!--android:layout_height="@dimen/dp_30"-->
+        <!--android:background="@drawable/connect_button"-->
+        <!--android:text="手动模式"-->
+        <!--android:textColor="@color/black"-->
+        <!--android:textStyle="bold" />-->
+
+        <!--<View-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1" />-->
+        <!--</LinearLayout>-->
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/llKJGH"

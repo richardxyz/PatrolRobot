@@ -298,9 +298,22 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     //机器模式
     @BindView(R.id.tvJQMS)
     TextView tvJQMS;
-    //进入和退出配置模式
+    /**
+     * 隐藏展开按钮
+     */
     @BindView(R.id.btnInPZMS)
     Button btnInPZMS;
+    @BindView(R.id.rlCD)
+    RelativeLayout rlCD;
+    @BindView(R.id.btn_a)
+    Button btn_a;
+    @BindView(R.id.btn_b)
+    Button btn_b;
+    @BindView(R.id.btn_c)
+    Button btn_c;
+    @BindView(R.id.btn_d)
+    Button btn_d;
+
     //悬臂
     @BindView(R.id.llXB)
     LinearLayout llXB;
@@ -438,12 +451,12 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 EventBus.getDefault().postSticky(lists.get(position));
-                startActivity(new Intent(HomeAct.this,PictureShowAct.class));
+                startActivity(new Intent(HomeAct.this, PictureShowAct.class));
             }
         });
         //隐藏控制按钮
-        widgetHideAndShow(false, false, false, false, false);
-//        widgetHideAndShow(true, true, true, true,true);
+//        widgetHideAndShow(false, false, false, false, false);
+        widgetHideAndShow(true, true, true, true, true);
         //加载fragment
         manager = getSupportFragmentManager();
         kjgFragment = new KJGFragment();
@@ -683,7 +696,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     @OnClick({R.id.lli, R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
             R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.btnWc,
             R.id.tvCXT, R.id.btnXLOk, R.id.btnXJSD, R.id.btnInPZMS, R.id.ivLeftYJ, R.id.ivLeftFS,
-            R.id.ivRightYJ, R.id.ivRightFS, R.id.ivKZ, R.id.ivSS, R.id.ivSXSP})
+            R.id.ivRightYJ, R.id.ivRightFS, R.id.ivKZ, R.id.ivSS, R.id.ivSXSP, R.id.btn_a, R.id.btn_b, R.id.btn_c, R.id.btn_d})
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
@@ -787,11 +800,18 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
 
             case R.id.btnInPZMS://进入和退出配置模式
-                if (isPZMS) {
-                    btnInPZMS.setText("配置暂停");
+                if (rlCD.getVisibility() == View.VISIBLE) {
+                    rlCD.setVisibility(View.GONE);
+                } else {
+                    if (connectState) {
+                        rlCD.setVisibility(View.VISIBLE);
+                    } else {
+                        ToastUtils.showShort("当前未登录设备");
+                    }
 
-                    showPZMSStopDialog();//配置模式暂停提示Dialog
                 }
+
+
                 break;
 
             case R.id.ivLeftYJ://左悬臂压紧
@@ -826,10 +846,25 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     EventBus.getDefault().postSticky(new PlayStateBean(connectState));//通知播放实时视频
                 }
                 break;
+            case R.id.btn_a://配置暂停
+                if (isPZMS) {
+                    showPZMSStopDialog();//配置模式暂停提示Dialog
+                }else {
+                    ToastUtils.showShort("当前非配置模式，无法暂停");
+                }
+                break;
+            case R.id.btn_b://配置完成
+
+                break;
+            case R.id.btn_c://唤醒
+
+                break;
+            case R.id.btn_d://手动模式
+
+                break;
+
         }
     }
-
-    int asd;
 
     /**
      * 配置模式暂停提示Dialog
@@ -1520,6 +1555,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             pDialog.setTitleText("请等待设备到达拍摄点...");
                             pDialog.setCancelable(false);
                             pDialog.show();
+                        }else if (deviceStateNow == 3){//完成
+
                         }
 
                         break;
