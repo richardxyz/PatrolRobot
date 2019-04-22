@@ -1469,27 +1469,36 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                         if (balance == 0) {
                             tvPh.setText("正常");
                             tvPh.setTextColor(getResources().getColor(R.color.green));
+                            ivPh.setImageResource(R.mipmap.tab_ph_zc);
                         } else if (balance == 1) {
                             tvPh.setText("警告");
                             tvPh.setTextColor(getResources().getColor(R.color.colorAccent));
+                            ivPh.setImageResource(R.mipmap.tab_ph_jg);
                         } else if (balance == 2) {
                             tvPh.setText("危险");
                             tvPh.setTextColor(getResources().getColor(R.color.red));
+                            ivPh.setImageResource(R.mipmap.tab_ph_wx);
                         }
                         if (camera == 1) {
                             tvKjg.setText("开启");
+                            ivKjg.setImageResource(R.mipmap.tab_kjg_on);
                         } else {
                             tvKjg.setText("关闭");
+                            ivKjg.setImageResource(R.mipmap.tab_kjg_off);
                         }
                         if (ir == 1) {
                             tvHw.setText("开启");
+                            ivHw.setImageResource(R.mipmap.tab_hw_on);
                         } else {
                             tvHw.setText("关闭");
+                            ivHw.setImageResource(R.mipmap.tab_hw_off);
                         }
                         if (radar == 1) {
                             tvLd.setText("开启");
+                            ivLd.setImageResource(R.mipmap.tab_jg_on);
                         } else {
                             tvLd.setText("关闭");
+                            ivLd.setImageResource(R.mipmap.tab_jg_off);
                         }
                     }
                 });
