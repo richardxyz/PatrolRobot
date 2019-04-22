@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -56,6 +57,7 @@ import com.zkkc.patrolrobot.moudle.home.fragment.VideoFragment;
 import com.zkkc.patrolrobot.moudle.home.presenter.MainPresenter;
 import com.zkkc.patrolrobot.moudle.home.utils.DeviceOPUtils;
 import com.zkkc.patrolrobot.receiver.BatteryChangedReceiver;
+import com.zkkc.patrolrobot.widget.VerticalProgressBar;
 import com.zkkc.patrolrobot.widget.seekbar.VerticalSeekBar;
 
 import org.fusesource.hawtbuf.Buffer;
@@ -167,6 +169,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
      */
     @BindView(R.id.ivZD)
     ImageView ivZD;
+    @BindView(R.id.pbDC_a)
+    VerticalProgressBar pbDC_a;
     @BindView(R.id.tvZDNum)
     TextView tvZDNum;
     @BindView(R.id.ivZDcd)
@@ -176,10 +180,12 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     /**
      * 主机电量
      */
-    @BindView(R.id.ivZJ)
-    ImageView ivZJ;
+
+    @BindView(R.id.pbDC)
+    ProgressBar pbDC;
     @BindView(R.id.tvZJNum)
     TextView tvZJNum;
+
     @BindView(R.id.ivZJcd)
     ImageView ivZJcd;
     @BindView(R.id.lll)
@@ -364,8 +370,9 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
     public void batteryEvent(BatteryStateBean stateBean) {
         batteryType = stateBean.batteryType;
         powNum = stateBean.powStr;
-        tvZJNum.setText(powNum + "%");
-
+        tvZJNum.setText("终端" + powNum + "%");
+        pbDC.setProgress(powNum);
+        pbDC_a.setCurrMode(2);
         switch (batteryType) {
             case BATTERY_STATUS_CHARGING://充电中
                 ivZJcd.setVisibility(View.VISIBLE);
@@ -849,7 +856,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
             case R.id.btn_a://配置暂停
                 if (isPZMS) {
                     showPZMSStopDialog();//配置模式暂停提示Dialog
-                }else {
+                } else {
                     ToastUtils.showShort("当前非配置模式，无法暂停");
                 }
                 break;
@@ -1455,7 +1462,8 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                     @Override
                     public void run() {
                         //TODO
-                        tvZDNum.setText(hostBasicDetails.getElectric() + "%");//电量
+                        tvZDNum.setText("设备"+hostBasicDetails.getElectric() + "%");//电量
+                        pbDC_a.setProgress(hostBasicDetails.getElectric());
                         tvSu.setText(hostBasicDetails.getHumidity() + "%");//湿度
                         tvWd.setText(hostBasicDetails.getTemperature() + "℃");//温度
                         if (balance == 0) {
@@ -1555,7 +1563,7 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                             pDialog.setTitleText("请等待设备到达拍摄点...");
                             pDialog.setCancelable(false);
                             pDialog.show();
-                        }else if (deviceStateNow == 3){//完成
+                        } else if (deviceStateNow == 3) {//完成
 
                         }
 

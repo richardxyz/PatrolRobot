@@ -12,8 +12,8 @@
     <string name="item_h">35℃</string>
     <string name="item_i">我的设备</string>
     <string name="item_j">未连接</string>
-    <string name="item_k">终端电量</string>
-    <string name="item_l">主机电量</string>
+    <string name="item_k">设备0%</string>
+    <string name="item_l">终端0%</string>
     <string name="item_m">关闭</string>
     <string name="item_o">详情</string>
     <string name="item_n">线路</string>
