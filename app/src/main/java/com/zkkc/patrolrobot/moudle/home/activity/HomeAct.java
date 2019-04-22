@@ -1468,11 +1468,11 @@ public class HomeAct extends BaseActivity<MainContract.View, MainContract.Presen
                         tvWd.setText(hostBasicDetails.getTemperature() + "℃");//温度
                         if (balance == 0) {
                             tvPh.setText("正常");
-                            tvPh.setTextColor(getResources().getColor(R.color.green));
+                            tvPh.setTextColor(getResources().getColor(R.color.white));
                             ivPh.setImageResource(R.mipmap.tab_ph_zc);
                         } else if (balance == 1) {
                             tvPh.setText("警告");
-                            tvPh.setTextColor(getResources().getColor(R.color.colorAccent));
+                            tvPh.setTextColor(getResources().getColor(R.color.yellow));
                             ivPh.setImageResource(R.mipmap.tab_ph_jg);
                         } else if (balance == 2) {
                             tvPh.setText("危险");
