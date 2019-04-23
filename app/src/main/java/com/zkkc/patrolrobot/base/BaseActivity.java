@@ -3,6 +3,7 @@ package com.zkkc.patrolrobot.base;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -18,9 +19,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.cazaea.sweetalert.SweetAlertDialog;
+import com.cy.dialog.progress.ProgressDialog;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zkkc.patrolrobot.R;
+//import com.zkkc.patrolrobot.moudle.home.activity.HomeAct;
 
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
@@ -133,6 +137,26 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
         }
     }
 
+    SweetAlertDialog proDialog;
+
+    /**
+     * 加载Dialog
+     */
+    public void showBaseProDialog(Context mContext, String msg) {
+        proDialog = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE);
+        proDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        proDialog.setTitleText(msg);
+        proDialog.setCancelable(true);
+        proDialog.show();
+
+    }
+
+    public void dismisssBaseProDialog() {
+        if (proDialog!=null){
+            proDialog.dismiss();
+            proDialog = null;
+        }
+    }
 
     /**
      * 预览图片弹窗
@@ -206,13 +230,18 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        if (presenter != null) {
-            presenter.detachView();
-        }
         if (closeDialog != null) {
             closeDialog.dismiss();
             closeDialog = null;
         }
+        if (proDialog != null) {
+            proDialog.dismiss();
+            proDialog = null;
+        }
+        super.onDestroy();
+        if (presenter != null) {
+            presenter.detachView();
+        }
+
     }
 }

@@ -55,6 +55,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="reverseLandscape" />
         <activity
+            android:name=".moudle.home.activity.MainAct"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="reverseLandscape" />
+        <activity
             android:name=".moudle.home.activity.PictureShowAct"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="reverseLandscape" />

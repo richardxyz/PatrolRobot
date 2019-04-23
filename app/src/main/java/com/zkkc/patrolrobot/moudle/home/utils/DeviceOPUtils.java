@@ -2,7 +2,7 @@ package com.zkkc.patrolrobot.moudle.home.utils;
 
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.zkkc.patrolrobot.moudle.home.activity.HomeAct;
+import com.zkkc.patrolrobot.moudle.home.activity.MainAct;
 import com.zkkc.patrolrobot.moudle.home.entity.DeviceConfigurationState;
 import com.zkkc.patrolrobot.moudle.home.entity.PZCSBean;
 
@@ -18,7 +18,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void queryJQZT(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void queryJQZT(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(0);
@@ -33,7 +33,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void queryPZZT(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void queryPZZT(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(0);
@@ -47,7 +47,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void queryXLPZXX(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void queryXLPZXX(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(0);
@@ -61,7 +61,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void inPZMS(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void inPZMS(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(5);
@@ -75,7 +75,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void inYJAZ(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void inYJAZ(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(1);
@@ -89,7 +89,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void inPSDXX(HomeAct mContext, CallbackConnection connection, String serialNumber, PZCSBean.DataBean bean) {
+    public static void inPSDXX(MainAct mContext, CallbackConnection connection, String serialNumber, PZCSBean.DataBean bean) {
         PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         state.setModule(8);
@@ -104,7 +104,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void inJDQR(HomeAct mContext, CallbackConnection connection, boolean isHw, String serialNumber) {
+    public static void inJDQR(MainAct mContext, CallbackConnection connection, boolean isHw, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         if (isHw) {//红外
@@ -123,7 +123,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void inPZOK(HomeAct mContext, CallbackConnection connection, String serialNumber, PZCSBean.DataBean bean) {
+    public static void inPZOK(MainAct mContext, CallbackConnection connection, String serialNumber, PZCSBean.DataBean bean) {
         PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         state.setModule(8);
@@ -138,7 +138,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void inXJFX(HomeAct mContext, CallbackConnection connection, int num, String serialNumber) {
+    public static void inXJFX(MainAct mContext, CallbackConnection connection, int num, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(2);
@@ -152,7 +152,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void deviceUp(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void deviceUp(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(2);
@@ -166,7 +166,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void deviceUpLow(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void deviceUpLow(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(2);
@@ -180,7 +180,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void deviceStop(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void deviceStop(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(2);
@@ -194,7 +194,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void deviceDown(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void deviceDown(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(2);
@@ -208,7 +208,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void deviceDownLow(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void deviceDownLow(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(2);
@@ -222,7 +222,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void cameraLeft(HomeAct mContext, CallbackConnection connection, boolean isHW, String serialNumber, PZCSBean.DataBean bean) {
+    public static void cameraLeft(MainAct mContext, CallbackConnection connection, boolean isHW, String serialNumber, PZCSBean.DataBean bean) {
         PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         if (isHW) {
@@ -241,7 +241,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void cameraRight(HomeAct mContext, CallbackConnection connection, boolean isHW, String serialNumber, PZCSBean.DataBean bean) {
+    public static void cameraRight(MainAct mContext, CallbackConnection connection, boolean isHW, String serialNumber, PZCSBean.DataBean bean) {
         PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         if (isHW) {
@@ -260,7 +260,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void cameraUp(HomeAct mContext, CallbackConnection connection, boolean isHW, String serialNumber, PZCSBean.DataBean bean) {
+    public static void cameraUp(MainAct mContext, CallbackConnection connection, boolean isHW, String serialNumber, PZCSBean.DataBean bean) {
         PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         if (isHW) {
@@ -279,7 +279,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void cameraDown(HomeAct mContext, CallbackConnection connection, boolean isHW, String serialNumber, PZCSBean.DataBean bean) {
+    public static void cameraDown(MainAct mContext, CallbackConnection connection, boolean isHW, String serialNumber, PZCSBean.DataBean bean) {
         PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         if (isHW) {
@@ -298,7 +298,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void cameraStop(HomeAct mContext, CallbackConnection connection, boolean isHW, String serialNumber) {
+    public static void cameraStop(MainAct mContext, CallbackConnection connection, boolean isHW, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         if (isHW) {
@@ -316,7 +316,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void cameraFocus(HomeAct mContext, CallbackConnection connection, boolean adjust, String serialNumber, PZCSBean.DataBean bean) {
+    public static void cameraFocus(MainAct mContext, CallbackConnection connection, boolean adjust, String serialNumber, PZCSBean.DataBean bean) {
         PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         state.setModule(7);
@@ -335,7 +335,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void pzmsStop(HomeAct mContext, CallbackConnection connection, String serialNumber) {
+    public static void pzmsStop(MainAct mContext, CallbackConnection connection, String serialNumber) {
         DeviceConfigurationState state = new DeviceConfigurationState();
         state.setSerialNum(serialNumber);
         state.setModule(5);
@@ -349,7 +349,7 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void xbKZ(HomeAct mContext, CallbackConnection connection, String serialNumber, int num) {
+    public static void xbKZ(MainAct mContext, CallbackConnection connection, String serialNumber, int num) {
         if (connection != null) {
             DeviceConfigurationState state = new DeviceConfigurationState();
             state.setSerialNum(serialNumber);

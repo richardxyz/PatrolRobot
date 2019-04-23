@@ -42,22 +42,15 @@ import java.util.concurrent.ExecutorService;
 
 import cn.com.magnity.sdk.MagDevice;
 
-import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.DTFX;
-import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.NAME;
-import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.PW;
-import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.TOWER_NO;
-import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.TOWER_TOTAL;
-import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.USER_NAME;
-import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.XL_NUM;
-import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.XL_Q;
-import static com.zkkc.patrolrobot.moudle.home.activity.HomeAct.XL_Z;
 
 /**
  * Created by ShiJunRan on 2019/3/7
  */
 public class MainModel extends BaseModel {
     private CallbackConnection connection;
-
+    public static final String USER_NAME = "USER_NAME";
+    public static final String NAME = "NAME";
+    public static final String PW = "PW";
     /**
      * 连接MQTT服务器
      *
@@ -82,7 +75,6 @@ public class MainModel extends BaseModel {
         connection.connect(new Callback<Void>() {
             @Override
             public void onSuccess(Void value) {
-//                callBack.onSuccess("连接成功");
             }
 
             @Override
@@ -100,7 +92,7 @@ public class MainModel extends BaseModel {
 
             @Override
             public void onDisconnected() {
-                callBack.onDisconnected("服务器连接中断，正在重连···");
+                callBack.onDisconnected("服务器连接中断,正在重连...");
             }
 
             @Override
