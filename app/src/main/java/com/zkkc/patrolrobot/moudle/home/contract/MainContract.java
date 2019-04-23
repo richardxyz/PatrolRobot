@@ -38,19 +38,17 @@ public interface MainContract {
 
         void subscribeErr(String strErr);
 
-        void sendPublishSuccess();
-
         void sendPublishErr(String strErr);
 
         void addXLSuccess();
 
-        void saveAngleSuccess();
-
-        void saveAngleFailure(String err);
-
         void saveLDSuccess();
 
         void saveLDFailure(String err);
+
+        void saveAngleSuccess();
+
+        void saveAngleFailure(String err);
 
         void queryAngleSuccess(List<ShootAngleDao> list);
         void queryAngleFailure(String err);
@@ -66,12 +64,12 @@ public interface MainContract {
 
         public abstract void addXL(String serialNumber, String dTFX, String xlNum, String XLQ, String XLZ, CallbackConnection connection);
 
-        public abstract void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, MagDevice mDev, String serialNumber,
+        public abstract void saveAngleDetail(EmptyControlVideo detailPlayer, MagDevice mDev, String serialNumber,
                                              int cameraType, int cameraX, int cameraY, int cameraZ);
 
-        public abstract void queryAngleDetail(ExecutorService threadPool, String serialNumber);
+        public abstract void queryAngleDetail(String serialNumber);
 
-        public abstract void saveLocationDetails(ExecutorService threadPool, String serialNumber, String towerNo, int towerType,
+        public abstract void saveLocationDetails(String serialNumber, String towerNo, int towerType,
                                                  int direction, int inCharge, int fzcNum);
     }
 }

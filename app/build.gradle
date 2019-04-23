@@ -73,12 +73,13 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.1.4'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
-    implementation 'com.github.AnJiaoDe:BaseDialog:V1.1.8'
+
     //取2.1.4版本，后续版本是依赖了androidx库和v7库冲突
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
     implementation 'com.github.ai2101039:YLCircleImageView:v1.0.6'
     //dialog
     implementation 'com.github.cazaea:sweet-alert-dialog:1.0.0'
+    implementation 'com.github.AnJiaoDe:BaseDialog:V1.1.8'
     //ui
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'

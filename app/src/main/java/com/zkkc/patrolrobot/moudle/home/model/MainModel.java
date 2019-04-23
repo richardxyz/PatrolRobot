@@ -51,6 +51,12 @@ public class MainModel extends BaseModel {
     public static final String USER_NAME = "USER_NAME";
     public static final String NAME = "NAME";
     public static final String PW = "PW";
+    public static final String DTFX = "DTFX";
+    public static final String XL_NUM = "XL_NUM";
+    public static final String XL_Q = "XL_Q";
+    public static final String XL_Z = "XL_Z";
+    public static final String TOWER_NO = "TOWER_NO";
+    public static final String TOWER_TOTAL = "TOWER_TOTAL";
     /**
      * 连接MQTT服务器
      *
@@ -150,8 +156,6 @@ public class MainModel extends BaseModel {
         LogUtils.i("SJR_PUSH", GsonUtils.toJson(b));
         connection.publish(TrackConstant.DEVICE_OP, GsonUtils.toJson(b).getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
             public void onSuccess(Void v) {
-                callback.onSuccess();
-
             }
 
             public void onFailure(Throwable value) {

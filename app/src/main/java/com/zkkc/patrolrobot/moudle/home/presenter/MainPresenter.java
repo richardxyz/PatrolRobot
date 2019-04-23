@@ -3,6 +3,7 @@ package com.zkkc.patrolrobot.moudle.home.presenter;
 import android.content.Context;
 import android.view.View;
 
+import com.luoxudong.app.threadpool.ThreadPoolHelp;
 import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.home.callback.IAddXL;
 import com.zkkc.patrolrobot.moudle.home.callback.IBaseCallback;
@@ -30,10 +31,13 @@ import cn.com.magnity.sdk.MagDevice;
 public class MainPresenter extends MainContract.Presenter {
     private Context mContext;
     private MainModel model;
-
+    private ExecutorService threadPool;
     public MainPresenter(Context mContext) {
         this.mContext = mContext;
         model = new MainModel();
+        threadPool = ThreadPoolHelp.Builder
+                .cached()
+                .builder();
     }
 
     @Override
@@ -81,7 +85,6 @@ public class MainPresenter extends MainContract.Presenter {
         model.sendPublishData(b, connection, new IBaseCallback() {
             @Override
             public void onSuccess() {
-                getView().sendPublishSuccess();
             }
 
             @Override
@@ -113,7 +116,7 @@ public class MainPresenter extends MainContract.Presenter {
     }
 
     @Override
-    public void saveAngleDetail(ExecutorService threadPool, EmptyControlVideo detailPlayer, MagDevice mDev, String serialNumber,
+    public void saveAngleDetail(EmptyControlVideo detailPlayer, MagDevice mDev, String serialNumber,
                                 int cameraType, int cameraX, int cameraY, int cameraZ) {
         model.saveAngleDetail(threadPool, detailPlayer,mDev, serialNumber, cameraType, cameraX, cameraY, cameraZ, new ISaveAngleCallback() {
             @Override
@@ -129,7 +132,7 @@ public class MainPresenter extends MainContract.Presenter {
     }
 
     @Override
-    public void queryAngleDetail(ExecutorService threadPool, String serialNumber) {
+    public void queryAngleDetail(String serialNumber) {
         model.queryAngleDetail(threadPool, serialNumber, new IQueryAngleCallback() {
             @Override
             public void onSuccess(List<ShootAngleDao> list) {
@@ -144,7 +147,7 @@ public class MainPresenter extends MainContract.Presenter {
     }
 
     @Override
-    public void saveLocationDetails(ExecutorService threadPool, String serialNumber, String towerNo, int towerType,
+    public void saveLocationDetails(String serialNumber, String towerNo, int towerType,
                                     int direction, int inCharge, int fzcNum) {
         model.saveLocationDetails(threadPool, serialNumber, towerNo, towerType, direction, inCharge, fzcNum, new ISaveAngleCallback() {
             @Override
