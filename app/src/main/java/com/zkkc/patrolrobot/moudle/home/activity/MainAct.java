@@ -622,21 +622,29 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                         if (deviceStateMainDian == 2) {
                             btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                             btn_a.setFocusableInTouchMode(false);
+                            btn_a.setEnabled(false);
                             btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                             btn_b.setFocusableInTouchMode(true);
+                            btn_b.setEnabled(true);
                             btn_c.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                             btn_c.setFocusableInTouchMode(true);
+                            btn_c.setEnabled(true);
                             btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                             btn_d.setFocusableInTouchMode(true);
+                            btn_d.setEnabled(true);
                         } else {
                             btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                             btn_a.setFocusableInTouchMode(true);
+                            btn_a.setEnabled(true);
                             btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                             btn_b.setFocusableInTouchMode(true);
+                            btn_b.setEnabled(true);
                             btn_c.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                             btn_c.setFocusableInTouchMode(false);
+                            btn_c.setEnabled(false);
                             btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                             btn_d.setFocusableInTouchMode(false);
+                            btn_d.setEnabled(false);
                         }
                     } else {
                         ToastUtils.showShort("当前未登录设备");
@@ -2075,12 +2083,16 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 //TODO  asdasdasd  可进行自动模式 ，手动模式切换，唤醒。配置暂停置为灰色
                 btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                 btn_a.setFocusableInTouchMode(false);
+                btn_a.setEnabled(false);
                 btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                 btn_b.setFocusableInTouchMode(true);
+                btn_b.setEnabled(true);
                 btn_c.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                 btn_c.setFocusableInTouchMode(true);
+                btn_c.setEnabled(true);
                 btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                 btn_d.setFocusableInTouchMode(true);
+                btn_d.setEnabled(true);
                 break;
             case 3://配置修改
 
