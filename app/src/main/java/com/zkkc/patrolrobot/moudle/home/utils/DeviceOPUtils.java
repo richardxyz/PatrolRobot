@@ -123,12 +123,11 @@ public class DeviceOPUtils {
      * @param mContext
      * @param connection
      */
-    public static void inPZOK(MainAct mContext, CallbackConnection connection, String serialNumber, PZCSBean.DataBean bean) {
+    public static void inPZOK(MainAct mContext, CallbackConnection connection, String serialNumber) {
         PZCSBean state = new PZCSBean();
         state.setSerialNum(serialNumber);
         state.setModule(8);
         state.setOp(1);
-        state.setData(bean);
         mContext.getPresenter().sendPublishData(state, connection);
     }
 
@@ -342,6 +341,19 @@ public class DeviceOPUtils {
         state.setOp(1);
         mContext.getPresenter().sendPublishData(state, connection);
     }
+    /**
+     * 退出配置模式
+     *
+     * @param mContext
+     * @param connection
+     */
+    public static void pzmsOut(MainAct mContext, CallbackConnection connection, String serialNumber) {
+        DeviceConfigurationState state = new DeviceConfigurationState();
+        state.setSerialNum(serialNumber);
+        state.setModule(5);
+        state.setOp(2);
+        mContext.getPresenter().sendPublishData(state, connection);
+    }
 
     /**
      * 机器人悬臂控制
@@ -355,6 +367,44 @@ public class DeviceOPUtils {
             state.setSerialNum(serialNumber);
             state.setModule(3);
             state.setOp(num);
+            mContext.getPresenter().sendPublishData(state, connection);
+        } else {
+            ToastUtils.showShort("当前未登录");
+        }
+
+    }
+
+    /**
+     * 唤醒
+     *
+     * @param mContext
+     * @param connection
+     */
+    public static void hx(MainAct mContext, CallbackConnection connection, String serialNumber) {
+        if (connection != null) {
+            DeviceConfigurationState state = new DeviceConfigurationState();
+            state.setSerialNum(serialNumber);
+            state.setModule(2);
+            state.setOp(0);
+            mContext.getPresenter().sendPublishData(state, connection);
+        } else {
+            ToastUtils.showShort("当前未登录");
+        }
+
+    }
+    /**
+     * 手动模式和自动模式
+     * @param mContext
+     * @param connection
+     * @param serialNumber
+     * @param ms   0-手动模式    1-自动模式
+     */
+    public static void sdAndZd(MainAct mContext, CallbackConnection connection, String serialNumber, int ms) {
+        if (connection != null) {
+            DeviceConfigurationState state = new DeviceConfigurationState();
+            state.setSerialNum(serialNumber);
+            state.setModule(4);
+            state.setOp(ms);
             mContext.getPresenter().sendPublishData(state, connection);
         } else {
             ToastUtils.showShort("当前未登录");

@@ -87,7 +87,13 @@ public class PSDFragment extends BaseFragment {
                                 ShootAngleDaoDao.Properties.Direction.eq(direction))
                         .build();
                 mList = queryBuilder.list();
-                psdAdapter.setNewData(mList);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        psdAdapter.setNewData(mList);
+                    }
+                });
+
             }
         });
 

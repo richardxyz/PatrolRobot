@@ -20,10 +20,10 @@
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_5"
+        android:background="@drawable/edit_shape_b"
         android:orientation="horizontal">
 
         <TextView
@@ -49,10 +49,10 @@
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_5"
+        android:background="@drawable/edit_shape_b"
         android:orientation="horizontal">
 
         <TextView
@@ -81,10 +81,10 @@
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_5"
+        android:background="@drawable/edit_shape_b"
         android:orientation="horizontal">
 
         <TextView
@@ -113,10 +113,10 @@
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_5"
+        android:background="@drawable/edit_shape_b"
         android:orientation="horizontal">
 
         <TextView
@@ -142,10 +142,10 @@
     <LinearLayout
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_shape_b"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_5"
+        android:background="@drawable/edit_shape_b"
         android:orientation="horizontal">
 
         <TextView
@@ -164,6 +164,39 @@
             android:background="@drawable/spinner_shape"
             android:dropDownSelector="@color/spinner_dropdown"
             android:entries="@array/spinner_cdz"
+            android:gravity="center" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.6" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_5"
+        android:background="@drawable/edit_shape_b"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="终止塔 |  "
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_14" />
+
+        <Spinner
+            android:id="@+id/spinner_ZZT"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_30"
+            android:layout_weight="1"
+            android:background="@drawable/spinner_shape"
+            android:dropDownSelector="@color/spinner_dropdown"
+            android:entries="@array/spinner_zzt"
             android:gravity="center" />
 
         <View

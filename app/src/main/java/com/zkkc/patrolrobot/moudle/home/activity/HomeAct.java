@@ -988,7 +988,7 @@
 //
 //    private void showConnectDialog() {
 //        View diaView = View.inflate(this, R.layout.dialog_connect, null);
-//        connectDialog = new Dialog(this);
+//        connectDialog = new Dialog(this);showConnectDialog
 //        connectDialog.setContentView(diaView);
 //        Window window = connectDialog.getWindow();
 //        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

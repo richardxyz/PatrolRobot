@@ -27,5 +27,8 @@
         <item>正向</item>
         <item>反向</item>
     </array>
-
+    <array name="spinner_zzt">
+        <item>否</item>
+        <item>是</item>
+    </array>
 </resources>

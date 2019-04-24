@@ -258,7 +258,7 @@ public class MainModel extends BaseModel {
             @Override
             public void run() {
                 if (cameraType == 1) {//可见光
-                    detailPlayer.saveFrame(bitmapToFile(), true, new GSYVideoShotSaveListener() {
+                    detailPlayer.saveFrame(bitmapToFile(false), true, new GSYVideoShotSaveListener() {
                         @Override
                         public void result(boolean success, File file) {
                             if (success) {
@@ -296,8 +296,10 @@ public class MainModel extends BaseModel {
                         }
                     });
                 } else {//红外
-                    File mFile = bitmapToFile();
-                    boolean success = mDev.saveBMP(0, FileUtils.getFileName(mFile));
+                    File mFile = bitmapToFile(true);
+                    Uri uriA = UriUtils.file2Uri(mFile);
+                    boolean success = mDev.saveBMP(0, uriA.toString());
+
                     if (success) {
                         Uri uri = UriUtils.file2Uri(mFile);
                         LocationDetailsDao locationDetailsDao = queryLDDao();
@@ -393,14 +395,19 @@ public class MainModel extends BaseModel {
         return null;
     }
 
-    private File bitmapToFile() {
+    private File bitmapToFile(boolean isHw) {
+        String fileName = null;
         String nowDate = getNowDate();
         File filesDir = Environment.getExternalStorageDirectory();
         File appDir = new File(filesDir, "a_track");
         if (!appDir.exists()) {
             appDir.mkdir();
         }
-        String fileName = nowDate + ".png";
+        if (isHw){
+            fileName = nowDate + ".BMP";
+        }else {
+             fileName = nowDate + ".png";
+        }
         File file = new File(appDir, fileName);
         return file;
     }
