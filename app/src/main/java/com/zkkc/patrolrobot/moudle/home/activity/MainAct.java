@@ -2072,7 +2072,15 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 etXLZ.setFocusableInTouchMode(false);
                 btnXLOk.setVisibility(View.INVISIBLE);
 
-
+                //TODO  asdasdasd  可进行自动模式 ，手动模式切换，唤醒。配置暂停置为灰色
+                btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+                btn_a.setFocusableInTouchMode(false);
+                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+                btn_b.setFocusableInTouchMode(true);
+                btn_c.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+                btn_c.setFocusableInTouchMode(true);
+                btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+                btn_d.setFocusableInTouchMode(true);
                 break;
             case 3://配置修改
 
