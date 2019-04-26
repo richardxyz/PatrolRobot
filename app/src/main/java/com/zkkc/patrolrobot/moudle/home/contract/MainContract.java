@@ -51,8 +51,12 @@ public interface MainContract {
         void saveAngleFailure(String err);
 
         void queryAngleSuccess(List<ShootAngleDao> list);
+
         void queryAngleFailure(String err);
 
+        void delNowPSDDataSuccess();
+
+        void delNowPSDDataFailure(String err);
     }
 
     abstract class Presenter extends BasePresenter<View> {
@@ -71,5 +75,7 @@ public interface MainContract {
 
         public abstract void saveLocationDetails(String serialNumber, String towerNo, int towerType,
                                                  int direction, int inCharge, int fzcNum);
+
+        public abstract void delNowPSDData(String serialNumber);
     }
 }

@@ -139,12 +139,14 @@
                 android:paddingRight="@dimen/dp_20">
 
                 <EditText
+                    android:id="@+id/etSS"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_25"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginBottom="@dimen/dp_5"
                     android:background="@drawable/edit_shape_b"
-                    android:hint="搜索"
+                    android:hint="搜索塔号"
+                    android:inputType="number"
                     android:maxLines="1"
                     android:textSize="@dimen/sp_13" />
 

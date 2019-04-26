@@ -18,6 +18,7 @@ import com.zkkc.patrolrobot.entity.LocationDetailsDao;
 import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.home.callback.IAddXL;
 import com.zkkc.patrolrobot.moudle.home.callback.IBaseCallback;
+import com.zkkc.patrolrobot.moudle.home.callback.IDelNowPSDData;
 import com.zkkc.patrolrobot.moudle.home.callback.IMQTTConnHost;
 import com.zkkc.patrolrobot.moudle.home.callback.IQueryAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.ISaveAngleCallback;
@@ -57,6 +58,7 @@ public class MainModel extends BaseModel {
     public static final String XL_Z = "XL_Z";
     public static final String TOWER_NO = "TOWER_NO";
     public static final String TOWER_TOTAL = "TOWER_TOTAL";
+
     /**
      * 连接MQTT服务器
      *
@@ -352,9 +354,9 @@ public class MainModel extends BaseModel {
                 LocationDetailsDao locationDetailsDao = queryLDDao();
                 if (locationDetailsDao != null) {
                     Query<ShootAngleDao> queryBuilder = getAngleDao().queryBuilder()
-                            .where(ShootAngleDaoDao.Properties.SerialNo.eq(locationDetailsDao.getSerialNo()),
-                                    ShootAngleDaoDao.Properties.TowerNo.eq(locationDetailsDao.getTowerNo()),
-                                    ShootAngleDaoDao.Properties.Direction.eq(locationDetailsDao.getDirection()))
+                            .where(ShootAngleDaoDao.Properties.SerialNo.eq(locationDetailsDao.getSerialNo()))
+                            .where(ShootAngleDaoDao.Properties.TowerNo.eq(locationDetailsDao.getTowerNo()))
+                            .where(ShootAngleDaoDao.Properties.Direction.eq(locationDetailsDao.getDirection()))
                             .build();
                     List<ShootAngleDao> list = queryBuilder.list();
                     if (list != null) {
@@ -363,11 +365,9 @@ public class MainModel extends BaseModel {
                         } else {
                             callback.onFailure("暂无数据");
                         }
-
                     } else {
                         callback.onFailure("暂无数据");
                     }
-
                 } else {
                     callback.onFailure("暂无数据");
                 }
@@ -376,6 +376,41 @@ public class MainModel extends BaseModel {
 
 
     }
+
+    public void delNowPSDData(ExecutorService threadPool, String serialNumber, final IDelNowPSDData call) {
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                LocationDetailsDao locationDetailsDao = queryLDDao();
+                if (locationDetailsDao != null) {
+                    Query<ShootAngleDao> queryBuilder = getAngleDao().queryBuilder()
+                            .where(ShootAngleDaoDao.Properties.SerialNo.eq(locationDetailsDao.getSerialNo()))
+                            .where(ShootAngleDaoDao.Properties.TowerNo.eq(locationDetailsDao.getTowerNo()))
+                            .where(ShootAngleDaoDao.Properties.Direction.eq(locationDetailsDao.getDirection()))
+                            .build();
+                    List<ShootAngleDao> list = queryBuilder.list();
+                    getLDDao().delete(locationDetailsDao);
+                    if (list != null) {
+                        if (list.size() > 0) {
+                            for (int i = 0; i < list.size(); i++) {
+                                getAngleDao().delete(list.get(i));
+                            }
+                            call.onSuccess();
+                        } else {
+                            call.onFailure("暂无可删除的数据");
+                        }
+                    } else {
+                        call.onFailure("暂无可删除的数据");
+                    }
+                } else {
+                    call.onFailure("暂无可删除的数据");
+                }
+
+            }
+        });
+
+    }
+
 
     private LocationDetailsDao queryLDDao() {
         List<LocationDetailsDao> locationDetailsDaos = getLDDao().loadAll();
@@ -403,10 +438,10 @@ public class MainModel extends BaseModel {
         if (!appDir.exists()) {
             appDir.mkdir();
         }
-        if (isHw){
+        if (isHw) {
             fileName = nowDate + ".BMP";
-        }else {
-             fileName = nowDate + ".png";
+        } else {
+            fileName = nowDate + ".png";
         }
         File file = new File(appDir, fileName);
         return file;

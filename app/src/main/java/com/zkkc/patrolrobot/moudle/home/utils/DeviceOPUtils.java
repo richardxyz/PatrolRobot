@@ -13,6 +13,19 @@ import org.fusesource.mqtt.client.CallbackConnection;
  */
 public class DeviceOPUtils {
     /**
+     * 查询设备安装状态
+     *
+     * @param mContext
+     * @param connection
+     */
+    public static void queryAZZT(MainAct mContext, CallbackConnection connection, String serialNumber) {
+        DeviceConfigurationState state = new DeviceConfigurationState();
+        state.setSerialNum(serialNumber);
+        state.setModule(0);
+        state.setOp(5);
+        mContext.getPresenter().sendPublishData(state, connection);
+    }
+    /**
      * 查询当前机器状态
      *
      * @param mContext

@@ -5,8 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
@@ -25,6 +28,8 @@ import com.zkkc.patrolrobot.moudle.details.adapter.PZAdapter;
 import com.zkkc.patrolrobot.moudle.details.fragment.PSDFragment;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.greendao.query.Query;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +64,8 @@ public class DetailsAct extends BaseActivity {
     SlidingTabLayout stl;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
+    @BindView(R.id.etSS)
+    EditText etSS;
 
 
     List<LocationDetailsDao> locationDetailsDaos = new ArrayList<>();
@@ -100,7 +107,7 @@ public class DetailsAct extends BaseActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 EventBus.getDefault().post(locationDetailsDaos.get(position));
-                ToastUtils.showShort(position+"");
+                ToastUtils.showShort(position + "");
             }
         });
         threadPool.execute(new Runnable() {
@@ -112,14 +119,13 @@ public class DetailsAct extends BaseActivity {
                         @Override
                         public void run() {
                             tvPsdzs.setText(locationDetailsDaos.size() + "");
+                            if (locationDetailsDaos.size() > 0) {
+                                pzAdapter.setNewData(locationDetailsDaos);
+                            } else {
+                                ToastUtils.showShort("暂无数据");
+                            }
                         }
                     });
-                    if (locationDetailsDaos.size() > 0) {
-//                        pzAdapter.notifyDataSetChanged();
-                        pzAdapter.setNewData(locationDetailsDaos);
-                    } else {
-                        ToastUtils.showShort("暂无数据");
-                    }
                 } else {
                     ToastUtils.showShort("暂无数据");
                 }
@@ -134,7 +140,41 @@ public class DetailsAct extends BaseActivity {
         fragments.add(psdFragment);
         stl.setViewPager(viewPager, arr, this, fragments);
 
+        etSS.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable edit) {
+                final String trim = etSS.getText().toString().trim();
+                if (trim != null && !trim.equals("")) {
+                    threadPool.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Query<LocationDetailsDao> builder = getLDDao().queryBuilder()
+                                    .where(LocationDetailsDaoDao.Properties.TowerNo.eq(trim))
+                                    .build();
+                            final List<LocationDetailsDao> list = builder.list();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pzAdapter.setNewData(list);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    pzAdapter.setNewData(locationDetailsDaos);
+                }
+
+
+            }
+        });
     }
 
     private void mainData() {

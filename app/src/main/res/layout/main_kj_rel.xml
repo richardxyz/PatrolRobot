@@ -394,7 +394,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:background="@drawable/connect_button"
                 android:text="配置暂停"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <View
@@ -408,7 +408,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:background="@drawable/connect_button"
                 android:text="唤醒"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <View
@@ -436,7 +436,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:background="@drawable/connect_button"
                 android:text="手动模式"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <View
@@ -450,7 +450,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:background="@drawable/connect_button"
                 android:text="自动模式"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <View

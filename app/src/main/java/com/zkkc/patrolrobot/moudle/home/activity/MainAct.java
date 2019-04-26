@@ -384,6 +384,9 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     public static final String IS_ZZT = "IS_ZZT";//是否为终止塔
 
+    private boolean isMPZZT = false;//是否为主动发送的配置暂停
+    public static final String IS_WCDQD = "IS_WCDQD";//是否删除当前配置点的数据库数据
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void batteryEvent(BatteryStateBean stateBean) {
         batteryType = stateBean.batteryType;
@@ -534,13 +537,11 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 if (llXLPopup.getVisibility() == View.GONE) {
                     //查询线路配置信息
                     if (connectState) {
-                        updateXLPopupShow(true);
                         showBaseProDialog(MainAct.this, "正在查询线路信息");
                         DeviceOPUtils.queryXLPZXX(MainAct.this, connection, SERIAL_NUMBER);
                     } else {
                         ToastUtils.showShort("当前未登录设备");
                     }
-
                 } else {
                     updateXLPopupShow(false);
                 }
@@ -551,14 +552,12 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                     updateXQPopupShow(false);
                 } else {
                     if (connectState) {
-                        updateXQPopupShow(true);
                         //点击使其显示
-                        //TODO 数据变化更新
+                        updateXQPopupShow(true);
                         getPresenter().queryAngleDetail(SERIAL_NUMBER);
                     } else {
                         ToastUtils.showShort("当前未登录设备");
                     }
-
                 }
                 break;
             case R.id.btnAffirm://位置确认
@@ -571,24 +570,20 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
             case R.id.btnWc://完成
                 if (isHW) {
-                    int anInt = SPUtils.getInstance().getInt(IS_ZZT);
-                    if (anInt == 1) {
+                    boolean anInt = SPUtils.getInstance().getBoolean(IS_ZZT);
+                    if (anInt) {
                         showZZTDialog();//终止塔完成
                     } else {
                         showPzwcDialog();//当前拍摄点角度全部完成
                     }
-
                 } else {
                     showqhHwDialog();//可见光完成后dialog
                 }
-
-
                 break;
             case R.id.tvCXT://调焦
 
                 break;
             case R.id.btnXLOk://确认添加（线路）
-
                 if (connectState) {
                     //添加数据
                     final String xlNum = etXLNum.getText().toString().trim();
@@ -596,12 +591,11 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                     final String XLZ = etXLZ.getText().toString().trim();
                     btnXLOk.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                     btnXLOk.setFocusableInTouchMode(false);
+                    btnXLOk.setEnabled(false);
                     getPresenter().addXL(SERIAL_NUMBER, dTFX + "", xlNum, XLQ, XLZ, connection);
                 } else {
                     ToastUtils.showShort("当前未登录设备");
                 }
-
-
                 break;
             case R.id.btnXJSD://行进档速
                 if (isZC) {
@@ -612,49 +606,51 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                     btnXJSD.setText("正常");
                 }
                 break;
-
             case R.id.btnInPZMS://隐藏展开按钮
                 if (rlCD.getVisibility() == View.VISIBLE) {
                     rlCD.setVisibility(View.GONE);
                 } else {
                     if (connectState) {
                         rlCD.setVisibility(View.VISIBLE);
-                        if (deviceStateMainDian == 2) {
+                        if (isPZWC) {//配置完成
                             btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
-                            btn_a.setFocusableInTouchMode(false);
                             btn_a.setEnabled(false);
-                            btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
-                            btn_b.setFocusableInTouchMode(true);
-                            btn_b.setEnabled(true);
+                            if (deviceMainState == 7) {
+                                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+                                btn_b.setEnabled(true);
+                            } else {
+                                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+                                btn_b.setEnabled(false);
+                            }
                             btn_c.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
-                            btn_c.setFocusableInTouchMode(true);
                             btn_c.setEnabled(true);
                             btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
-                            btn_d.setFocusableInTouchMode(true);
                             btn_d.setEnabled(true);
-                        } else {
-                            btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
-                            btn_a.setFocusableInTouchMode(true);
-                            btn_a.setEnabled(true);
-                            btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
-                            btn_b.setFocusableInTouchMode(true);
-                            btn_b.setEnabled(true);
+                        } else {//未配置完成
+                            if (isPZMS) {
+                                btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+                                btn_a.setEnabled(true);
+                            } else {
+                                btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+                                btn_a.setEnabled(false);
+                            }
+                            if (deviceMainState == 7) {
+                                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+                                btn_b.setEnabled(true);
+                            } else {
+                                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+                                btn_b.setEnabled(false);
+                            }
                             btn_c.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
-                            btn_c.setFocusableInTouchMode(false);
                             btn_c.setEnabled(false);
                             btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
-                            btn_d.setFocusableInTouchMode(false);
                             btn_d.setEnabled(false);
                         }
                     } else {
                         ToastUtils.showShort("当前未登录设备");
                     }
-
                 }
-
-
                 break;
-
             case R.id.ivLeftYJ://左悬臂压紧
                 ToastUtils.showShort("左悬臂压紧");
                 DeviceOPUtils.xbKZ(MainAct.this, connection, SERIAL_NUMBER, 0);
@@ -695,15 +691,28 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 }
                 break;
             case R.id.btn_b://唤醒
-                DeviceOPUtils.hx(MainAct.this, connection, SERIAL_NUMBER);
+                if (connection != null) {
+                    DeviceOPUtils.hx(MainAct.this, connection, SERIAL_NUMBER);
+                } else {
+                    ToastUtils.showShort("当前未登录");
+                }
                 break;
             case R.id.btn_c://手动模式
-                showBaseProDialog(MainAct.this, "正在切换到手动模式");
-                DeviceOPUtils.sdAndZd(MainAct.this, connection, SERIAL_NUMBER, 0);
+                if (connection != null) {
+                    showBaseProDialog(MainAct.this, "正在切换到手动模式");
+                    DeviceOPUtils.sdAndZd(MainAct.this, connection, SERIAL_NUMBER, 0);
+                } else {
+                    ToastUtils.showShort("当前未登录");
+                }
+
                 break;
             case R.id.btn_d://自动模式
-                showBaseProDialog(MainAct.this, "正在切换到自动模式");
-                DeviceOPUtils.sdAndZd(MainAct.this, connection, SERIAL_NUMBER, 1);
+                if (connection != null) {
+                    showBaseProDialog(MainAct.this, "正在切换到自动模式");
+                    DeviceOPUtils.sdAndZd(MainAct.this, connection, SERIAL_NUMBER, 1);
+                } else {
+                    ToastUtils.showShort("当前未登录");
+                }
                 break;
 
         }
@@ -732,8 +741,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 pzmssStopDialog.dismiss();
                 //配置模式暂停
                 DeviceOPUtils.pzmsStop(MainAct.this, connection, SERIAL_NUMBER);
-                //TODO ---抹除当前未配置完成的拍摄点信息----
-
+                showBaseProDialog(MainAct.this, "等待进入配置暂停模式");
             }
         });
 
@@ -763,6 +771,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 //终止塔完成
                 btnPzwcOk.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                 btnPzwcOk.setFocusableInTouchMode(false);
+                btnPzwcOk.setEnabled(false);
                 // 退出配置模式，点确认（终止塔）
                 DeviceOPUtils.pzmsOut(MainAct.this, connection, SERIAL_NUMBER);//退出配置模式
 
@@ -796,6 +805,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 //TODO 当前拍摄点配置完成，等待机器到达下个拍摄点
                 btnPzwcOk.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                 btnPzwcOk.setFocusableInTouchMode(false);
+                btnPzwcOk.setEnabled(false);
                 DeviceOPUtils.inPZOK(MainAct.this, connection, SERIAL_NUMBER);
 
             }
@@ -868,7 +878,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     private int inType;
     private String dqNum;
     private String fzcNum;
-    private int isZZT = 0;//是否为终止塔
+    private boolean isZZT = false;//是否为终止塔
     Button btnGo;
 
     private void showPSDialog() {
@@ -888,10 +898,10 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 positionTv.setGravity(Gravity.CENTER);
                 switch (position) {
                     case 0://否
-                        isZZT = 0;
+                        isZZT = false;
                         break;
                     case 1://是
-                        isZZT = 1;
+                        isZZT = true;
                         break;
                 }
             }
@@ -1003,6 +1013,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                     bean.setType(inType);
                     btnGo.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                     btnGo.setFocusableInTouchMode(false);
+                    btnGo.setEnabled(false);
                     SPUtils.getInstance().put(IS_ZZT, isZZT);
                     DeviceOPUtils.inPSDXX(MainAct.this, connection, SERIAL_NUMBER, bean);
                 }
@@ -1041,8 +1052,13 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 String userName = etUserName.getText().toString().trim();
                 String name = etName.getText().toString().trim();
                 String pW = etPW.getText().toString().trim();
-                showBaseProDialog(MainAct.this, "登录中，请稍后...");
-                getPresenter().MQTTConnHost(userName, name, pW, mqtt);
+                if (!"".equals(userName) && !"".equals(name) && !"".equals(pW)) {
+                    showBaseProDialog(MainAct.this, "登录中，请稍后...");
+                    getPresenter().MQTTConnHost(userName, name, pW, mqtt);
+                }else {
+                    ToastUtils.showShort("用户名或密码不能为空");
+                }
+
                 connectDialog.dismiss();
             }
         });
@@ -1441,24 +1457,56 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                         ToastUtils.showShort("进入配置模式成功");
                         dismisssBaseProDialog();
                         isPZMS = true;
-                        if (deviceStateNow == 0) {//未
+                        if (deviceStateMainDian == 0) {//未配置
                             updateXLPopupShow(true);//显示线路信息录入Popup
-                            LogUtils.i("SJR", "意外弹出了线路信息录入Popup");
-                        } else if (deviceStateNow == 1) {//中
-                            showBaseProDialog(MainAct.this, "设备正在前往拍摄点");
-                        } else if (deviceStateNow == 3) {//完成
-
+                        } else if (deviceStateMainDian == 1) {//配置中
+                            switch (deviceStateDian) {
+                                case 0://默认
+                                    showBaseProDialog(MainAct.this, "设备正在前往拍摄点，请稍后...");
+                                    break;
+                                case 1://点配置
+                                    widgetHideAndShow(true, true, true, true, true);
+                                    affirmState = true;
+                                    btnAffirm.setText("位置确认");
+                                    break;
+                                case 2://可见光角度配置
+                                    widgetHideAndShow(true, true, true, true, true);
+                                    affirmState = false;
+                                    btnAffirm.setText("角度确认");
+                                    if (isHW) {
+                                        switchoverCamera(false);
+                                    }
+                                    break;
+                                case 3://红外角度配置
+                                    widgetHideAndShow(true, true, true, true, true);
+                                    affirmState = false;
+                                    btnAffirm.setText("角度确认");
+                                    if (!isHW) {
+                                        switchoverCamera(true);
+                                    }
+                                    break;
+                                case 4://配置暂停
+                                    showBaseProDialog(MainAct.this, "设备正在前往拍摄点，请稍后...");
+                                    break;
+                                case 5://线路信息配置
+                                    widgetHideAndShow(false, false, false, false, false);
+                                    updateXLPopupShow(true);//显示线路信息录入Popup
+                                    ToastUtils.showShort("线路信息未配置完成，请重新录入");
+                                    break;
+                            }
                         }
-
                         break;
                     case 3://过障
                         tvJQMS.setText("过障模式");
                         break;
                     case 4://充电
                         tvJQMS.setText("充电模式");
+                        showCDDialog();//充电模式（进入配置暂停，需要重新进入配置模式）
                         break;
                     case 5://低电
                         tvJQMS.setText("低电模式");
+                        ToastUtils.setMsgColor(getResources().getColor(R.color.red));
+                        ToastUtils.showLong("当前为低电模式，不可进行配置");
                         break;
                     case 6://信息采集
                         tvJQMS.setText("信息采集");
@@ -1476,6 +1524,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                     case 0://未配置
                         break;
                     case 1://配置中
+                        deviceStateDian = subState;
                         switch (subState) {
                             case 0://默认
                                 break;
@@ -1483,22 +1532,28 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                                 dismisssBaseProDialog();
                                 showDDPSDDialog();//到达拍摄点
                                 break;
-                            case 2://角度配置
+                            case 2://可见光角度配置
                                 break;
-                            case 3://配置校验
+                            case 3://红外角度配置
                                 break;
                             case 4://配置暂停
+                                isPZMS = false;
+                                if (isMPZZT) {//主动进入配置暂停
+                                    dismisssBaseProDialog();
+                                    isMPZZT = false;
+                                    ToastUtils.showShort("设备进入配置暂停成功");
+                                    //TODO ---抹除当前未配置完成的拍摄点信息----
+                                    showBaseProDialog(MainAct.this, "正在删除当前拍摄点信息");
+                                    getPresenter().delNowPSDData(SERIAL_NUMBER);
+                                }
+                                break;
+                            case 5://信息配置
                                 break;
                         }
                         break;
                     case 2://配置完成
-                        SPUtils.getInstance().put(IS_ZZT, 0);
-                        widgetHideAndShow(false, false, false, false, false);
-                        affirmState = true;
-                        btnAffirm.setText("位置确认");
-                        switchoverCamera(false);
-
-
+                        SPUtils.getInstance().put(IS_WCDQD, false);
+                        initYCKJ(true);//隐藏的操作按钮显示状态设置
                         break;
                     case 3://配置修改
                         switch (subState) {
@@ -1514,6 +1569,36 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
         }
 
+
+    }
+
+    /**
+     * 充电模式（进入配置暂停，需要重新进入配置模式）
+     */
+    BaseDialog cdmsDialog;
+
+    private void showCDDialog() {
+        cdmsDialog = new BaseDialog(this);
+        cdmsDialog.contentView(R.layout.dialog_cdms_ts)
+                .canceledOnTouchOutside(false).show();
+        Button btnCancel = cdmsDialog.findViewById(R.id.btnCancel);
+        Button btnOk = cdmsDialog.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cdmsDialog.dismiss();
+                //继续配置  进入配置模式
+                //进入配置模式
+                DeviceOPUtils.inPZMS(MainAct.this, connection, SERIAL_NUMBER);
+                showBaseProDialog(MainAct.this, "正在进入配置模式");
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cdmsDialog.dismiss();
+            }
+        });
 
     }
 
@@ -1561,10 +1646,10 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
      * @param pzztBean
      */
     private int deviceMainState = -1;//主状态（0-手动模式 1-自动模式 2-配置 3-过障模式 4-充电模式 5-低电模式 6-信息采集 7-待机模式 8-数据上传）
-    private int deviceStateNow = -1;//配置信息（0-未配置 1-配置中 2-配置完成 3-配置修改）
     private int deviceStateDian = -1;//子配置状态（0-行走中 1-点配置 2-可见光角度配置 3-红外角度配置  4-配置暂停  5-线路信息未配置完成）
     private int deviceStateMainDian = -1;//配置状态（0-未配置 1-配置中 2-配置完成 3-配置修改）
     private boolean isPZMS = false;//当前是否是配置模式
+    private boolean isPZWC = false;//当前是否配置完成
 
     private void switchData(PZZTBean pzztBean) {
         int module = pzztBean.getModule();
@@ -1575,9 +1660,17 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 switch (op) {
                     case 0://机器状态
                         dismisssBaseProDialog();
-                        //查询线路配置信息
-                        showBaseProDialog(MainAct.this, "正在查询线路信息");
-                        DeviceOPUtils.queryXLPZXX(MainAct.this, connection, SERIAL_NUMBER);
+                        if (data.getMainState() != 5) {
+                            //查询配置状态
+                            showBaseProDialog(MainAct.this, "正在查询配置状态");
+                            DeviceOPUtils.queryPZZT(MainAct.this, connection, SERIAL_NUMBER);
+                        } else {
+                            ToastUtils.showLong("当前为低电模式，不可进行配置");
+                            ToastUtils.setMsgColor(getResources().getColor(R.color.red));
+                        }
+//                        //查询线路配置信息
+//                        showBaseProDialog(MainAct.this, "正在查询线路信息");
+//                        DeviceOPUtils.queryXLPZXX(MainAct.this, connection, SERIAL_NUMBER);
                         deviceMainState = data.getMainState();
                         switch (data.getMainState()) {
                             case 0://手动
@@ -1594,9 +1687,11 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                                 break;
                             case 4://充电
                                 tvJQMS.setText("充电模式");
+                                showCDDialog();//充电模式（进入配置暂停，需要重新进入配置模式）
                                 break;
                             case 5://低电
                                 tvJQMS.setText("低电模式");
+
                                 break;
                             case 6://信息采集
                                 tvJQMS.setText("信息采集");
@@ -1608,23 +1703,35 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                                 tvJQMS.setText("数据上传");
                                 break;
                         }
-
-
                         break;
                     case 1://线路配置信息
                         if (data != null) {
                             dismisssBaseProDialog();
+                            updateXLPopupShow(true);
                             int state = data.getState();
                             int bigTowerDir = data.getBigTowerDir();
                             String lineNum = data.getLineNum();
                             String initialPoint = data.getInitialPoint();
                             String endPoint = data.getEndPoint();
-                            int installState = data.getInstallState();
-                            deviceStateNow = state;
-                            if (installState == 1) {//未安装
-                                showTSAZDialog();//提示执行安装Dialog
+                            //设置显示的数据
+                            if (bigTowerDir == 0) {
+                                spinnerDTFX.setSelection(0);
                             } else {
-                                doXLXX(state, bigTowerDir, lineNum, initialPoint, endPoint);//处理配置信息
+                                spinnerDTFX.setSelection(1);
+                            }
+                            etXLNum.setText(lineNum);
+                            etXLQ.setText(initialPoint);
+                            etXLZ.setText(endPoint);
+                            if (state == 2) {
+                                etXLNum.setFocusableInTouchMode(false);
+                                etXLQ.setFocusableInTouchMode(false);
+                                etXLZ.setFocusableInTouchMode(false);
+                                btnXLOk.setVisibility(View.INVISIBLE);
+                            } else {
+                                etXLNum.setFocusableInTouchMode(true);
+                                etXLQ.setFocusableInTouchMode(true);
+                                etXLZ.setFocusableInTouchMode(true);
+                                btnXLOk.setVisibility(View.VISIBLE);
                             }
                         }
 
@@ -1633,76 +1740,98 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                         dismisssBaseProDialog();
                         int mainState = data.getMainState();
                         int subState = data.getSubState();
-                        int installState = data.getInstallState();
                         deviceStateMainDian = mainState;
                         switch (mainState) {
                             case 0://未配置
+                                initYCKJ(false);//隐藏的操作按钮显示状态设置
+                                showWPZDialog();//提示未配置
                                 break;
                             case 1://配置中
+                                initYCKJ(false);//隐藏的操作按钮显示状态设置
                                 deviceStateDian = subState;
                                 switch (subState) {
                                     case 0://默认(行走中)
-                                        //TODO  有疑问 到底是什么状态  未知啊
-                                        ToastUtils.showLong("设备正在前往拍摄点,请稍后...");
-                                        showBaseProDialog(MainAct.this, "设备正在前往拍摄点");
-                                        isPZMS = true;
                                         widgetHideAndShow(false, false, false, false, false);
+                                        if (deviceMainState != 2) {
+                                            isPZMS = false;
+                                            //进入配置模式
+                                            DeviceOPUtils.inPZMS(MainAct.this, connection, SERIAL_NUMBER);
+                                            showBaseProDialog(MainAct.this, "正在进入配置模式");
+                                        } else {
+                                            isPZMS = true;
+                                            showBaseProDialog(MainAct.this, "设备正在前往拍摄点，请稍后...");
+                                        }
                                         break;
                                     case 1://点配置
-                                        isPZMS = true;
-                                        affirmState = true;
-                                        btnAffirm.setText("位置确认");
-                                        //控制按钮显示和隐藏
-                                        widgetHideAndShow(true, true, true, true, true);
+                                        if (deviceMainState != 2) {
+                                            isPZMS = false;
+                                            //进入配置模式
+                                            DeviceOPUtils.inPZMS(MainAct.this, connection, SERIAL_NUMBER);
+                                            showBaseProDialog(MainAct.this, "正在进入配置模式");
+                                        } else {
+                                            isPZMS = true;
+                                            widgetHideAndShow(true, true, true, true, true);
+                                            affirmState = true;
+                                            btnAffirm.setText("位置确认");
+                                        }
                                         break;
                                     case 2://可见光角度配置
-                                        isPZMS = true;
-                                        affirmState = false;
-                                        btnAffirm.setText("角度确认");
-//                                        showQzPsJdDialog();
-                                        if (isHW) {
-                                            switchoverCamera(false);
+                                        if (deviceMainState != 2) {
+                                            isPZMS = false;
+                                            //进入配置模式
+                                            DeviceOPUtils.inPZMS(MainAct.this, connection, SERIAL_NUMBER);
+                                            showBaseProDialog(MainAct.this, "正在进入配置模式");
+                                        } else {
+                                            isPZMS = true;
+                                            widgetHideAndShow(true, true, true, true, true);
+                                            affirmState = false;
+                                            btnAffirm.setText("角度确认");
+                                            if (isHW) {
+                                                switchoverCamera(false);
+                                            }
                                         }
-                                        //控制按钮显示和隐藏
-                                        widgetHideAndShow(true, true, true, true, true);
                                         break;
                                     case 3://红外角度配置
-                                        isPZMS = true;
-                                        affirmState = false;
-                                        btnAffirm.setText("角度确认");
-                                        if (!isHW) {
-                                            switchoverCamera(true);
+                                        if (deviceMainState != 2) {
+                                            isPZMS = false;
+                                            //进入配置模式
+                                            DeviceOPUtils.inPZMS(MainAct.this, connection, SERIAL_NUMBER);
+                                            showBaseProDialog(MainAct.this, "正在进入配置模式");
+                                        } else {
+                                            isPZMS = true;
+                                            widgetHideAndShow(true, true, true, true, true);
+                                            affirmState = false;
+                                            btnAffirm.setText("角度确认");
+                                            if (!isHW) {
+                                                switchoverCamera(true);
+                                            }
                                         }
-                                        //控制按钮显示和隐藏
-                                        widgetHideAndShow(true, true, true, true, true);
                                         break;
                                     case 4://配置暂停，上次未配置完的数据被抹除掉了，本地删除上次未配置完成的数据
-                                        ToastUtils.showShort("配置暂停");
                                         isPZMS = false;
-                                        affirmState = true;
-                                        btnAffirm.setText("位置确认");
-                                        //控制按钮显示和隐藏
-                                        widgetHideAndShow(false, false, false, false, false);
-//                                        if (deviceMainState == 5) {//当前的状态无法进入配置模式（条件）
-//                                            ToastUtils.showShort("当前设备为低电模式，请等待充电完成");
-//                                        } else {
                                         //进入配置模式
-                                        showBaseProDialog(MainAct.this, "正在进入配置模式");
                                         DeviceOPUtils.inPZMS(MainAct.this, connection, SERIAL_NUMBER);
-//                                        }
+                                        showBaseProDialog(MainAct.this, "正在进入配置模式");
                                         break;
                                     case 5://线路信息未配置完成
-                                        isPZMS = true;
-                                        if (installState == 1) {
-                                            ToastUtils.showShort("线路信息未配置完成，请重新录入");
+                                        if (deviceMainState != 2) {
+                                            isPZMS = false;
+                                            //进入配置模式
+                                            DeviceOPUtils.inPZMS(MainAct.this, connection, SERIAL_NUMBER);
+                                            showBaseProDialog(MainAct.this, "正在进入配置模式");
+                                        } else {
+                                            isPZMS = true;
+                                            widgetHideAndShow(false, false, false, false, false);
                                             updateXLPopupShow(true);//显示线路信息录入Popup
+                                            ToastUtils.showShort("线路信息未配置完成，请重新录入");
                                         }
                                         break;
                                 }
                                 break;
                             case 2://配置完成
                                 ToastUtils.showLong("该设备配置已完成");
-
+                                SPUtils.getInstance().put(IS_WCDQD, false);
+                                initYCKJ(true);//隐藏的操作按钮显示状态设置
                                 break;
                             case 3://配置修改
                                 ToastUtils.showShort("配置修改");
@@ -1711,6 +1840,17 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
 
                         break;
                     case 3://跨塔数量
+                        break;
+                    case 5://设备安装状态
+                        dismisssBaseProDialog();
+                        int installState = data.getInstallState();
+                        if (installState == 1) {//未安装
+                            showTSAZDialog();//提示执行安装Dialog
+                        } else {
+                            //查询机器状态
+                            showBaseProDialog(MainAct.this, "正在查询机器状态");
+                            DeviceOPUtils.queryJQZT(MainAct.this, connection, SERIAL_NUMBER);
+                        }
                         break;
                 }
                 break;
@@ -1723,12 +1863,15 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                                 if (installResult.equals("0")) {
                                     dismisssBaseProDialog();
                                     ToastUtils.showShort("一键安装完成");
-                                    //查询线路配置信息
-                                    showBaseProDialog(MainAct.this, "正在查询线路信息");
-                                    DeviceOPUtils.queryXLPZXX(MainAct.this, connection, SERIAL_NUMBER);
+                                    //查询机器状态
+                                    showBaseProDialog(MainAct.this, "正在查询机器状态");
+                                    DeviceOPUtils.queryJQZT(MainAct.this, connection, SERIAL_NUMBER);
+//                                    //查询线路配置信息
+//                                    showBaseProDialog(MainAct.this, "正在查询线路信息");
+//                                    DeviceOPUtils.queryXLPZXX(MainAct.this, connection, SERIAL_NUMBER);
 
-//                                    showLRXJFXDialog();//行进方向录入Dialog
                                 } else if (installResult.equals("1")) {
+                                    dismisssBaseProDialog();
                                     ToastUtils.showShort("一键安装失败,请检查机器设备是否安装正确！");
                                     //一键安装失败！重新进行一键安装
                                 }
@@ -1761,6 +1904,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                         if (lrxjfxDialog != null) {
                             btnConnect.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                             btnConnect.setFocusableInTouchMode(true);
+                            btnConnect.setEnabled(true);
                             lrxjfxDialog.dismiss();
                             ToastUtils.showLong("操作成功，请等待设备到达预定拍摄点");
                             showBaseProDialog(MainAct.this, "等待设备到达预定拍摄点");
@@ -1801,10 +1945,8 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                         break;
                     case 1://配置模式暂停
                         //TODO
-                        ToastUtils.showShort("配置模式已暂停");
-//                        if (pzmssStopDialog != null) {
-//                            pzmssStopDialog.dismiss();
-//                        }
+                        isMPZZT = true;//我主动发送的配置暂停
+                        ToastUtils.showShort("配置发送成功");
                         break;
                     case 2://配置模式退出
                         break;
@@ -1879,25 +2021,26 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                     case 0://配置拍摄点
                         //保存拍摄点录入的信息
                         getPresenter().saveLocationDetails(SERIAL_NUMBER, dqNum, inType, inDirection, inCharge, Integer.parseInt(fzcNum));
-
-
                         break;
                     case 1://配置完成
-                        if (SPUtils.getInstance().getInt(IS_ZZT) == 1) {
+                        if (SPUtils.getInstance().getBoolean(IS_ZZT)) {
+                            SPUtils.getInstance().put(IS_ZZT, false);
                             ToastUtils.showShort("全部配置完成");
+                            isPZWC = true;
+                            SPUtils.getInstance().put(IS_WCDQD, false);
                         } else {
                             if (pzwcDialog != null) {
                                 btnPzwcOk.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                                 btnPzwcOk.setFocusableInTouchMode(true);
+                                btnPzwcOk.setEnabled(true);
                                 pzwcDialog.dismiss();
                                 widgetHideAndShow(false, false, false, false, false);
                                 switchoverCamera(false);
                                 ToastUtils.showLong("当前拍摄点配置完成，请等待设备到达下个拍摄点");
+                                SPUtils.getInstance().put(IS_WCDQD, false);
                                 showBaseProDialog(MainAct.this, "正在前往下一拍摄点，请稍后...");
                             }
                         }
-
-
                         break;
                     case 2://校验完成
                         break;
@@ -1920,6 +2063,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                     case 0://配置信息
                         btnXLOk.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                         btnXLOk.setFocusableInTouchMode(true);
+                        btnXLOk.setEnabled(true);
                         updateXLPopupShow(false);
                         //行进方向录入
                         showLRXJFXDialog();
@@ -1931,6 +2075,46 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
         }
 
+    }
+
+    private void initYCKJ(boolean b) {
+        if (b) {
+            SPUtils.getInstance().put(IS_ZZT, false);
+            widgetHideAndShow(false, false, false, false, false);
+            affirmState = true;
+            btnAffirm.setText("位置确认");
+            switchoverCamera(false);
+            //TODO  可进行自动模式 ，手动模式切换，唤醒。配置暂停置为灰色
+            isPZWC = true;//当前是否配置完成
+            btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+            btn_a.setEnabled(false);
+            if (deviceMainState == 7) {
+                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+                btn_b.setEnabled(true);
+            } else {
+                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+                btn_b.setEnabled(false);
+            }
+            btn_c.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+            btn_c.setEnabled(true);
+            btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+            btn_d.setEnabled(true);
+        } else {
+            isPZWC = false;//当前是否配置完成
+            btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+            btn_a.setEnabled(true);
+            if (deviceMainState == 7) {
+                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+                btn_b.setEnabled(true);
+            } else {
+                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+                btn_b.setEnabled(false);
+            }
+            btn_c.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+            btn_c.setEnabled(false);
+            btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+            btn_d.setEnabled(false);
+        }
     }
 
     /**
@@ -1972,6 +2156,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 //行进方向设置
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                 btnConnect.setFocusableInTouchMode(false);
+                btnConnect.setEnabled(false);
                 DeviceOPUtils.inXJFX(MainAct.this, connection, xjfxInfo, SERIAL_NUMBER);
             }
         });
@@ -2025,80 +2210,6 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 tvXQ.setTextColor(getResources().getColor(R.color.white));
             }
         }
-    }
-
-    /**
-     * 处理线路信息
-     *
-     * @param state
-     * @param bigTowerDir
-     * @param lineNum
-     * @param initialPoint
-     * @param endPoint
-     */
-    private void doXLXX(int state, int bigTowerDir, String lineNum, String initialPoint, String endPoint) {
-        switch (state) {
-            case 0://未配置
-                etXLNum.setText("");
-                etXLQ.setText("");
-                etXLZ.setText("");
-                etXLNum.setFocusableInTouchMode(true);
-                etXLQ.setFocusableInTouchMode(true);
-                etXLZ.setFocusableInTouchMode(true);
-                btnXLOk.setVisibility(View.VISIBLE);
-                showWPZDialog();//提示未配置
-                break;
-            case 1://配置中
-                //查询当前配置状态
-                showBaseProDialog(MainAct.this, "正在查询当前配置状态");
-                DeviceOPUtils.queryPZZT(MainAct.this, connection, SERIAL_NUMBER);
-                if (bigTowerDir == 0) {
-                    spinnerDTFX.setSelection(0);
-                } else {
-                    spinnerDTFX.setSelection(1);
-                }
-                etXLNum.setText(lineNum);
-                etXLQ.setText(initialPoint);
-                etXLZ.setText(endPoint);
-                etXLNum.setFocusableInTouchMode(true);
-                etXLQ.setFocusableInTouchMode(true);
-                etXLZ.setFocusableInTouchMode(true);
-                btnXLOk.setVisibility(View.VISIBLE);
-
-                break;
-            case 2://配置完成
-                if (bigTowerDir == 0) {
-                    spinnerDTFX.setSelection(0);
-                } else {
-                    spinnerDTFX.setSelection(1);
-                }
-                etXLNum.setText(lineNum);
-                etXLQ.setText(initialPoint);
-                etXLZ.setText(endPoint);
-                etXLNum.setFocusableInTouchMode(false);
-                etXLQ.setFocusableInTouchMode(false);
-                etXLZ.setFocusableInTouchMode(false);
-                btnXLOk.setVisibility(View.INVISIBLE);
-
-                //TODO  asdasdasd  可进行自动模式 ，手动模式切换，唤醒。配置暂停置为灰色
-                btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
-                btn_a.setFocusableInTouchMode(false);
-                btn_a.setEnabled(false);
-                btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
-                btn_b.setFocusableInTouchMode(true);
-                btn_b.setEnabled(true);
-                btn_c.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
-                btn_c.setFocusableInTouchMode(true);
-                btn_c.setEnabled(true);
-                btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
-                btn_d.setFocusableInTouchMode(true);
-                btn_d.setEnabled(true);
-                break;
-            case 3://配置修改
-
-                break;
-        }
-
     }
 
     /**
@@ -2163,6 +2274,12 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     @Override
     public void mFailure(String strErr) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dismisssBaseProDialog();
+            }
+        });
         ToastUtils.showShort(strErr);
         connectState = false;
     }
@@ -2275,9 +2392,9 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //查询当前机器状态
-                DeviceOPUtils.queryJQZT(MainAct.this, connection, SERIAL_NUMBER);
-                showBaseProDialog(MainAct.this, "正在查询当前机器状态");
+                //查询设备安装状态
+                DeviceOPUtils.queryAZZT(MainAct.this, connection, SERIAL_NUMBER);
+                showBaseProDialog(MainAct.this, "正在查询设备安装状态");
             }
         });
     }
@@ -2305,10 +2422,12 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 if (dialogPsd != null) {
                     btnGo.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                     btnGo.setFocusableInTouchMode(true);
+                    btnGo.setEnabled(true);
                     dialogPsd.dismiss();
                     dialogPsd = null;
                     affirmState = false;
                     btnAffirm.setText("角度确认");
+                    SPUtils.getInstance().put(IS_WCDQD, true);
                     ToastUtils.showShort("拍摄点信息录入成功");
                 }
             }
@@ -2344,6 +2463,18 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     @Override
     public void queryAngleFailure(String err) {
+        ToastUtils.showShort(err);
+    }
+
+    @Override
+    public void delNowPSDDataSuccess() {
+        dismisssBaseProDialog();
+        ToastUtils.showShort("当前拍摄点信息删除成功");
+    }
+
+    @Override
+    public void delNowPSDDataFailure(String err) {
+        dismisssBaseProDialog();
         ToastUtils.showShort(err);
     }
 

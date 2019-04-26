@@ -23,7 +23,7 @@ public class PZAdapter extends BaseQuickAdapter<LocationDetailsDao, BaseViewHold
     protected void convert(BaseViewHolder helper, LocationDetailsDao item) {
         helper.setText(R.id.tvThNum, "塔号" + item.getTowerNo());
         helper.setText(R.id.tvPzName, item.getMCZR());
-//        helper.setText(R.id.tvPsdNum, "--");
+        helper.setText(R.id.tvPsdWZ, item.getDirection());
         helper.setText(R.id.tvWcName, item.getMDate());
     }
 }

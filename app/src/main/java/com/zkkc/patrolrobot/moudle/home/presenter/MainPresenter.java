@@ -7,6 +7,7 @@ import com.luoxudong.app.threadpool.ThreadPoolHelp;
 import com.zkkc.patrolrobot.entity.ShootAngleDao;
 import com.zkkc.patrolrobot.moudle.home.callback.IAddXL;
 import com.zkkc.patrolrobot.moudle.home.callback.IBaseCallback;
+import com.zkkc.patrolrobot.moudle.home.callback.IDelNowPSDData;
 import com.zkkc.patrolrobot.moudle.home.callback.IMQTTConnHost;
 import com.zkkc.patrolrobot.moudle.home.callback.IQueryAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.ISaveAngleCallback;
@@ -161,5 +162,19 @@ public class MainPresenter extends MainContract.Presenter {
             }
         });
 
+    }
+
+    @Override
+    public void delNowPSDData(String serialNumber) {
+        model.delNowPSDData(threadPool, serialNumber, new IDelNowPSDData() {
+            @Override
+            public void onSuccess() {
+                getView().delNowPSDDataSuccess();
+            }
+            @Override
+            public void onFailure(String strErr) {
+                getView().delNowPSDDataFailure(strErr);
+            }
+        });
     }
 }
