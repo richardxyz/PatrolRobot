@@ -319,6 +319,8 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     Button btn_c;
     @BindView(R.id.btn_d)
     Button btn_d;
+    @BindView(R.id.btn_e)
+    Button btn_e;
 
     //悬臂
     @BindView(R.id.llXB)
@@ -511,7 +513,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     @OnClick({R.id.lli, R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
             R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.btnWc,
             R.id.tvCXT, R.id.btnXLOk, R.id.btnXJSD, R.id.btnInPZMS, R.id.ivLeftYJ, R.id.ivLeftFS,
-            R.id.ivRightYJ, R.id.ivRightFS, R.id.ivKZ, R.id.ivSS, R.id.ivSXSP, R.id.btn_a, R.id.btn_b, R.id.btn_c, R.id.btn_d})
+            R.id.ivRightYJ, R.id.ivRightFS, R.id.ivKZ, R.id.ivSS, R.id.ivSXSP, R.id.btn_a, R.id.btn_b, R.id.btn_c, R.id.btn_d, R.id.btn_e})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.lli://我的设备
@@ -626,13 +628,19 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                             btn_c.setEnabled(true);
                             btn_d.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                             btn_d.setEnabled(true);
+                            btn_e.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+                            btn_e.setEnabled(false);
                         } else {//未配置完成
                             if (isPZMS) {
                                 btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
                                 btn_a.setEnabled(true);
+                                btn_e.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
+                                btn_e.setEnabled(false);
                             } else {
                                 btn_a.setBackground(getResources().getDrawable(R.drawable.edit_shape_e));
                                 btn_a.setEnabled(false);
+                                btn_e.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
+                                btn_e.setEnabled(true);
                             }
                             if (deviceMainState == 7) {
                                 btn_b.setBackground(getResources().getDrawable(R.drawable.edit_shape_c));
@@ -688,6 +696,19 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                     showPZMSStopDialog();//配置模式暂停提示Dialog
                 } else {
                     ToastUtils.showShort("当前非配置模式，无法暂停");
+                }
+                break;
+            case R.id.btn_e://进入配置模式
+                if (!isPZMS) {
+                    if (connection!=null){
+                        //进入配置模式
+                        DeviceOPUtils.inPZMS(MainAct.this, connection, SERIAL_NUMBER);
+                        showBaseProDialog(MainAct.this, "正在进入配置模式");
+                    }else {
+                        ToastUtils.showShort("当前未登录");
+                    }
+                } else {
+                    ToastUtils.showShort("当前已是配置模式");
                 }
                 break;
             case R.id.btn_b://唤醒
@@ -1055,7 +1076,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 if (!"".equals(userName) && !"".equals(name) && !"".equals(pW)) {
                     showBaseProDialog(MainAct.this, "登录中，请稍后...");
                     getPresenter().MQTTConnHost(userName, name, pW, mqtt);
-                }else {
+                } else {
                     ToastUtils.showShort("用户名或密码不能为空");
                 }
 
@@ -1457,44 +1478,50 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                         ToastUtils.showShort("进入配置模式成功");
                         dismisssBaseProDialog();
                         isPZMS = true;
-                        if (deviceStateMainDian == 0) {//未配置
-                            updateXLPopupShow(true);//显示线路信息录入Popup
-                        } else if (deviceStateMainDian == 1) {//配置中
-                            switch (deviceStateDian) {
-                                case 0://默认
-                                    showBaseProDialog(MainAct.this, "设备正在前往拍摄点，请稍后...");
-                                    break;
-                                case 1://点配置
-                                    widgetHideAndShow(true, true, true, true, true);
-                                    affirmState = true;
-                                    btnAffirm.setText("位置确认");
-                                    break;
-                                case 2://可见光角度配置
-                                    widgetHideAndShow(true, true, true, true, true);
-                                    affirmState = false;
-                                    btnAffirm.setText("角度确认");
-                                    if (isHW) {
-                                        switchoverCamera(false);
-                                    }
-                                    break;
-                                case 3://红外角度配置
-                                    widgetHideAndShow(true, true, true, true, true);
-                                    affirmState = false;
-                                    btnAffirm.setText("角度确认");
-                                    if (!isHW) {
-                                        switchoverCamera(true);
-                                    }
-                                    break;
-                                case 4://配置暂停
-                                    showBaseProDialog(MainAct.this, "设备正在前往拍摄点，请稍后...");
-                                    break;
-                                case 5://线路信息配置
-                                    widgetHideAndShow(false, false, false, false, false);
-                                    updateXLPopupShow(true);//显示线路信息录入Popup
-                                    ToastUtils.showShort("线路信息未配置完成，请重新录入");
-                                    break;
+                        if (isMPZZT) {
+                            showBaseProDialog(MainAct.this, "设备正在前往拍摄点，请稍后...");
+                        } else {
+                            if (deviceStateMainDian == 0) {//未配置
+                                updateXLPopupShow(true);//显示线路信息录入Popup
+                            } else if (deviceStateMainDian == 1) {//配置中
+                                switch (deviceStateDian) {
+                                    case 0://默认
+                                        showBaseProDialog(MainAct.this, "设备正在前往拍摄点，请稍后...");
+                                        break;
+                                    case 1://点配置
+                                        widgetHideAndShow(true, true, true, true, true);
+                                        affirmState = true;
+                                        btnAffirm.setText("位置确认");
+                                        break;
+                                    case 2://可见光角度配置
+                                        widgetHideAndShow(true, true, true, true, true);
+                                        affirmState = false;
+                                        btnAffirm.setText("角度确认");
+                                        if (isHW) {
+                                            switchoverCamera(false);
+                                        }
+                                        break;
+                                    case 3://红外角度配置
+                                        widgetHideAndShow(true, true, true, true, true);
+                                        affirmState = false;
+                                        btnAffirm.setText("角度确认");
+                                        if (!isHW) {
+                                            switchoverCamera(true);
+                                        }
+                                        break;
+                                    case 4://配置暂停
+                                        showBaseProDialog(MainAct.this, "设备正在前往拍摄点，请稍后...");
+                                        break;
+                                    case 5://线路信息配置
+                                        widgetHideAndShow(false, false, false, false, false);
+                                        updateXLPopupShow(true);//显示线路信息录入Popup
+                                        ToastUtils.showShort("线路信息未配置完成，请重新录入");
+                                        break;
+                                }
                             }
                         }
+
+
                         break;
                     case 3://过障
                         tvJQMS.setText("过障模式");

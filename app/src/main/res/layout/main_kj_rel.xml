@@ -355,8 +355,9 @@
 
     <Button
         android:id="@+id/btnInPZMS"
-        android:layout_width="@dimen/dp_28"
-        android:layout_height="@dimen/dp_28"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
+        android:padding="2dp"
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
@@ -375,7 +376,7 @@
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_10"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/lla"
@@ -403,11 +404,11 @@
                 android:layout_weight="1" />
 
             <Button
-                android:id="@+id/btn_b"
+                android:id="@+id/btn_e"
                 android:layout_width="@dimen/dp_90"
                 android:layout_height="@dimen/dp_30"
                 android:background="@drawable/connect_button"
-                android:text="唤醒"
+                android:text="配置模式"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
@@ -458,6 +459,17 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
         </LinearLayout>
+        <Button
+            android:id="@+id/btn_b"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_30"
+            android:background="@drawable/connect_button"
+            android:layout_below="@id/llb"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="唤醒"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
         <!--<LinearLayout-->
         <!--android:id="@+id/llc"-->
         <!--android:layout_width="match_parent"-->
