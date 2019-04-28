@@ -34,7 +34,6 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.cazaea.sweetalert.SweetAlertDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cy.dialog.BaseDialog;
 import com.zkkc.patrolrobot.R;
@@ -511,7 +510,7 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     }
 
     @OnClick({R.id.lli, R.id.lla, R.id.llb, R.id.llj, R.id.llm, R.id.llXL, R.id.llXQ, R.id.ivXJUp, R.id.ivXJDown,
-            R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.btnAffirm, R.id.btnWc,
+            R.id.ivKJGLeft, R.id.ivKJGRight, R.id.ivKJGUp, R.id.ivKJGDown, R.id.ivTJAdd, R.id.ivTJMinus, R.id.btnAffirm, R.id.btnWc,
             R.id.tvCXT, R.id.btnXLOk, R.id.btnXJSD, R.id.btnInPZMS, R.id.ivLeftYJ, R.id.ivLeftFS,
             R.id.ivRightYJ, R.id.ivRightFS, R.id.ivKZ, R.id.ivSS, R.id.ivSXSP, R.id.btn_a, R.id.btn_b, R.id.btn_c, R.id.btn_d, R.id.btn_e})
     public void onViewClicked(View view) {
@@ -700,11 +699,11 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
                 break;
             case R.id.btn_e://进入配置模式
                 if (!isPZMS) {
-                    if (connection!=null){
+                    if (connection != null) {
                         //进入配置模式
                         DeviceOPUtils.inPZMS(MainAct.this, connection, SERIAL_NUMBER);
                         showBaseProDialog(MainAct.this, "正在进入配置模式");
-                    }else {
+                    } else {
                         ToastUtils.showShort("当前未登录");
                     }
                 } else {

@@ -299,9 +299,9 @@ public class MainModel extends BaseModel {
                     });
                 } else {//红外
                     File mFile = bitmapToFile(true);
-                    Uri uriA = UriUtils.file2Uri(mFile);
-                    boolean success = mDev.saveBMP(0, uriA.toString());
-
+//                    Uri uriA = UriUtils.file2Uri(mFile);
+//                    boolean success = mDev.saveBMP(0, uriA.toString());
+                    boolean success = mDev.saveBMP(0, mFile.getPath());
                     if (success) {
                         Uri uri = UriUtils.file2Uri(mFile);
                         LocationDetailsDao locationDetailsDao = queryLDDao();
