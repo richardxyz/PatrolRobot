@@ -2474,7 +2474,8 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     @Override
     public void saveAngleFailure(String err) {
-        ToastUtils.showShort("拍摄角度信息和图片本地保存失败");
+//        ToastUtils.showShort("拍摄角度信息和图片本地保存失败");
+        ToastUtils.showShort(err);
     }
 
     @Override
