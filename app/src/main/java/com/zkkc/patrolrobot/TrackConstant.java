@@ -9,7 +9,7 @@ public class TrackConstant {
         public final static String LOCAL_HOST = "192.168.1.251";
         public final static int HOST_PORT = 4399;
     //本地环境
-//    public static final String LOCAL_HOST = "172.16.43.104";
+//    public static final String LOCAL_HOST = "172.16.1.105";
 //    public static final int HOST_PORT = 61613;
 
     /**

@@ -24,7 +24,8 @@ import java.util.concurrent.ExecutorService;
 public class DeviceAdapter extends BaseQuickAdapter<DeviceDao, BaseViewHolder> {
     private EventStateBean bean;
     private ExecutorService threadPool;
-    public DeviceAdapter(int layoutResId, @Nullable List<DeviceDao> data,ExecutorService threadPool) {
+
+    public DeviceAdapter(int layoutResId, @Nullable List<DeviceDao> data, ExecutorService threadPool) {
         super(layoutResId, data);
         this.threadPool = threadPool;
     }
@@ -51,26 +52,41 @@ public class DeviceAdapter extends BaseQuickAdapter<DeviceDao, BaseViewHolder> {
                     threadPool.execute(new Runnable() {
                         @Override
                         public void run() {
-                            WifiUtils wifiUtils = new WifiUtils(TrackApp.getContext());
-                            boolean is = wifiUtils.connectWifi(item.getDWifi(), null);
                             EventBus.getDefault().post("hide_dialog");
-                            if (!is){
-                                ToastUtils.showLong("设备WIFI连接失败，请重试");
-                            }else {
-                                List<DeviceDao> data = getData();
-                                for (int i = 0; i < data.size(); i++) {
-                                    if (i == helper.getAdapterPosition()) {
-                                        data.get(i).setIsCheck(1);
-                                    } else {
-                                        data.get(i).setIsCheck(0);
-                                    }
+                            List<DeviceDao> data = getData();
+                            for (int i = 0; i < data.size(); i++) {
+                                if (i == helper.getAdapterPosition()) {
+                                    data.get(i).setIsCheck(1);
+                                } else {
+                                    data.get(i).setIsCheck(0);
                                 }
-                                bean = new EventStateBean();
-                                bean.setUpdate_state("connect_state");
-                                bean.setUpdate_position(helper.getAdapterPosition());
-                                bean.setDatas(getData());
-                                EventBus.getDefault().post(bean);
                             }
+                            bean = new EventStateBean();
+                            bean.setUpdate_state("connect_state");
+                            bean.setUpdate_position(helper.getAdapterPosition());
+                            bean.setDatas(getData());
+                            EventBus.getDefault().post(bean);
+
+//                            WifiUtils wifiUtils = new WifiUtils(TrackApp.getContext());
+//                            boolean is = wifiUtils.connectWifi(item.getDWifi(), null);
+//                            EventBus.getDefault().post("hide_dialog");
+//                            if (!is){
+//                                ToastUtils.showLong("设备WIFI连接失败，请重试");
+//                            }else {
+//                                List<DeviceDao> data = getData();
+//                                for (int i = 0; i < data.size(); i++) {
+//                                    if (i == helper.getAdapterPosition()) {
+//                                        data.get(i).setIsCheck(1);
+//                                    } else {
+//                                        data.get(i).setIsCheck(0);
+//                                    }
+//                                }
+//                                bean = new EventStateBean();
+//                                bean.setUpdate_state("connect_state");
+//                                bean.setUpdate_position(helper.getAdapterPosition());
+//                                bean.setDatas(getData());
+//                                EventBus.getDefault().post(bean);
+//                            }
                         }
                     });
                 }

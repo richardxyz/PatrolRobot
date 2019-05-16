@@ -23,6 +23,7 @@ import com.zkkc.patrolrobot.moudle.home.callback.IMQTTConnHost;
 import com.zkkc.patrolrobot.moudle.home.callback.IQueryAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.callback.ISaveAngleCallback;
 import com.zkkc.patrolrobot.moudle.home.entity.PZCSBean;
+import com.zkkc.patrolrobot.moudle.home.utils.CharacterUtils;
 import com.zkkc.patrolrobot.widget.EmptyControlVideo;
 
 import org.fusesource.hawtbuf.Buffer;
@@ -79,6 +80,7 @@ public class MainModel extends BaseModel {
         }
         mqtt.setUserName(name);
         mqtt.setPassword(pW);
+        mqtt.setClientId(CharacterUtils.getRandomString(25));
         connection = mqtt.callbackConnection();
         connection.connect(new Callback<Void>() {
             @Override
