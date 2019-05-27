@@ -101,4 +101,6 @@ dependencies {
     implementation 'com.shuyu:gsyVideoPlayer-ex_so:6.0.3'
     //zxing
     implementation 'com.github.yuzhiqiang1993:zxing:2.2.5'
+    //wifi
+    implementation 'com.github.tangjiang24:WifiConnector:2.0'
 }

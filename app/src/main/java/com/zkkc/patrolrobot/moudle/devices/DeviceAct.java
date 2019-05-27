@@ -18,6 +18,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.cazaea.sweetalert.SweetAlertDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.kongzue.dialog.v2.WaitDialog;
 import com.luoxudong.app.threadpool.ThreadPoolHelp;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
@@ -84,19 +85,16 @@ public class DeviceAct extends BaseActivity {
             }
         }
     }
-    SweetAlertDialog pDialog;
+
+    WaitDialog waitDialog;
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void mAdapterEvent(String str){
-        switch (str){
+    public void mAdapterEvent(String str) {
+        switch (str) {
             case "show_dialog":
-                pDialog = new SweetAlertDialog(DeviceAct.this, SweetAlertDialog.PROGRESS_TYPE);
-                pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-                pDialog.setTitleText("努力连接WIFI中,请稍后");
-                pDialog.setCancelable(false);
-                pDialog.show();
+                 waitDialog = WaitDialog.show(DeviceAct.this, "WIFI连接中...");
                 break;
             case "hide_dialog":
-                pDialog.cancel();
+                waitDialog.doDismiss();
                 break;
         }
 
@@ -123,6 +121,7 @@ public class DeviceAct extends BaseActivity {
     public BaseView createView() {
         return null;
     }
+
     @Override
     public void init() {
         threadPool = ThreadPoolHelp.Builder
