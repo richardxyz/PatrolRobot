@@ -3,10 +3,14 @@ package com.zkkc.patrolrobot;
 import android.app.Application;
 import android.content.Context;
 
+import com.kongzue.dialog.v2.DialogSettings;
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager;
 import com.shuyu.gsyvideoplayer.player.PlayerFactory;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.zkkc.patrolrobot.common.GreenDaoManager;
+
+import static com.kongzue.dialog.v2.DialogSettings.THEME_DARK;
+import static com.kongzue.dialog.v2.DialogSettings.THEME_LIGHT;
 
 
 /**
@@ -23,6 +27,17 @@ public class TrackApp extends Application {
         //greenDao全局配置,只希望有一个数据库操作对象
         GreenDaoManager.getInstance();
         initVideoPlayer();
+        initMyDialog();
+    }
+
+    private void initMyDialog() {
+        // DialogSettings.STYLE_KONGZUE   DialogSettings.STYLE_IOS
+        DialogSettings.style = DialogSettings.STYLE_IOS;
+        DialogSettings.tip_theme = THEME_LIGHT;          //设置提示框主题为亮色主题
+        DialogSettings.dialog_theme = THEME_LIGHT;       //设置对话框主题为暗色主题
+        DialogSettings.use_blur = true;                 //设置是否启用模糊
+
+
     }
 
     public static Context getContext() {

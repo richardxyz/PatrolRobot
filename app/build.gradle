@@ -21,6 +21,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
+
     }
     buildTypes {
         release {
@@ -80,6 +83,7 @@ dependencies {
     //dialog
     implementation 'com.github.cazaea:sweet-alert-dialog:1.0.0'
     implementation 'com.github.AnJiaoDe:BaseDialog:V1.1.8'
+    implementation 'com.kongzue.dialog:dialog:2.5.1'
     //ui
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'

@@ -14,6 +14,7 @@
     <color name="gray_15">#F2F0EA</color>
     <color name="bg_color">#01111B</color>
     <color name="bg_color_2">#F2F2F2</color>
+    <color name="bg_color_3">#e7e7e7</color>
 
     <color name="bg_dialog">#312E42</color>
     <color name="text_n">#0404C2</color>

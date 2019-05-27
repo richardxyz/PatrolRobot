@@ -2,12 +2,14 @@ package com.zkkc.patrolrobot.moudle.home.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.FragmentUtils;
@@ -36,6 +39,12 @@ import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cy.dialog.BaseDialog;
+import com.kongzue.dialog.listener.InputDialogOkButtonClickListener;
+import com.kongzue.dialog.v2.InputDialog;
+import com.kongzue.dialog.v2.MessageDialog;
+import com.kongzue.dialog.v2.SelectDialog;
+import com.kongzue.dialog.v2.TipDialog;
+import com.kongzue.dialog.v2.WaitDialog;
 import com.zkkc.patrolrobot.R;
 import com.zkkc.patrolrobot.TrackConstant;
 import com.zkkc.patrolrobot.base.BaseActivity;
@@ -363,8 +372,8 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
 
     //mqtt相关
     private MQTT mqtt;
-    private short KEEP_ALIVE = 5;
-    private long CONNECT_ATTEMPTS_MAX = -1;//重连次数
+    private short KEEP_ALIVE = 15;
+    private long CONNECT_ATTEMPTS_MAX = 0;//重连次数
     private long RECONNECT_DELAY = 4;//在第一次重新连接尝试之前等待时长
     private long RECONNECT_DELAY_MAX = 4;//重新连接尝试之间等待的最长时间
     private boolean connectState = false;//mqtt连接状态

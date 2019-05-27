@@ -11,6 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_5"
         android:text="角度1"
         android:textColor="@color/orange_light"
         android:textSize="@dimen/sp_12" />
@@ -20,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvNum"
         android:orientation="vertical"
+        android:layout_marginBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_20">
 
         <com.android.library.YLCircleImageView
