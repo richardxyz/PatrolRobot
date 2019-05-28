@@ -1,6 +1,7 @@
 package com.zkkc.patrolrobot.base;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -10,21 +11,29 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.constraint.Constraints;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.cazaea.sweetalert.SweetAlertDialog;
 import com.cy.dialog.progress.ProgressDialog;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.kongzue.dialog.listener.OnBackPressListener;
+import com.kongzue.dialog.v2.Pop;
+import com.kongzue.dialog.v2.WaitDialog;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zkkc.patrolrobot.R;
-//import com.zkkc.patrolrobot.moudle.home.activity.HomeAct;
 
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
@@ -137,24 +146,27 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
         }
     }
 
-    SweetAlertDialog proDialog;
 
     /**
      * 加载Dialog
      */
-    public void showBaseProDialog(Context mContext, String msg) {
-        proDialog = new SweetAlertDialog(mContext, SweetAlertDialog.PROGRESS_TYPE);
-        proDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        proDialog.setTitleText(msg);
-        proDialog.setCancelable(true);
-        proDialog.show();
+    WaitDialog waitDialog;
 
+    public void showBaseProDialog(final Context mContext, final String msg) {
+        waitDialog = WaitDialog.show(this, msg);
+        waitDialog.setOnBackPressListener(new OnBackPressListener() {
+            @Override
+            public void OnBackPress(android.support.v7.app.AlertDialog alertDialog) {
+                waitDialog.doDismiss();
+                waitDialog = null;
+            }
+        });
     }
 
     public void dismisssBaseProDialog() {
-        if (proDialog!=null){
-            proDialog.dismiss();
-            proDialog = null;
+        if (waitDialog != null) {
+            waitDialog.doDismiss();
+            waitDialog = null;
         }
     }
 
@@ -219,6 +231,7 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
 
     }
 
+
     /**
      * 退出应用程序
      */
@@ -234,10 +247,7 @@ public abstract class BaseActivity<V extends BaseView, P extends BasePresenter<V
             closeDialog.dismiss();
             closeDialog = null;
         }
-        if (proDialog != null) {
-            proDialog.dismiss();
-            proDialog = null;
-        }
+        WaitDialog.unloadAllDialog();
         super.onDestroy();
         if (presenter != null) {
             presenter.detachView();
