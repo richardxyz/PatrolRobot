@@ -95,6 +95,7 @@ public class DetailsAct extends BaseActivity {
 
     @Override
     public void init() {
+        etSS.clearFocus();
         threadPool = ThreadPoolHelp.Builder
                 .cached()
                 .builder();
