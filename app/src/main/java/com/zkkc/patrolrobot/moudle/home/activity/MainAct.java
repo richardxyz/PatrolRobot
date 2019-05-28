@@ -447,6 +447,13 @@ public class MainAct extends BaseActivity<MainContract.View, MainContract.Presen
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        SERIAL_NUMBER = SPUtils.getInstance().getString("SERIAL_NUMBER");
+        XB_STATE = SPUtils.getInstance().getString("XB_STATE");
+    }
+
+    @Override
     public void init() {
         //动态权限
         permissionsSet();
